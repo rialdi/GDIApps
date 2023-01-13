@@ -155,7 +155,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           port: ${{ secrets.DEPLOY_PORT }}
           key: ${{ secrets.DEPLOY_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          #passphrase: ${{ secrets.PASSPHRASE }}
           source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
           target: "~/"
 
@@ -168,7 +168,7 @@ jobs:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          #passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.DEPLOY_PORT }}
           envs: APPTOKEN,USERNAME
           script: |
@@ -187,7 +187,7 @@ jobs:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          #: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.DEPLOY_PORT }}
           envs: APPTOKEN,USERNAME
           script: |
