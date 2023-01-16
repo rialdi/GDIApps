@@ -168,7 +168,7 @@ jobs:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
-          #passphrase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.DEPLOY_PORT }}
           envs: APPTOKEN,USERNAME
           script: |
