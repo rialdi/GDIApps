@@ -3,9 +3,11 @@ services:
   ${APP_NAME}:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
-    #network_mode: bridge
-    networks:
-      - proxy
+    network_mode: bridge
+    ports:
+      - "80"
+    # networks:
+    #   - proxy
     # ports:
     #   - mode: ingress
     #     target: 80
