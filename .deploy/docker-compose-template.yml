@@ -5,10 +5,13 @@ services:
     restart: always
     network_mode: bridge
     ports:
-      - "80"
+      - mode: ingress
+        target: 80
+        published: 80
+        protocol: tcp
     environment:
-      VIRTUAL_HOST: ${HOST_DOMAIN}
-      LETSENCRYPT_HOST: ${HOST_DOMAIN}
+      VIRTUAL_HOST: "apps.ptgdi.com"
+      LETSENCRYPT_HOST: "apps.ptgdi.com"
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DEPLOY_API: ${DEPLOY_API}
       DEPLOY_CDN: ${DEPLOY_CDN}
