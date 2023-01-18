@@ -14,6 +14,8 @@ services:
         published: 443
         protocol: tcp
     environment:
+      VIRTUAL_PROTO: "https"
+      VIRTUAL_PORT: "443"
       VIRTUAL_HOST: "apps.ptgdi.com"
       LETSENCRYPT_HOST: "apps.ptgdi.com"
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
