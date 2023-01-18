@@ -11,3 +11,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS runtime
 WORKDIR /app
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "GDIApps.dll"]
+
+COPY ptgdi.crt /usr/local/share/certificates/ptgdi.crt
+RUN update-ca-certificates
