@@ -129,8 +129,8 @@ jobs:
           if [ "${{ github.event.inputs.version }}" != "" ]; then
             echo "TAG_NAME=${{ github.event.inputs.version }}" >> $GITHUB_ENV
           fi;
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H ${{ secrets.DEPLOY_API }} >> ~/.ssh/known_hosts
+      #- name: Adding Known Hosts
+       # run: ssh-keyscan -H ${{ secrets.DEPLOY_API }} >> ~/.ssh/known_hosts
 
       # Populate docker-compose.yml with variables from build process, including TAG_NAME.
       - name: docker-compose file prep
