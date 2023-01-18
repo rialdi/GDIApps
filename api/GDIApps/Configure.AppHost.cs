@@ -21,6 +21,8 @@ public class AppHost : AppHostBase, IHostingStartup
         SetConfig(new HostConfig {
         });
 
+        Plugins.Add(new AdminDatabaseFeature());
+
         Plugins.Add(new SpaFeature {
             EnableSpaFallback = true
         });
