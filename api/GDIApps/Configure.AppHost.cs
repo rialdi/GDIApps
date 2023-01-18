@@ -31,6 +31,8 @@ public class AppHost : AppHostBase, IHostingStartup
             "http://localhost:5173",
             "http://localhost:3000",
             "https://localhost:5005",
+            "https://apps.ptgdi.com",
+            "http://apps.ptgdi.com",
             "https://" + Environment.GetEnvironmentVariable("DEPLOY_CDN")
         }, allowCredentials:true));
 

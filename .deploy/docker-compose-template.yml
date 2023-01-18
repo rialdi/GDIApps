@@ -5,8 +5,10 @@ services:
     restart: always
     network_mode: bridge
     ports:
-      - 80 : 80
-      - 443 : 443
+      - mode: ingress
+        target: 80
+        published: 80
+        protocol: tcp
     environment:
       VIRTUAL_HOST: "apps.ptgdi.com"
       LETSENCRYPT_HOST: "apps.ptgdi.com"
