@@ -6,8 +6,8 @@ services:
     network_mode: bridge
     ports:
       - mode: ingress
-        target: 80
-        published: 80
+        target: 443
+        published: 443
         protocol: tcp
     environment:
       VIRTUAL_HOST: "apps.ptgdi.com"
