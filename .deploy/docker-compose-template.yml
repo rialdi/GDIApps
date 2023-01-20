@@ -4,15 +4,15 @@ services:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
     network_mode: bridge
-    # ports:
-    #   - "80"
+    ports:
+      - "80"
     # networks:
     #   - proxy
-    ports:
-      - mode: ingress
-        target: 80
-        published: 80
-        protocol: tcp
+    # ports:
+    #   - mode: ingress
+    #     target: 80
+    #     published: 80
+    #     protocol: tcp
       # - mode: ingress
       #   target: 443
       #   published: 443
