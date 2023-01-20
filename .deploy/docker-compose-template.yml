@@ -4,23 +4,25 @@ services:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
     network_mode: bridge
-    ports:
-      - "80"
+    # ports:
+    #   - "80"
     # networks:
     #   - proxy
-    # ports:
-    #   - mode: ingress
-    #     target: 80
-    #     published: 80
-    #     protocol: tcp
-      # - mode: ingress
-      #   target: 443
-      #   published: 443
-      #   protocol: tcp
+    ports:
+      - mode: ingress
+        target: 80
+        published: 80
+        protocol: tcp
+      - mode: ingress
+        target: 443
+        published: 443
+        protocol: tcp
     environment:
       VIRTUAL_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      DEPLOY_API: ${DEPLOY_API}
+      DEPLOY_CDN: ${DEPLOY_CDN}
     volumes:
       - ${APP_NAME}-mydb:/app/App_Data
   ${APP_NAME}-migration:
