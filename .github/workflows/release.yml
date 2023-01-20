@@ -192,6 +192,5 @@ jobs:
           envs: APPTOKEN,USERNAME
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            sudo docker network create nginx-proxy
             docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
             docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up -d
