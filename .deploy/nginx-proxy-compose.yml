@@ -15,32 +15,32 @@ services:
       - dhparam:/etc/nginx/dhparam
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    #network_mode: bridge
-    networks:
-      - proxy
+    network_mode: bridge
+    # networks:
+    #   - proxy
 
-  letsencrypt:
-    image: nginxproxy/acme-companion
-    container_name: nginx-proxy-le
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - certs:/etc/nginx/certs:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: always
   # letsencrypt:
-  #   image: jrcs/letsencrypt-nginx-proxy-companion:2.0
+  #   image: nginxproxy/acme-companion
   #   container_name: nginx-proxy-le
-  #   restart: always
-  #   environment:
-  #     - DEFAULT_EMAIL=rialdi@ptgdi.com
   #   volumes_from:
   #     - nginx-proxy
   #   volumes:
   #     - certs:/etc/nginx/certs:rw
-  #     - acme:/etc/acme.sh
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #   #network_mode: bridge
+  #   restart: always
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion:2.0
+    container_name: nginx-proxy-le
+    restart: always
+    environment:
+      - DEFAULT_EMAIL=rialdi@ptgdi.com
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: bridge
 
 volumes:
   conf:
@@ -50,7 +50,7 @@ volumes:
   certs:
   acme:
 
-networks:
-  proxy:
-    external:
-      name: nginx-proxy
+# networks:
+#   proxy:
+#     external:
+#       name: nginx-proxy
