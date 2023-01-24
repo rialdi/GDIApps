@@ -4,13 +4,13 @@ WORKDIR /app
 COPY ./api .
 RUN dotnet restore
 
-# WORKDIR /app/TestApp
-# RUN dotnet publish -c release -o /out --no-restore
+WORKDIR /app/GDIApps
+RUN dotnet publish -c release -o /out --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS runtime
 WORKDIR /app
 COPY --from=build /out .
-ENTRYPOINT ["dotnet", "TestApp.dll"]
+ENTRYPOINT ["dotnet", "GDIApps.dll"]
 
 
 
