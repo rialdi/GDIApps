@@ -5,9 +5,9 @@ services:
     restart: always
     expose:
      - 8000
-    networks:
-      service_network:
-    # network_mode: bridge
+    # networks:
+    #   service_network:
+    network_mode: bridge
     # ports:
     #   - "80"
     # networks:
@@ -43,5 +43,5 @@ services:
 volumes:
   ${APP_NAME}-mydb:
 
-networks:
-  service_network:
+# networks:
+#   service_network:
