@@ -140,6 +140,7 @@ jobs:
           IMAGE_REPO: ${{ env.image_repository_name }}
           APP_NAME: ${{ github.event.repository.name }}
           HOST_DOMAIN: ${{ secrets.DEPLOY_API }}
+          LETSENCRYPT_HOST: "apps.ptgdi.com,www.apps.ptgdi.com"
           LETSENCRYPT_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
           DEPLOY_API: ${{ secrets.DEPLOY_API }}
           DEPLOY_CDN: ${{ secrets.DEPLOY_CDN }}
