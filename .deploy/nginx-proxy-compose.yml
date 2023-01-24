@@ -28,13 +28,15 @@ services:
   #     - certs:/etc/nginx/certs:rw
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
   #   restart: always
-  letsencrypt:
+  nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion:2.0
     container_name: nginx-proxy-le
     restart: always
     environment:
       - DEFAULT_EMAIL=rialdi@ptgdi.com
     volumes_from:
+      - nginx-proxy
+    depends_on:
       - nginx-proxy
     volumes:
       - certs:/etc/nginx/certs:rw
@@ -49,6 +51,8 @@ volumes:
   dhparam:
   certs:
   acme:
+
+networks: { proxy: { name: proxy } }
 
 # networks:
 #   proxy:
