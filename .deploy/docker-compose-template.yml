@@ -42,3 +42,6 @@ services:
 
 volumes:
   ${APP_NAME}-mydb:
+
+networks:
+  service_network:
