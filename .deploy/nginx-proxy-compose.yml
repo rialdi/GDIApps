@@ -36,8 +36,8 @@ services:
       - DEFAULT_EMAIL=rialdi@ptgdi.com
     volumes_from:
       - nginx-proxy
-    depends_on:
-      - nginx-proxy
+    # depends_on:
+    #   - nginx-proxy
     volumes:
       - certs:/etc/nginx/certs:rw
       - acme:/etc/acme.sh
