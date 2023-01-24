@@ -16,28 +16,16 @@ services:
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     network_mode: bridge
-    networks:
-      - proxy
 
-  # letsencrypt:
-  #   image: nginxproxy/acme-companion
-  #   container_name: nginx-proxy-le
-  #   volumes_from:
-  #     - nginx-proxy
-  #   volumes:
-  #     - certs:/etc/nginx/certs:rw
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #   restart: always
-  nginx-letsencrypt:
+  letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion:2.0
     container_name: nginx-proxy-le
     restart: always
     environment:
       - DEFAULT_EMAIL=rialdi@ptgdi.com
+      - NGINX_PROXY_CONTAINER=nginx-proxy
     volumes_from:
       - nginx-proxy
-    # depends_on:
-    #   - nginx-proxy
     volumes:
       - certs:/etc/nginx/certs:rw
       - acme:/etc/acme.sh
@@ -51,10 +39,3 @@ volumes:
   dhparam:
   certs:
   acme:
-
-networks: { proxy: { name: proxy } }
-
-# networks:
-#   proxy:
-#     external:
-#       name: nginx-proxy
