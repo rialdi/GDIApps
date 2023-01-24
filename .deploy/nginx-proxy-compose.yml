@@ -8,56 +8,69 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    networks:
-      service_network:
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - nginx-certs:/etc/nginx/certs
-      - nginx-vhost:/etc/nginx/vhost.d
-      - nginx-html:/usr/share/nginx/html
+    # networks:
+    #   service_network:
     # volumes:
-    #   - conf:/etc/nginx/conf.d
-    #   - vhost:/etc/nginx/vhost.d
-    #   - html:/usr/share/nginx/html
-    #   - dhparam:/etc/nginx/dhparam
-    #   - certs:/etc/nginx/certs:ro
     #   - /var/run/docker.sock:/tmp/docker.sock:ro
-    # network_mode: bridge
+    #   - nginx-certs:/etc/nginx/certs
+    #   - nginx-vhost:/etc/nginx/vhost.d
+    #   - nginx-html:/usr/share/nginx/html
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    network_mode: bridge
 
-  nginx-proxy-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    # image: jrcs/letsencrypt-nginx-proxy-companion:2.0
-    container_name: nginx-proxy-le
-    restart: always
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
     environment:
-      - DEFAULT_EMAIL=rialdi@ptgdi.com
-      - NGINX_PROXY_CONTAINER=nginx-proxy
+      - DEFAULT_EMAIL=mail@yourdomain.tld
     volumes_from:
       - nginx-proxy
     volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - nginx-certs:/etc/nginx/certs
-      - nginx-vhost:/etc/nginx/vhost.d
-      - nginx-html:/usr/share/nginx/html
+    network_mode: bridge
+
+  # nginx-proxy-letsencrypt:
+  #   image: jrcs/letsencrypt-nginx-proxy-companion
+  #   # image: jrcs/letsencrypt-nginx-proxy-companion:2.0
+  #   container_name: nginx-proxy-le
+  #   restart: always
+  #   environment:
+  #     - DEFAULT_EMAIL=rialdi@ptgdi.com
+  #     - NGINX_PROXY_CONTAINER=nginx-proxy
+  #   volumes_from:
+  #     - nginx-proxy
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - nginx-certs:/etc/nginx/certs
+  #     - nginx-vhost:/etc/nginx/vhost.d
+  #     - nginx-html:/usr/share/nginx/html
     # volumes:
     #   - certs:/etc/nginx/certs:rw
     #   - acme:/etc/acme.sh
     #   - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      service_network:
+#     networks:
+#       service_network:
 
-networks:
-  service_network:
-
-volumes:
-  nginx-certs:
-  nginx-vhost:
-  nginx-html:
+# networks:
+#   service_network:
 
 # volumes:
-#   conf:
-#   vhost:
-#   html:
-#   dhparam:
-#   certs:
-#   acme:
+#   nginx-certs:
+#   nginx-vhost:
+#   nginx-html:
+
+volumes:
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:
+  acme:
