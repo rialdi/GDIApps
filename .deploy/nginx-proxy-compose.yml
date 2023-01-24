@@ -16,8 +16,8 @@ services:
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     network_mode: bridge
-    # networks:
-    #   - proxy
+    networks:
+      - proxy
 
   # letsencrypt:
   #   image: nginxproxy/acme-companion
