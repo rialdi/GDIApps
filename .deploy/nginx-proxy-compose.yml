@@ -24,18 +24,30 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     network_mode: bridge
 
-  acme-companion:
-    image: nginxproxy/acme-companion
-    container_name: nginx-proxy-acme
-    environment:
-      - DEFAULT_EMAIL=mail@yourdomain.tld
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - certs:/etc/nginx/certs:rw
-      - acme:/etc/acme.sh
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    network_mode: bridge
+  letsencrypt-companion:
+      container_name: letsencrypt-companion
+      image: jrcs/letsencrypt-nginx-proxy-companion
+      restart: unless-stopped
+      volumes_from:
+          - nginx
+      volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - /var/docker/nginx/acme:/etc/acme.sh
+      environment:
+          DEFAULT_EMAIL: test@mail.com
+
+  # acme-companion:
+  #   image: nginxproxy/acme-companion
+  #   container_name: nginx-proxy-acme
+  #   environment:
+  #     - DEFAULT_EMAIL=mail@yourdomain.tld
+  #   volumes_from:
+  #     - nginx-proxy
+  #   volumes:
+  #     - certs:/etc/nginx/certs:rw
+  #     - acme:/etc/acme.sh
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   network_mode: bridge
 
   # nginx-proxy-letsencrypt:
   #   image: jrcs/letsencrypt-nginx-proxy-companion
