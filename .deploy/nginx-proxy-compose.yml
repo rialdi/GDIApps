@@ -31,10 +31,12 @@ services:
       volumes_from:
           - nginx
       volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - /var/docker/nginx/acme:/etc/acme.sh
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - nginx-certs:/etc/nginx/certs
+        - nginx-vhost:/etc/nginx/vhost.d
+        - nginx-html:/usr/share/nginx/html
       environment:
-          DEFAULT_EMAIL: test@mail.com
+          DEFAULT_EMAIL: rialdi@ptgdi.com
 
   # acme-companion:
   #   image: nginxproxy/acme-companion
