@@ -3,13 +3,13 @@ services:
   ${APP_NAME}:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
-    # expose:
-    #  - 3000
+    expose:
+     - 3000
     # networks:
     #   service_network:
     network_mode: bridge
-    ports:
-      - "80"
+    # ports:
+    #   - "80"
     # networks:
     #   - proxy
     # ports:
@@ -24,7 +24,7 @@ services:
     environment:
       # HTTP_PORT: 8000
       VIRTUAL_HOST: ${HOST_DOMAIN}
-      # VIRTUAL_PORT: 3000
+      VIRTUAL_PORT: 3000
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DEPLOY_API: ${DEPLOY_API}

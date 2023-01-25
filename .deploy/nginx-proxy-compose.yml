@@ -22,7 +22,7 @@ services:
     container_name: nginx-proxy-le
     restart: always
     environment:
-      - DEFAULT_EMAIL=you@example.com
+      - DEFAULT_EMAIL=rialdi@ptgdi.com
     volumes_from:
       - nginx-proxy
     volumes:
