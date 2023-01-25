@@ -23,10 +23,11 @@ services:
     #     protocol: tcp
     environment:
       # HTTP_PORT: 8000
-      VIRTUAL_HOST: ${HOST_DOMAIN}
+      DEFAULT_HOST: apps.ptgdi.com
+      VIRTUAL_HOST: apps.ptgdi.com
       VIRTUAL_PORT: 3000
-      LETSENCRYPT_HOST: ${HOST_DOMAIN}
-      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      LETSENCRYPT_HOST: apps.ptgdi.com
+      LETSENCRYPT_EMAIL: rialdi@ptgdi.com
       DEPLOY_API: ${DEPLOY_API}
       DEPLOY_CDN: ${DEPLOY_CDN}
     volumes:
