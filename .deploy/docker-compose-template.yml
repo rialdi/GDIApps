@@ -7,7 +7,7 @@ services:
     ports:
       - "80"
     environment:
-      # DEFAULT_HOST: apps.ptgdi.com
+      DEFAULT_HOST: apps.ptgdi.com
       VIRTUAL_HOST: ${HOST_DOMAIN}
       VIRTUAL_PORT: ${HOST_VIRTUALPORT}
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
