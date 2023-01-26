@@ -44,3 +44,25 @@ and
 - https://localhost:5005
 
 
+
+Install dotnet 6 sdk
+https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-6.0.404-windows-x64-installer
+
+
+Install dotnet tool ef
+
+Run this command in CMD / terminal
+dotnet tool install --global dotnet-ef 
+
+Install nodejs
+https://nodejs.org/en/download/
+
+Install npm
+npm install -g npm
+
+install @vue cli-service
+npm install @vue/cli-service -g
+
+Install Certificate
+dotnet dev-certs https --trust
+https://docs.servicestack.net/netcore-localhost-cert#when-developing-for-android
