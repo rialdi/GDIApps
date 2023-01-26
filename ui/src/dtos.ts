@@ -1,5 +1,5 @@
 /* Options:
-Date: 2022-12-26 22:37:19
+Date: 2023-01-26 18:55:24
 Version: 6.50
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -66,6 +66,13 @@ export enum Department
     QualityAssurance = 'QualityAssurance',
     Developer = 'Developer',
     Management = 'Management',
+}
+
+export enum EMAIL_TEMPLATE_CODE
+{
+    APPUSER_EMAIL_CONFIRM = 'APPUSER_EMAIL_CONFIRM',
+    APPUSER_RESET_PASSWORD = 'APPUSER_RESET_PASSWORD',
+    APPUSER_REGISTRATION = 'APPUSER_REGISTRATION',
 }
 
 // @DataContract
@@ -158,6 +165,159 @@ export class Booking extends AuditBase
     public cancelled?: boolean;
 
     public constructor(init?: Partial<Booking>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class Client extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @StringLength(100)
+    public code?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public name?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    public isActive?: boolean;
+    public projectList?: Project[];
+
+    public constructor(init?: Partial<Client>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class Project extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    public projectClient?: Client;
+    // @Required()
+    // @StringLength(100)
+    public code?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public name?: string;
+
+    // @StringLength(1000)
+    public description?: string;
+
+    // @StringLength(100)
+    public projectOwner?: string;
+
+    // @StringLength(100)
+    public projectManager?: string;
+
+    public nominalValue?: number;
+    public durationDays?: number;
+    public estimatedStartDate?: string;
+    public estimatedEndDate?: string;
+    public actualtartDate?: string;
+    public actualEndDate?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<Project>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ContactUs extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    public name?: string;
+
+    // @Required()
+    public email?: string;
+
+    // @Required()
+    public phoneNumber?: string;
+
+    // @Required()
+    public message?: string;
+
+    public constructor(init?: Partial<ContactUs>) { super(init); (Object as any).assign(this, init); }
+}
+
+/**
+* Emails
+*/
+export class Email extends AuditBase
+{
+    // @Required()
+    public id?: number;
+
+    // @Required()
+    public code?: EMAIL_TEMPLATE_CODE;
+
+    public from?: string;
+    // @Required()
+    public to?: string;
+
+    // @Required()
+    public subject?: string;
+
+    // @Required()
+    // @StringLength(2147483647)
+    public body?: string;
+
+    public sendStatusMessage?: string;
+
+    public constructor(init?: Partial<Email>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class EmailTemplate extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @StringLength(100)
+    public code?: EMAIL_TEMPLATE_CODE;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    public isActive?: boolean;
+    // @Required()
+    // @StringLength(2147483647)
+    public emailTemplateText?: string;
+
+    // @Required()
+    // @StringLength(2147483647)
+    public htmlTemplate?: string;
+
+    public constructor(init?: Partial<EmailTemplate>) { super(init); (Object as any).assign(this, init); }
+}
+
+export enum LOOKUPTYPE
+{
+    STATUS = 'STATUS',
+    PRIORITY = 'PRIORITY',
+}
+
+export class Lookup extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @StringLength(100)
+    public lookupType?: LOOKUPTYPE;
+
+    // @Required()
+    // @StringLength(100)
+    public lookupValue?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public lookupText?: string;
+
+    public isActive?: boolean;
+    // @Ignore()
+    public lookupDisplay?: string;
+
+    public constructor(init?: Partial<Lookup>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -255,6 +415,14 @@ export class AppUser extends UserAuth
     public archivedDate?: string;
 
     public constructor(init?: Partial<AppUser>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ContactUsEmailResponse
+{
+    public email?: string;
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<ContactUsEmailResponse>) { (Object as any).assign(this, init); }
 }
 
 export class HelloResponse
@@ -420,6 +588,14 @@ export class IdResponse
     public constructor(init?: Partial<IdResponse>) { (Object as any).assign(this, init); }
 }
 
+export class CRUDResponse
+{
+    public id?: number;
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<CRUDResponse>) { (Object as any).assign(this, init); }
+}
+
 // @ValidateRequest(Validator="IsAuthenticated")
 export class UpdatePassword implements IReturn<ResponseStatus>
 {
@@ -451,6 +627,31 @@ export class GetUserInfoDetail implements IReturn<AppUser>
     public getTypeName() { return 'GetUserInfoDetail'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new AppUser(); }
+}
+
+// @Route("/contacts/email", "POST")
+// @ValidateRequest(Validator="IsAuthenticated")
+export class ContactUsEmail implements IReturn<ContactUsEmailResponse>
+{
+    public contactId?: number;
+    public subject?: string;
+    public body?: string;
+
+    public constructor(init?: Partial<ContactUsEmail>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'ContactUsEmail'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new ContactUsEmailResponse(); }
+}
+
+export class AppUserConfirmEmail
+{
+    public userName?: string;
+    public emailTemplateCode?: EMAIL_TEMPLATE_CODE;
+
+    public constructor(init?: Partial<AppUserConfirmEmail>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'AppUserConfirmEmail'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() {}
 }
 
 // @Route("/hello")
@@ -702,6 +903,73 @@ export class QueryBookings extends QueryDb<Booking> implements IReturn<QueryResp
     public createResponse() { return new QueryResponse<Booking>(); }
 }
 
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryClients extends QueryDb<Client> implements IReturn<QueryResponse<Client>>
+{
+    public code?: string;
+
+    public constructor(init?: Partial<QueryClients>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryClients'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Client>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryContactUses extends QueryDb<ContactUs> implements IReturn<QueryResponse<ContactUs>>
+{
+
+    public constructor(init?: Partial<QueryContactUses>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryContactUses'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<ContactUs>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmails extends QueryDb<Email> implements IReturn<QueryResponse<Email>>
+{
+    public toContains?: string;
+    public subjectContains?: string;
+
+    public constructor(init?: Partial<QueryEmails>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmails'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Email>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmailTemplates extends QueryDb<EmailTemplate> implements IReturn<QueryResponse<EmailTemplate>>
+{
+    public code?: EMAIL_TEMPLATE_CODE;
+
+    public constructor(init?: Partial<QueryEmailTemplates>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmailTemplates'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmailTemplate>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryLookups extends QueryDb<Lookup> implements IReturn<QueryResponse<Lookup>>
+{
+    public lookuptype?: LOOKUPTYPE;
+
+    public constructor(init?: Partial<QueryLookups>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryLookups'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Lookup>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryProjects extends QueryDb<Project> implements IReturn<QueryResponse<Project>>
+{
+    public code?: string;
+    public clientId?: string;
+
+    public constructor(init?: Partial<QueryProjects>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProjects'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Project>(); }
+}
+
 /**
 * Create a new Booking
 */
@@ -771,6 +1039,169 @@ export class DeleteBooking implements IReturnVoid, IDeleteDb<Booking>
 
     public constructor(init?: Partial<DeleteBooking>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DeleteBooking'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateClient implements IReturn<CRUDResponse>, ICreateDb<Client>
+{
+    public code?: string;
+    public name?: string;
+    public description?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateClient>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateClient'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateClient implements IReturn<CRUDResponse>, IPatchDb<Client>
+{
+    public id?: number;
+    public code?: string;
+    public name?: string;
+    public description?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateClient>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateClient'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteClient implements IReturnVoid, IDeleteDb<Client>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteClient>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteClient'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateEmailTemplate implements IReturn<CRUDResponse>, ICreateDb<EmailTemplate>
+{
+    public code?: EMAIL_TEMPLATE_CODE;
+    public description?: string;
+    public emailTemplateText?: string;
+    public htmlTemplate?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateEmailTemplate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateEmailTemplate'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateEmailTemplate implements IReturn<CRUDResponse>, IPatchDb<EmailTemplate>
+{
+    public id?: number;
+    public code?: EMAIL_TEMPLATE_CODE;
+    public description?: string;
+    public emailTemplateText?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateEmailTemplate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateEmailTemplate'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteEmailTemplate implements IReturnVoid, IDeleteDb<EmailTemplate>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteEmailTemplate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteEmailTemplate'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateLookup implements IReturn<CRUDResponse>, ICreateDb<Lookup>
+{
+    public lookuptype?: LOOKUPTYPE;
+    public lookupValue?: string;
+    public lookupText?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateLookup>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateLookup'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateLookup implements IReturn<CRUDResponse>, IPatchDb<Lookup>
+{
+    public id?: number;
+    public lookuptype?: LOOKUPTYPE;
+    public lookupValue?: string;
+    public lookupText?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateLookup>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateLookup'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteLookup implements IReturnVoid, IDeleteDb<Lookup>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteLookup>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteLookup'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateProject implements IReturn<CRUDResponse>, ICreateDb<Project>
+{
+    public clientId?: number;
+    public code?: string;
+    public name?: string;
+    public description?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateProject>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateProject'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateProject implements IReturn<CRUDResponse>, IPatchDb<Project>
+{
+    public id?: number;
+    public clientId?: number;
+    public code?: string;
+    public name?: string;
+    public description?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateProject>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateProject'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteProject implements IReturnVoid, IDeleteDb<Project>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteProject>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteProject'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }

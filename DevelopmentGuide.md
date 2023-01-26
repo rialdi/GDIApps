@@ -42,3 +42,9 @@
 - Modify public class UpdateLookup
 - Rebuild the project
 - to ensure new APIs is created, go to https://localhost:5005/ui-admin
+
+## Update dtos.ts for client script function
+- Open package.json file in folder /ui/
+- Right click on => "scripts" => "dtos"
+- Click "Run Script"
+- to ensure New APIs existing in dtos.ts, open dtos.ts inside folder /api/src/
