@@ -7,6 +7,7 @@ using GDIApps.ServiceModel.Types;
 
 namespace GDIApps.ServiceModel;
 
+[ValidateIsAuthenticated]
 [Tag("Emails")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmails : QueryDb<Email> {

@@ -7,11 +7,13 @@ using GDIApps.ServiceModel.Types;
 
 namespace GDIApps.ServiceModel;
 
+[ValidateIsAuthenticated]
 [Tag("ContactUs")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryContactUses : QueryDb<ContactUs> {
 }
 
+[ValidateIsAuthenticated]
 [Tag("ContactUs")]
 [Route("/contacts/email", "POST")]
 public class ContactUsEmail : IReturn<ContactUsEmailResponse>

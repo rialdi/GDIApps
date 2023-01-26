@@ -7,12 +7,14 @@ using GDIApps.ServiceModel.Types;
 
 namespace GDIApps.ServiceModel;
 
+[ValidateIsAuthenticated]
 [Tag("EmailTemplates")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmailTemplates : QueryDb<EmailTemplate> {
     public EMAIL_TEMPLATE_CODE? Code {get; set;}
 }
 
+[ValidateIsAuthenticated]
 [Tag("EmailTemplates")]
 [AutoApply(Behavior.AuditCreate)]
 public class CreateEmailTemplate : ICreateDb<EmailTemplate>, IReturn<CRUDResponse>
@@ -25,6 +27,7 @@ public class CreateEmailTemplate : ICreateDb<EmailTemplate>, IReturn<CRUDRespons
     public bool? IsActive { get; set; }
 }
 
+[ValidateIsAuthenticated]
 [Tag("EmailTemplates")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdateEmailTemplate : IPatchDb<EmailTemplate>, IReturn<CRUDResponse>
@@ -37,6 +40,7 @@ public class UpdateEmailTemplate : IPatchDb<EmailTemplate>, IReturn<CRUDResponse
     public bool? IsActive { get; set; }
 }
 
+[ValidateIsAuthenticated]
 [Tag("EmailTemplates")]
 [AutoApply(Behavior.AuditSoftDelete)]
 public class DeleteEmailTemplate : IDeleteDb<EmailTemplate>, IReturnVoid
