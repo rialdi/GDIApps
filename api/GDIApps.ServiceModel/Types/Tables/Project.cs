@@ -15,8 +15,8 @@ public class Project : AuditBase
     [References(typeof(Client))]
     public int ClientId { get; set;}
 
-    [Reference]
-    public Client ProjectClient { get; set; }
+    // [Reference]
+    // public Client ProjectClient { get; set; }
 
     [Required]
     [StringLength(100)]    

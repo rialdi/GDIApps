@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-01-26 18:55:24
+Date: 2023-01-27 09:39:50
 Version: 6.50
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -167,27 +167,6 @@ export class Booking extends AuditBase
     public constructor(init?: Partial<Booking>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class Client extends AuditBase
-{
-    public id?: number;
-    // @Required()
-    // @StringLength(100)
-    public code?: string;
-
-    // @Required()
-    // @StringLength(100)
-    public name?: string;
-
-    // @Required()
-    // @StringLength(1000)
-    public description?: string;
-
-    public isActive?: boolean;
-    public projectList?: Project[];
-
-    public constructor(init?: Partial<Client>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class Project extends AuditBase
 {
     public id?: number;
@@ -195,7 +174,6 @@ export class Project extends AuditBase
     // @References("typeof(GDIApps.ServiceModel.Types.Client)")
     public clientId?: number;
 
-    public projectClient?: Client;
     // @Required()
     // @StringLength(100)
     public code?: string;
@@ -222,6 +200,27 @@ export class Project extends AuditBase
     public isActive?: boolean;
 
     public constructor(init?: Partial<Project>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class Client extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @StringLength(100)
+    public code?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public name?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    public isActive?: boolean;
+    public projectList?: Project[];
+
+    public constructor(init?: Partial<Client>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class ContactUs extends AuditBase

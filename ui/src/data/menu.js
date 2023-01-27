@@ -7,9 +7,28 @@
 export default {
   main: [
     {
-      name: "Dashboard",
+      name: "Dashboards",
       to: "backend-dashboard",
       icon: "si si-speedometer",
+    },
+    {
+      name: "Admin Pages",
+      icon: "si si-grid",
+      subActivePaths: "/backend/admins",
+      sub: [
+        {
+          name: "Lookups",
+          to: "backend-admins-lookup",
+        },
+        {
+          name: "Clients",
+          to: "backend-admins-client",
+        },
+        {
+          name: "Projects",
+          to: "backend-admins-project",
+        }
+      ],
     },
     /*
     {

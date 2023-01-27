@@ -1,0 +1,175 @@
+<script setup lang="ts">
+// import Create from "@/pages/Lookups-crud/Create.vue"
+// import Edit from "@/pages/Lookups-crud/Edit.vue"
+// import OutlineButton from "@/components/form/OutlineButton.vue"
+// import AppPage from "@/components/AppPage.vue"
+// import SrcLink from "@/components/SrcLink.vue"
+
+import { ref } from "vue"
+// import { formatDate, formatCurrency } from "@/utils"
+import { Lookup, QueryLookups } from "@/dtos"
+import { client } from "@/api"
+
+// const newLookup = ref<boolean>(false)
+// const editLookupId = ref<number|undefined>()
+
+// const expandAbout = ref<boolean>(false)
+
+const Lookups = ref<Lookup[]>([])
+
+const refreshLookups = async () => {
+  const api = await client.api(new QueryLookups())
+  if (api.succeeded) {
+    Lookups.value = api.response!.results ?? []
+  }
+}
+
+onMounted(async () => await refreshLookups())
+
+// const reset = (args:{ newLookup?: boolean, editLookupId?:number } = {}) => {
+//   newLookup.value = args.newLookup ?? false
+//   editLookupId.value = args.editLookupId ?? undefined
+// }
+
+// const onDone = () => {
+//   reset()
+//   refreshLookups()
+// }
+
+// const toggleAbout = () => expandAbout.value = !expandAbout.value
+
+</script>
+
+<!-- <script setup>
+import { reactive } from "vue";
+
+// Example data
+const users = reactive([
+  {
+    id: 1,
+    name: "Adam McCoy",
+    avatar: "avatar10",
+    href: "javascript:void(0)",
+    labelVariant: "success",
+    labelText: "VIP",
+  },
+  {
+    id: 2,
+    name: "Betty Kelley",
+    avatar: "avatar2",
+    href: "javascript:void(0)",
+    labelVariant: "info",
+    labelText: "Business",
+  },
+  {
+    id: 3,
+    name: "Jesse Fisher",
+    avatar: "avatar9",
+    href: "javascript:void(0)",
+    labelVariant: "info",
+    labelText: "Business",
+  },
+  {
+    id: 4,
+    name: "Ryan Flores",
+    avatar: "avatar12",
+    href: "javascript:void(0)",
+    labelVariant: "warning",
+    labelText: "Trial",
+  },
+  {
+    id: 5,
+    name: "Alice Moore",
+    avatar: "avatar4",
+    href: "javascript:void(0)",
+    labelVariant: "danger",
+    labelText: "Disabled",
+  },
+]);
+</script> -->
+
+<template>
+  <!-- Hero --> 
+  <BasePageHeading
+    title="Lookups Data"
+    subtitle="Mobile friendly tables that work across all screen sizes."
+  >
+    <template #extra>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-alt">
+          <li class="breadcrumb-item">
+            <a class="link-fx" href="javascript:void(0)">Admins</a>
+          </li>
+          <li class="breadcrumb-item" aria-current="page">Lookups</li>
+        </ol>
+      </nav>
+    </template>
+  </BasePageHeading>
+  <!-- END Hero -->
+
+  <!-- Page Content -->
+  <div class="content">
+    <!-- Partial Table -->
+    <BaseBlock title="Partial Table">
+      <template #options>
+        <button type="button" class="btn-block-option">
+          <i class="si si-settings"></i>
+        </button>
+      </template>
+
+      <p class="fs-sm text-muted">
+        The second way is to use responsive utility CSS classes for hiding
+        columns in various screen resolutions. This way you can hide less
+        important columns and keep the most valuable on smaller screens. At the
+        following example the <strong>Access</strong> column isn't visible on
+        small and extra small screens and <strong>Email</strong> column isn't
+        visible on extra small screens.
+      </p>
+      <table class="table table-bordered table-striped table-vcenter">
+        <thead>
+          <tr>
+            <!-- <th class="text-center" style="width: 100px">
+              <i class="far fa-user"></i>
+            </th> -->
+            <th>Lookup Type</th>
+            <th class="d-none d-md-table-cell" style="width: 30%">Lookup Value</th>
+            <th class="d-none d-sm-table-cell" style="width: 15%">Lookup Text</th>
+            <th class="text-center" style="width: 100px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="currData in Lookups" :key="currData.id">
+            <!-- <td class="text-center">
+              <img
+                class="img-avatar img-avatar48"
+                :src="`/assets/media/avatars/${user.avatar}.jpg`"
+                alt="Avatar"
+              />
+            </td> -->
+            <td class="fw-semibold fs-sm">
+              {{ currData.lookupType }}
+            </td>
+            <td class="d-none d-md-table-cell fs-sm">
+              {{ currData.lookupValue }}
+            </td>
+            <td class="d-none d-sm-table-cell">
+              {{ currData.lookupText }}
+            </td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-alt-secondary">
+                  <i class="fa fa-fw fa-pencil-alt"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-alt-secondary">
+                  <i class="fa fa-fw fa-times"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </BaseBlock>
+    <!-- END Partial Table -->
+  </div>
+  <!-- END Page Content -->
+</template>

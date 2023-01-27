@@ -28,6 +28,11 @@ const ForgotPassword = () => import("@/pages/ForgotPassword.vue");
 const AuthLock = () => import("@/views/auth/LockView.vue");
 const AuthReminder = () => import("@/views/auth/ReminderView.vue");
 
+// Admin: Pages
+const LookupPages = () => import("@/pages/backend/admins/Lookups.vue");
+const ClientPages = () => import("@/pages/backend/admins/Clients.vue");
+const ProjectPages = () => import("@/pages/backend/admins/Projects/Index.vue");
+
 // Backend: Pages
 const BackendPagesAuth = () => import("@/views/backend/pages/AuthView.vue");
 const BackendPagesErrors = () => import("@/views/backend/pages/ErrorsView.vue");
@@ -130,6 +135,48 @@ const routes = [
         name: "backend-dashboard",
         component: BackendDashboard,
       },
+      { 
+        path: "admins", 
+        redirect: "/admins/lookup",
+        children: [
+          {
+            path: "lookup",
+            name: "backend-admins-lookup",
+            component: LookupPages,
+          },
+          {
+            path: "client",
+            name: "backend-admins-client",
+            component: ClientPages,
+          },
+          {
+            path: "project",
+            name: "backend-admins-project",
+            component: ProjectPages,
+          }
+        ],
+      },
+      // {
+      //   path: "admins",
+      //   redirect: "backend/admins/lookup",
+      //   children: [
+      //     {
+      //       path: "lookup",
+      //       name: "admins-lookup",
+      //       component: Lookup,
+      //     },
+      //     {
+      //       path: "client",
+      //       name: "admins-client",
+      //       component: Client,
+      //     },
+      //     {
+      //       path: "project",
+      //       name: "admins-project",
+      //       component: Project,
+      //     },
+      //   ]
+      // },
       {
         path: "user",
         redirect: "backend/user/profile",
