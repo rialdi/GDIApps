@@ -309,7 +309,7 @@ router.beforeResolve((to, from, next) => {
   if (to.name) {
     NProgress.start();
   }
-  console.log(attrs.value);
+  // console.log(attrs.value);
   validateRoute(to, next, attrs.value);
 });
 

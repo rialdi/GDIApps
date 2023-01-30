@@ -42,7 +42,7 @@ public class UpdateEmailTemplate : IPatchDb<EmailTemplate>, IReturn<CRUDResponse
 
 [ValidateIsAuthenticated]
 [Tag("EmailTemplates")]
-[AutoApply(Behavior.AuditSoftDelete)]
+// [AutoApply(Behavior.AuditSoftDelete)]
 public class DeleteEmailTemplate : IDeleteDb<EmailTemplate>, IReturnVoid
 {
     public int Id { get; set; }        

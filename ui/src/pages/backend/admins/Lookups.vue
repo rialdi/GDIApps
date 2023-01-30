@@ -1,92 +1,193 @@
 <script setup lang="ts">
-// import Create from "@/pages/Lookups-crud/Create.vue"
-// import Edit from "@/pages/Lookups-crud/Edit.vue"
-// import OutlineButton from "@/components/form/OutlineButton.vue"
-// import AppPage from "@/components/AppPage.vue"
-// import SrcLink from "@/components/SrcLink.vue"
-
 import { ref } from "vue"
 // import { formatDate, formatCurrency } from "@/utils"
-import { Lookup, QueryLookups } from "@/dtos"
+import { Lookup, QueryLookups, LOOKUPTYPE, CreateLookup, UpdateLookup, DeleteLookup } from "@/dtos"
 import { client } from "@/api"
+import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps } from '@progress/kendo-vue-grid';
+import { DropDownList, DropDownListChangeEvent } from '@progress/kendo-vue-dropdowns';
+import { Button as kbutton} from '@progress/kendo-vue-buttons'
+import { process, State, DataResult, SortDescriptor } from '@progress/kendo-data-query'
+import CommandCell from '../../../components/grids/CommandCell.vue';
+// import DropDownCell from '../../../components/grids/DropDownCell.vue';
+// import { process, DataResult, SortDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query'
 
-// const newLookup = ref<boolean>(false)
-// const editLookupId = ref<number|undefined>()
 
-// const expandAbout = ref<boolean>(false)
+const lookupTypeList = Object.keys(LOOKUPTYPE)
+lookupTypeList.push("ALL");
+let selectedLookupType = ref<LOOKUPTYPE>();
 
-const Lookups = ref<Lookup[]>([])
+// Object.assign(lookupTypeList, "ALL");
 
-const refreshLookups = async () => {
-  const api = await client.api(new QueryLookups())
+// console.log(lookupTypeList);
+
+// let editID = ref<number|undefined>()
+// let editID = null;
+// const defaultItems = { code: null, text: "ALL" };
+// let gridData = []
+let lookupData = ref<Lookup[]>([]).value;
+const pageable = ref(true);
+const sortable = ref(true);
+const skip = ref<number | undefined>(0);
+const take = ref<number | undefined>(10);
+let total = ref<number | undefined>(10);
+
+const sort = ref<SortDescriptor[] | undefined>([
+  { field: "lookupValue", dir: "asc" }
+]);
+// const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
+
+const columns = [
+  { field: 'lookupType', title: 'Lookup Type' },
+  { field: 'lookupValue', title: 'Lookup Value' },
+  { field: 'lookupText', title: 'lookupText' },
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate' },
+  { cell: 'myTemplate', filterable: false, title: 'Action' }
+] as GridColumnProps[];
+
+let gridData = ref<DataResult>({ data: [] as any, total: 0 });
+  defineExpose({
+    gridData
+  })
+
+const refreshDatas = async ( ) => {
+  const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE}))
   if (api.succeeded) {
-    Lookups.value = api.response!.results ?? []
+    lookupData = api.response!.results ?? []
+
+    gridData.value.data = process(lookupData, {
+      skip: skip.value,
+      take: take.value,
+      sort: sort.value,
+      // filter: filter.
+    }).data;
+
+    // console.log(gridData);
+
+    total.value = process( 
+      lookupData,{
+          // filter: filter.value
+      }).total;
   }
 }
 
-onMounted(async () => await refreshLookups())
+onMounted(async () => await refreshDatas());
 
-// const reset = (args:{ newLookup?: boolean, editLookupId?:number } = {}) => {
-//   newLookup.value = args.newLookup ?? false
-//   editLookupId.value = args.editLookupId ?? undefined
+const hasItemsInEdit =  computed(() => 
+  gridData.value.data.filter(p => p.inEdit).length > 0
+);
+
+const handleDropDownChange = (e: DropDownListChangeEvent) => {
+  selectedLookupType.value = (e.value == "ALL" ? null : e.value) ;
+  refreshDatas();
+};
+
+const createAppState = (dataState: State) => {
+  take.value = dataState.take;
+  skip.value = dataState.skip;
+  sort.value = dataState.sort;
+  refreshDatas();
+};
+
+const dataStateChange = (event: GridDataStateChangeEvent) => {
+  createAppState(event.data);
+}
+
+// const isActiveChange = (dataItem: any) => {
+//   console.log('isActiveChange')
+//   console.log(dataItem);
 // }
 
-// const onDone = () => {
-//   reset()
-//   refreshLookups()
+// const ddChange = (e: any, dataItem: any) => {
+//   const currData = dataItem;
+//   currData.isActive = e.target.value;
+//   let index = gridData.value.data.findIndex(p => p.id === currData.id);
+//   gridData.value.data.splice(index, 1, currData);
 // }
 
-// const toggleAbout = () => expandAbout.value = !expandAbout.value
+// const closeEdit = (e: GridEditEvent) => {
+//   // if (e.target === e.currentTarget) {
+//   //     // editID = null;
+//   // }
+// }
+const itemChange = (e: any) => {
+  if (e.dataItem.id) {
+    let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
+    let updated = Object.assign({},gridData.value.data[index], {[e.field]:e.value});
+    gridData.value.data.splice(index, 1, updated);
+  } else {
+    e.dataItem[e.field] = e.value;
+  }
+}
+
+const onRemove = async(e: any) => {
+  if( e.dataItem !== null) {
+    let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
+    gridData.value.data.splice(index, 1);
+    const request = new DeleteLookup({
+      id: e.dataItem.id
+    });
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+    }
+  }
+}
+
+const onEdit = (e: any) => {
+  let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
+  let updated = Object.assign({},gridData.value.data[index], {inEdit:true});
+  gridData.value.data.splice(index, 1, updated);
+}
+
+const onInsert = () => {
+  const selectedLookupTypeVal = selectedLookupType.value ?? LOOKUPTYPE.PRIORITY
+  const dataItem = { inEdit: true, lookupType: selectedLookupTypeVal, isActive: true };
+  gridData.value.data.splice(0, 0, dataItem)
+}
+
+const onCancelChanges = () => {
+  let editedItems = gridData.value.data.filter(p => p.inEdit === true);
+    if(editedItems.length){
+      editedItems.forEach(
+          item => {
+              item.inEdit = undefined;
+            });
+    }
+  refreshDatas();
+}
+
+const onSave = async (e: any) => {
+  const currData = e.dataItem;
+  // console.log('OnSave')
+  // console.log(currData)
+  if( currData.id == null) {
+    const request = new CreateLookup({
+      lookupType : currData.lookupType,
+      lookupValue : currData.lookupValue,
+      lookupText : currData.lookupText,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+    }
+  }
+  else{
+    const request = new UpdateLookup({
+      id : currData.id,
+      lookupType : currData.lookupType ,
+      lookupValue : currData.lookupValue,
+      lookupText : currData.lookupText,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+    }
+  }
+}
 
 </script>
-
-<!-- <script setup>
-import { reactive } from "vue";
-
-// Example data
-const users = reactive([
-  {
-    id: 1,
-    name: "Adam McCoy",
-    avatar: "avatar10",
-    href: "javascript:void(0)",
-    labelVariant: "success",
-    labelText: "VIP",
-  },
-  {
-    id: 2,
-    name: "Betty Kelley",
-    avatar: "avatar2",
-    href: "javascript:void(0)",
-    labelVariant: "info",
-    labelText: "Business",
-  },
-  {
-    id: 3,
-    name: "Jesse Fisher",
-    avatar: "avatar9",
-    href: "javascript:void(0)",
-    labelVariant: "info",
-    labelText: "Business",
-  },
-  {
-    id: 4,
-    name: "Ryan Flores",
-    avatar: "avatar12",
-    href: "javascript:void(0)",
-    labelVariant: "warning",
-    labelText: "Trial",
-  },
-  {
-    id: 5,
-    name: "Alice Moore",
-    avatar: "avatar4",
-    href: "javascript:void(0)",
-    labelVariant: "danger",
-    labelText: "Disabled",
-  },
-]);
-</script> -->
 
 <template>
   <!-- Hero --> 
@@ -110,64 +211,51 @@ const users = reactive([
   <!-- Page Content -->
   <div class="content">
     <!-- Partial Table -->
-    <BaseBlock title="Partial Table">
-      <template #options>
-        <button type="button" class="btn-block-option">
-          <i class="si si-settings"></i>
-        </button>
-      </template>
+    <BaseBlock>
+      <p>
+      <DropDownList
+        :data-items="lookupTypeList"
+        @change="handleDropDownChange"
+      ></DropDownList>&nbsp; Selected category ID:
+      <!-- <strong>{{ dropdownlistLookupType }}</strong> -->
+    </p>
 
-      <p class="fs-sm text-muted">
-        The second way is to use responsive utility CSS classes for hiding
-        columns in various screen resolutions. This way you can hide less
-        important columns and keep the most valuable on smaller screens. At the
-        following example the <strong>Access</strong> column isn't visible on
-        small and extra small screens and <strong>Email</strong> column isn't
-        visible on extra small screens.
-      </p>
-      <table class="table table-bordered table-striped table-vcenter">
-        <thead>
-          <tr>
-            <!-- <th class="text-center" style="width: 100px">
-              <i class="far fa-user"></i>
-            </th> -->
-            <th>Lookup Type</th>
-            <th class="d-none d-md-table-cell" style="width: 30%">Lookup Value</th>
-            <th class="d-none d-sm-table-cell" style="width: 15%">Lookup Text</th>
-            <th class="text-center" style="width: 100px">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="currData in Lookups" :key="currData.id">
-            <!-- <td class="text-center">
-              <img
-                class="img-avatar img-avatar48"
-                :src="`/assets/media/avatars/${user.avatar}.jpg`"
-                alt="Avatar"
-              />
-            </td> -->
-            <td class="fw-semibold fs-sm">
-              {{ currData.lookupType }}
-            </td>
-            <td class="d-none d-md-table-cell fs-sm">
-              {{ currData.lookupValue }}
-            </td>
-            <td class="d-none d-sm-table-cell">
-              {{ currData.lookupText }}
-            </td>
-            <td class="text-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-alt-secondary">
-                  <i class="fa fa-fw fa-pencil-alt"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-alt-secondary">
-                  <i class="fa fa-fw fa-times"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <kGrid ref="grid"
+      ::style="{height: '440px'}"
+          :data-items="gridData"
+          :edit-field="'inEdit'"
+          :sortable="sortable"
+          :pageable="pageable"
+          :take="take"
+          :skip="skip"
+          :total="total"
+          @itemchange="itemChange"
+          @datastatechange="dataStateChange"
+          :columns="columns"
+    >
+      <kGridToolbar>
+        <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
+            Add new
+        </kbutton>
+        <kbutton v-if="hasItemsInEdit"
+                title="Cancel current changes"
+                @click="onCancelChanges">
+                Cancel current changes
+        </kbutton>
+      </kGridToolbar>
+      <template v-slot:myTemplate="{props}">
+          <CommandCell :data-item="props.dataItem" 
+                  @edit="onEdit"
+                  @save="onSave" 
+                  @remove="onRemove"
+                  @cancel="onCancelChanges"/>
+      </template>
+      <template v-slot:isActiveTemplate="{ props }">
+        <td :colspan="1" >
+          <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
+        </td>
+      </template>
+    </kGrid>
     </BaseBlock>
     <!-- END Partial Table -->
   </div>

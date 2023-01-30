@@ -42,7 +42,7 @@ public class UpdateProject : IPatchDb<Project>, IReturn<CRUDResponse>
 
 [ValidateIsAuthenticated]
 [Tag("Projects")]
-[AutoApply(Behavior.AuditSoftDelete)]
+// [AutoApply(Behavior.AuditSoftDelete)]
 public class DeleteProject : IDeleteDb<Project>, IReturnVoid
 {
     public int Id { get; set; }        

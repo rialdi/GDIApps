@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useApp } from "@/api"
+import '@progress/kendo-theme-default/dist/all.css';
 
 // https://github.com/vueuse/head
 // you can use this to manipulate the document head in any components,

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-01-27 09:39:50
+Date: 2023-01-30 17:03:31
 Version: 6.50
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -1126,7 +1126,7 @@ export class DeleteEmailTemplate implements IReturnVoid, IDeleteDb<EmailTemplate
 // @ValidateRequest(Validator="IsAuthenticated")
 export class CreateLookup implements IReturn<CRUDResponse>, ICreateDb<Lookup>
 {
-    public lookuptype?: LOOKUPTYPE;
+    public lookupType?: LOOKUPTYPE;
     public lookupValue?: string;
     public lookupText?: string;
     public isActive?: boolean;
@@ -1141,7 +1141,7 @@ export class CreateLookup implements IReturn<CRUDResponse>, ICreateDb<Lookup>
 export class UpdateLookup implements IReturn<CRUDResponse>, IPatchDb<Lookup>
 {
     public id?: number;
-    public lookuptype?: LOOKUPTYPE;
+    public lookupType?: LOOKUPTYPE;
     public lookupValue?: string;
     public lookupText?: string;
     public isActive?: boolean;

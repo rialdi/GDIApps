@@ -39,7 +39,7 @@ public class UpdateClient : IPatchDb<Client>, IReturn<CRUDResponse>
 
 [ValidateIsAuthenticated]
 [Tag("Clients")]
-[AutoApply(Behavior.AuditSoftDelete)]
+// [AutoApply(Behavior.AuditSoftDelete)]
 public class DeleteClient : IDeleteDb<Client>, IReturnVoid
 {
     public int Id { get; set; }        
