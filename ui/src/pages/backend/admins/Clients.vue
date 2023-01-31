@@ -1,6 +1,8 @@
 <script setup lan="ts">
 import { reactive, computed, onMounted } from "vue";
 
+import Confirmation from "@/components/Confirmation.vue";
+
 // Vue Dataset, for more info and examples you can check out https://github.com/kouts/vue-dataset/tree/next
 import {
   Dataset,
@@ -13,6 +15,8 @@ import {
 
 // Get example data
 import users from "@/data/usersDataset.json";
+
+const modalConfirmationRef = ref()
 
 // Helper variables
 const cols = reactive([
@@ -78,6 +82,10 @@ function onSort(event, i) {
 
 // Apply a few Bootstrap 5 optimizations
 onMounted(() => {
+  // modalConfirmationRef.pro
+  modalConfirmationRef.value.ShowConfirmation({ title: "AAD", questionText: "sasda"})
+
+
   // Remove labels from
   document.querySelectorAll("#datasetLength label").forEach((el) => {
     el.remove();
@@ -90,6 +98,8 @@ onMounted(() => {
   selectLength.classList.add("form-select");
   selectLength.style.width = "80px";
 });
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -161,6 +171,7 @@ th.sort {
 
   <!-- Page Content -->
   <div class="content">
+    <Confirmation ref="modalConfirmationRef"/>
     <BaseBlock title="Vue Dataset" content-full>
       <Dataset
         v-slot="{ ds }"
@@ -207,7 +218,7 @@ th.sort {
                 </DatasetItem>
               </table>
             </div>
-          </div>
+          </div> 
         </div>
         <div
           class="d-flex flex-md-row flex-column justify-content-between align-items-center"

@@ -10,7 +10,18 @@ import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data
 import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
 // import DropDownCell from '../../../components/grids/DropDownCell.vue';
 // import { process, DataResult, SortDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query'
+import Swal from "sweetalert2";
 
+// Set default properties
+let toast = Swal.mixin({
+  buttonsStyling: false,
+  target: "#page-container",
+  customClass: {
+    confirmButton: "btn btn-success m-1",
+    cancelButton: "btn btn-danger m-1",
+    input: "form-control",
+  },
+});
 
 const lookupTypeList = Object.keys(LOOKUPTYPE)
 lookupTypeList.push("ALL");
@@ -128,7 +139,12 @@ const onRemove = async(e: any) => {
     });
     const api = await client.api(request)
     if (api.succeeded) {
-      refreshDatas();
+        toast.fire(
+              "Deleted!",
+              "Lookup data has been deleted.",
+              "success"
+            )
+      
     }
   }
 }
