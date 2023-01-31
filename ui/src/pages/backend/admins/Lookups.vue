@@ -7,7 +7,7 @@ import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, G
 import { DropDownList, DropDownListChangeEvent } from '@progress/kendo-vue-dropdowns';
 import { Button as kbutton} from '@progress/kendo-vue-buttons'
 import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
-import CommandCell from '../../../components/grids/CommandCell.vue';
+import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
 // import DropDownCell from '../../../components/grids/DropDownCell.vue';
 // import { process, DataResult, SortDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query'
 
@@ -209,7 +209,7 @@ const sortChangeHandler = (e: any) => {
 <template>
   <!-- Hero --> 
   <BasePageHeading
-    title="Lookups Data"
+    title="Lookups Datass"
     subtitle="Mobile friendly tables that work across all screen sizes."
   >
     <template #extra>

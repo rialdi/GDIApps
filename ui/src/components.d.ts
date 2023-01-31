@@ -17,7 +17,7 @@ declare module '@vue/runtime-core' {
     BasePageHeading: typeof import('./components/BasePageHeading.vue')['default']
     Checkbox: typeof import('./components/form/Checkbox.vue')['default']
     CloseButton: typeof import('./components/form/CloseButton.vue')['default']
-    CommandCell: typeof import('./components/grids/CommandCell.vue')['default']
+    CommandCell: typeof import('./layouts/partials/CommandCell.vue')['default']
     ConfirmDelete: typeof import('./components/form/ConfirmDelete.vue')['default']
     DropDownCell: typeof import('./components/grids/DropDownCell.vue')['default']
     ErrorSummary: typeof import('./components/form/ErrorSummary.vue')['default']
