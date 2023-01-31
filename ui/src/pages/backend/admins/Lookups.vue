@@ -6,7 +6,7 @@ import { client } from "@/api"
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps } from '@progress/kendo-vue-grid';
 import { DropDownList, DropDownListChangeEvent } from '@progress/kendo-vue-dropdowns';
 import { Button as kbutton} from '@progress/kendo-vue-buttons'
-import { process, State, DataResult, SortDescriptor } from '@progress/kendo-data-query'
+import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
 import CommandCell from '../../../components/grids/CommandCell.vue';
 // import DropDownCell from '../../../components/grids/DropDownCell.vue';
 // import { process, DataResult, SortDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query'
@@ -24,37 +24,34 @@ let selectedLookupType = ref<LOOKUPTYPE>();
 // let editID = null;
 // const defaultItems = { code: null, text: "ALL" };
 // let gridData = []
-let lookupData = ref<Lookup[]>([]).value;
+let lookupData = ref<Lookup[]>([]);
 const pageable = ref(true);
-const sortable = ref(true);
+// const sortable = ref(true);
 const skip = ref<number | undefined>(0);
 const take = ref<number | undefined>(10);
 let total = ref<number | undefined>(10);
 
-const sort = ref<SortDescriptor[] | undefined>([
-  { field: "lookupValue", dir: "asc" }
-]);
+// let hideLookupType = ref(true);
+
+const sort = ref<SortDescriptor[] | undefined>([]);
 // const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 const columns = [
   { field: 'lookupType', title: 'Lookup Type' },
   { field: 'lookupValue', title: 'Lookup Value' },
   { field: 'lookupText', title: 'lookupText' },
-  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate' },
-  { cell: 'myTemplate', filterable: false, title: 'Action' }
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
+  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" }
 ] as GridColumnProps[];
 
-let gridData = ref<DataResult>({ data: [] as any, total: 0 });
-  defineExpose({
-    gridData
-  })
+let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 
 const refreshDatas = async ( ) => {
   const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE}))
   if (api.succeeded) {
-    lookupData = api.response!.results ?? []
+    lookupData.value = api.response!.results ?? []
 
-    gridData.value.data = process(lookupData, {
+    gridData.data = process(lookupData.value, {
       skip: skip.value,
       take: take.value,
       sort: sort.value,
@@ -64,7 +61,7 @@ const refreshDatas = async ( ) => {
     // console.log(gridData);
 
     total.value = process( 
-      lookupData,{
+      lookupData.value,{
           // filter: filter.value
       }).total;
   }
@@ -73,11 +70,23 @@ const refreshDatas = async ( ) => {
 onMounted(async () => await refreshDatas());
 
 const hasItemsInEdit =  computed(() => 
-  gridData.value.data.filter(p => p.inEdit).length > 0
+  gridData.data.filter(p => p.inEdit).length > 0
 );
 
 const handleDropDownChange = (e: DropDownListChangeEvent) => {
   selectedLookupType.value = (e.value == "ALL" ? null : e.value) ;
+
+  if(e.value !== "ALL")
+  {
+    if(columns[0].field === "lookupType")
+      columns.splice(0,1);
+  }
+  else
+  {
+    if(columns[0].field !== "lookupType")
+      columns.splice(0, 0, { field: 'lookupType', title: 'Lookup Type' })
+  }
+  
   refreshDatas();
 };
 
@@ -92,10 +101,6 @@ const dataStateChange = (event: GridDataStateChangeEvent) => {
   createAppState(event.data);
 }
 
-// const isActiveChange = (dataItem: any) => {
-//   console.log('isActiveChange')
-//   console.log(dataItem);
-// }
 
 // const ddChange = (e: any, dataItem: any) => {
 //   const currData = dataItem;
@@ -104,16 +109,11 @@ const dataStateChange = (event: GridDataStateChangeEvent) => {
 //   gridData.value.data.splice(index, 1, currData);
 // }
 
-// const closeEdit = (e: GridEditEvent) => {
-//   // if (e.target === e.currentTarget) {
-//   //     // editID = null;
-//   // }
-// }
 const itemChange = (e: any) => {
   if (e.dataItem.id) {
-    let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
-    let updated = Object.assign({},gridData.value.data[index], {[e.field]:e.value});
-    gridData.value.data.splice(index, 1, updated);
+    let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+    let updated = Object.assign({},gridData.data[index], {[e.field]:e.value});
+    gridData.data.splice(index, 1, updated);
   } else {
     e.dataItem[e.field] = e.value;
   }
@@ -121,8 +121,8 @@ const itemChange = (e: any) => {
 
 const onRemove = async(e: any) => {
   if( e.dataItem !== null) {
-    let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
-    gridData.value.data.splice(index, 1);
+    let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+    gridData.data.splice(index, 1);
     const request = new DeleteLookup({
       id: e.dataItem.id
     });
@@ -134,22 +134,22 @@ const onRemove = async(e: any) => {
 }
 
 const onEdit = (e: any) => {
-  let index = gridData.value.data.findIndex(p => p.id === e.dataItem.id);
-  let updated = Object.assign({},gridData.value.data[index], {inEdit:true});
-  gridData.value.data.splice(index, 1, updated);
+  let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+  let updated = Object.assign({},gridData.data[index], {inEdit:true});
+  gridData.data.splice(index, 1, updated);
 }
 
 const onInsert = () => {
   const selectedLookupTypeVal = selectedLookupType.value ?? LOOKUPTYPE.PRIORITY
   const dataItem = { inEdit: true, lookupType: selectedLookupTypeVal, isActive: true };
-  gridData.value.data.splice(0, 0, dataItem)
+  gridData.data.splice(0, 0, dataItem)
 }
 
 const onCancelChanges = () => {
-  let editedItems = gridData.value.data.filter(p => p.inEdit === true);
+  let editedItems = gridData.data.filter((p: { inEdit: boolean; }) => p.inEdit === true);
     if(editedItems.length){
       editedItems.forEach(
-          item => {
+(          item: { inEdit: undefined; }) => {
               item.inEdit = undefined;
             });
     }
@@ -187,6 +187,23 @@ const onSave = async (e: any) => {
   }
 }
 
+const sortChangeHandler = (e: any) => {
+  if(e.sort.length > 0)
+  {
+    let existingSortItem = sort.value
+    if(existingSortItem != undefined && existingSortItem?.length > 0)
+    {
+      existingSortItem[0].dir = (existingSortItem[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = existingSortItem
+    }
+    else{
+      e.sort[0].dir = (e.sort[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = e.sort;
+    }
+    refreshDatas()
+  }
+}
+
 </script>
 
 <template>
@@ -216,6 +233,7 @@ const onSave = async (e: any) => {
       <DropDownList
         :data-items="lookupTypeList"
         @change="handleDropDownChange"
+        :default-value="'ALL'"
       ></DropDownList>&nbsp; Selected category ID:
       <!-- <strong>{{ dropdownlistLookupType }}</strong> -->
     </p>
@@ -224,13 +242,14 @@ const onSave = async (e: any) => {
       ::style="{height: '440px'}"
           :data-items="gridData"
           :edit-field="'inEdit'"
-          :sortable="sortable"
+          :sortable="true"
           :pageable="pageable"
           :take="take"
           :skip="skip"
           :total="total"
           @itemchange="itemChange"
           @datastatechange="dataStateChange"
+          @sortchange="sortChangeHandler"
           :columns="columns"
     >
       <kGridToolbar>
@@ -251,7 +270,7 @@ const onSave = async (e: any) => {
                   @cancel="onCancelChanges"/>
       </template>
       <template v-slot:isActiveTemplate="{ props }">
-        <td :colspan="1" >
+        <td :colspan="1" style="text-align:center">
           <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
         </td>
       </template>
