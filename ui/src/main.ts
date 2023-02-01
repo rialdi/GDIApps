@@ -4,6 +4,9 @@ import "@/styles/main.css"
 import { createApp } from "vue"
 import { createPinia } from "pinia"
 import App from "@/App.vue"
+import { Tooltip } from 'bootstrap'
+
+import Notifications from '@kyvg/vue3-notification'
 
 // You can use the following starter router instead of the default one as a clean starting point
 // import router from "./router/starter";
@@ -42,6 +45,7 @@ app.component("BasePageHeading", BasePageHeading);
 // Register global directives
 app.directive("click-ripple", clickRipple);
 
+app.directive('tooltip', Tooltip as any)
 // const routes = setupLayouts(generatedRoutes)
 
 // export const router = configRouter(createRouter({
@@ -51,8 +55,11 @@ app.directive("click-ripple", clickRipple);
 
 const pinia = createPinia()
 
+
+
 app
     .use(head)
     .use(router)
     .use(pinia)
+    .use(Notifications)
     .mount('#app')

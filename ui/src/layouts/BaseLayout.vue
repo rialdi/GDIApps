@@ -94,6 +94,7 @@ onMounted(() => {
     }, 500);
   });
 });
+
 </script>
 
 <template>
@@ -164,6 +165,15 @@ onMounted(() => {
     <!-- Main Container -->
     <div id="main-container">
       <slot name="page-top-content"></slot>
+      <notifications width="400px">
+        <template #body="props">
+          <div :class="'alert alert-dismissible alert-' +  props.item.type ">
+            <h2 class="alert-heading h4 my-2">{{ props.item.title }}</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div v-html="props.item.text"/>
+          </div>
+        </template>
+      </notifications>
       <RouterView />
     </div>
     <!-- END Main Container -->

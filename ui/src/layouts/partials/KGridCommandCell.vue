@@ -1,5 +1,22 @@
 <template>
+    <!-- <div class="content"> -->
     <td v-if="!(dataItem  as any)['inEdit']" class="k-command-cell">
+        <!-- <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-alt-primary"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Edit"
+                @click="editHandler">
+            <i class="fa fa-fw fa-pencil-alt"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-alt-danger" 
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Delete"
+                @click="removeHandler">
+            <i class="fa fa-fw fa-times"></i>
+            </button>
+        </div> -->
         <kbutton
             :theme-color="'primary'"
             class="k-grid-edit-command"
@@ -24,6 +41,7 @@
                 {{(dataItem as any).id? 'Cancel' : 'Discard'}}
             </kbutton>
         </td>
+    <!-- </div> -->
     </template>
 <style lang="scss">
 // SweetAlert2
@@ -78,23 +96,26 @@ const removeHandler = () => {
         customClass: {
             confirmButton: "btn btn-danger m-1",
             cancelButton: "btn btn-secondary m-1",
-        }
+        },
+        html: false as any,
+        preConfirm: () => {
+        return new Promise((resolve: any) => {
+          setTimeout(() => {
+            resolve();
+          }, 50);
+        });
+      },
     }).then((result) => {
         // console.log(result)
         if (result.value) {
             emit('remove', {dataItem:props.dataItem})
-            // toast.fire(
-            //   "Deleted!",
-            //   "Your imaginary file has been deleted.",
-            //   "success"
-            // );
         }
         else if (result.dismiss?.toString() === "cancel") {
+            // result.dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
             // toast.fire("Cancelled", "Your imaginary file is safe :)", "error");
         }
     });
 
-    emit('remove', {dataItem:props.dataItem})
 }
 const addUpdateHandler = () => emit('save', {dataItem:props.dataItem})
 const cancelDiscardHandler = () => emit('cancel', {dataItem:props.dataItem})
