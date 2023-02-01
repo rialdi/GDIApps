@@ -113,7 +113,7 @@ const users = reactive([
               <code>.table</code>
             </div>
           </template>
-
+ 
           <table class="table table-vcenter">
             <thead>
               <tr>
