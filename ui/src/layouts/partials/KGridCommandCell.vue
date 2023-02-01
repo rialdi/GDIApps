@@ -19,11 +19,14 @@
         </div> -->
         <kbutton
             :theme-color="'primary'"
+            style="width:80px"
             class="k-grid-edit-command"
             @click="editHandler">
             Edit
         </kbutton>
         <kbutton
+            :theme-color="'error'"
+            style="width:80px"
             class="k-grid-remove-command"
             @click="removeHandler">
             Remove
@@ -31,11 +34,15 @@
     </td>
     <td v-else>
             <kbutton
+                :theme-color="'warning'"
+                style="width:80px;margin-right:8px"
                 class="k-grid-save-command"
                 @click="addUpdateHandler">
                 {{(dataItem as any).id? 'Update' : 'Add'}}
             </kbutton>
             <kbutton
+                :theme-color="'info'"
+                style="width:80px"
                 class="k-grid-cancel-command"
                 @click="cancelDiscardHandler">
                 {{(dataItem as any).id? 'Cancel' : 'Discard'}}

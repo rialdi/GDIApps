@@ -225,7 +225,7 @@ const sortChangeHandler = (e: any) => {
 <template>
   <!-- Hero --> 
   <BasePageHeading
-    title="Lookups Datass"
+    title="Lookups Data"
     subtitle="Mobile friendly tables that work across all screen sizes."
   >
     <template #extra>
@@ -243,7 +243,7 @@ const sortChangeHandler = (e: any) => {
 
   <!-- Page Content -->
   <div class="content">
-    <button
+    <!-- <button
             type="button"
             class="btn btn-primary w-100"
             data-bs-toggle="tooltip"
@@ -256,10 +256,10 @@ const sortChangeHandler = (e: any) => {
             data-bs-placement="top"
             title="Top Tooltip"> 
             <i class="fa fa-fw fa-times"></i>
-            </button>
+            </button> -->
     <!-- Partial Table -->
     <!-- <notifications position="bottom left" classes="alert alert-info d-flex align-items-center" /> -->
-    <BaseBlock title="Default Table">
+    <BaseBlock title="Lookup data">
       
       <p>
         <DropDownList
@@ -287,6 +287,7 @@ const sortChangeHandler = (e: any) => {
               Add new
           </kbutton>
           <kbutton v-if="hasItemsInEdit"
+              :theme-color="'info'"
                   title="Cancel current changes"
                   @click="onCancelChanges">
                   Cancel current changes
