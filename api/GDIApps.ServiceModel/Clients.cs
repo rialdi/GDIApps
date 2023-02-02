@@ -12,6 +12,7 @@ namespace GDIApps.ServiceModel;
 [AutoApply(Behavior.AuditQuery)]
 public class QueryClients : QueryDb<Client> {
     public string? Code {get; set;}
+    public bool? IsActive { get; set; }
 }
 
 [ValidateIsAuthenticated]

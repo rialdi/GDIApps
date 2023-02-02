@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-01-30 17:03:31
+Date: 2023-02-02 12:38:33
 Version: 6.50
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -906,6 +906,7 @@ export class QueryBookings extends QueryDb<Booking> implements IReturn<QueryResp
 export class QueryClients extends QueryDb<Client> implements IReturn<QueryResponse<Client>>
 {
     public code?: string;
+    public isActive?: boolean;
 
     public constructor(init?: Partial<QueryClients>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryClients'; }

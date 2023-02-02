@@ -1,24 +1,56 @@
 <script setup lang="ts">
 import { ref } from "vue"
 // import { formatDate, formatCurrency } from "@/utils"
-import { Project, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
+import { Client, QueryClients, Project, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
 import { client } from "@/api"
+
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid';
 import { Button as kbutton} from '@progress/kendo-vue-buttons'
-import { process, SortDescriptor, DataResult } from '@progress/kendo-data-query'
+import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns';
+import { process, filterBy, SortDescriptor, DataResult } from '@progress/kendo-data-query'
+
 import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 
 import EditDialog from './EditDialog.vue';
 
+onMounted(async () => {
+  await getClientList()
+  await refreshDatas()
+});
+
+/* Combobox Client */
+const sourceClientList = ref<Client[]>([])
+let clientList = ref<any[]>([])
+const getClientList = async() => {
+  const api = await client.api(new QueryClients({ isActive: true }))
+  if (api.succeeded) {
+    sourceClientList.value = api.response!.results ?? []
+    clientList.value = process(sourceClientList.value, {}).data as any[]
+  }
+}
+const cboClientOnChange = (e: any) => {
+  if(e.value) {
+    refreshDatas(e.value.id)
+  } else {
+    refreshDatas()
+  }
+}
+const onCBOClientFilter = (e : any) => {
+  const data = process(sourceClientList.value, {}).data as any[]
+  clientList.value = filterBy(data, e.filter)
+}
+/* END of Combobox Client */
+
+/* Code for DataGrid */
 let ProjectData = ref<Project[]>([])
+let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 let total = ref<number | undefined>(10)
 let dataItemInEdit = ref<Project>()
-
 const sort = ref<SortDescriptor[] | undefined>([]);
 // const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-const columns = [
+const gridColumProperties = [
   { field: 'clientId', title: 'Code' },
   { field: 'code', title: 'Code' },
   { field: 'name', title: 'Name' },
@@ -27,37 +59,27 @@ const columns = [
   { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
 ] as GridColumnProps[];
 
-let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
+const refreshDatas = async (selectedClientId?: any ) => {
+  // Create QueryObjecs based on selectedClientId
+  const queryProjects = (selectedClientId) ? 
+    new QueryProjects({ clientId: selectedClientId }) : 
+    new QueryProjects() 
 
-const refreshDatas = async ( ) => {
-  const api = await client.api(new QueryProjects({ }))
+  const api = await client.api(queryProjects)
   if (api.succeeded) {
     ProjectData.value = api.response!.results ?? []
-
     gridData.data = process(ProjectData.value, {
       sort: sort.value,
       // filter: filter.
     }).data;
-
-    // console.log(gridData);
-
-    total.value = process( 
-      ProjectData.value,{
-          // filter: filter.value
-      }).total;
-    
-      dataItemInEdit.value = undefined
+    total.value = process(ProjectData.value,{}).total;
+    dataItemInEdit.value = undefined
   }
 }
-
-onMounted(async () => {
-  await refreshDatas()
-});
-
-const hasItemsInEdit =  computed(() => 
-  gridData.data.filter(p => p.inEdit).length > 0
-);
-
+const onInsert = () => {
+  // Set Default Value
+  dataItemInEdit.value = {code: 'New Code', name: "Project Name", isActive: true}
+}
 const onRemove = async(e: any) => {
   if( e.dataItem !== null) {
     let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
@@ -71,20 +93,13 @@ const onRemove = async(e: any) => {
     }
   }
 }
-
 const onEdit = (e: any) => {
   dataItemInEdit.value = e.dataItem
-}
-
-const onInsert = () => {
-  // Set Default Value
-  dataItemInEdit.value = {code: 'New Code', name: "Project Name", isActive: true}
 }
 
 const onCancelChanges = () => {
   dataItemInEdit.value = undefined
 }
-
 const onSave = async (e: any) => {
   const currData = e.dataItem;
   if( currData.id == null) {
@@ -122,7 +137,6 @@ const onSave = async (e: any) => {
     } 
   }
 }
-
 const sortChangeHandler = (e: any) => {
   if(e.sort.length > 0)
   {
@@ -139,7 +153,7 @@ const sortChangeHandler = (e: any) => {
     refreshDatas()
   }
 }
-
+/* END Code for DataGrid */
 </script>
 
 <template>
@@ -166,12 +180,18 @@ const sortChangeHandler = (e: any) => {
     <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" @save="onSave" @cancel="onCancelChanges">
     </EditDialog>
     <BaseBlock title="Project data">
-      <!-- <Create v-if="isNewData" class="max-w-screen-sm" @done="onSave" />
-      <Edit v-else-if="editDataId" :id="editDataId" class="max-w-screen-sm" @done="onSave" />
-      <OutlineButton v-else @click="() => reset({isNewData:true})">
-        New Booking
-      </OutlineButton> -->
-      
+      <!-- Page Filter Parameter -->
+      <kComboBox
+          :style="{ width: '230px' }"
+          :data-items="clientList"
+          :value-field="'id'"
+          :text-field="'name'"
+          :filterable="true"
+          @change="cboClientOnChange"
+          @filterchange="onCBOClientFilter"
+      ></kComboBox>
+      <!-- END Page Filter Parameter -->
+      <!-- Main Data Grid -->
       <kGrid ref="grid"
         ::style="{height: '440px'}"
             :data-items="gridData"
@@ -179,17 +199,11 @@ const sortChangeHandler = (e: any) => {
             :pageable="true"
             :total="total"
             @sortchange="sortChangeHandler"
-            :columns="columns"
+            :columns="gridColumProperties"
       >
         <kGridToolbar>
           <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
               Add new
-          </kbutton>
-          <kbutton v-if="hasItemsInEdit"
-              :theme-color="'info'"
-                  title="Cancel current changes"
-                  @click="onCancelChanges">
-                  Cancel current changes
           </kbutton>
         </kGridToolbar>
         <template v-slot:myTemplate="{props}">
@@ -205,8 +219,8 @@ const sortChangeHandler = (e: any) => {
           </td>
         </template>
       </kGrid>
+      <!-- End Main Data Grid -->
     </BaseBlock>
-    <!-- END Partial Table -->
   </div>
   <!-- END Page Content -->
 </template>
