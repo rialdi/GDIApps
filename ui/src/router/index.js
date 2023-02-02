@@ -279,11 +279,12 @@ const invalidAttrRedirect = (to, guardAttr, userAttrs) => userAttrs.indexOf('aut
 
 // type RouteGuard = { path, attr }
 const ROUTE_GUARDS = [
-  { path:'/backend/dashboard',       attr:'auth' },
-  { path:'/admin',         attr:'role:Admin' },
+  { path:'/backend/dashboard', attr:'auth' },
+  { path:'/backend/admins', attr:'role:Admin' },
   { path:'/bookings-crud', attr:'role:Employee' },
 ]
 const validateRoute = (to, next, attrs) => {
+  console.log(to);
   for (let i=0; i<ROUTE_GUARDS.length; i++) {
       const { path, attr } = ROUTE_GUARDS[i];
       if (!to.path.startsWith(path)) continue;

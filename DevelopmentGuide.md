@@ -1,5 +1,10 @@
 # Development Guidance
 
+# Add Dotnet Trust HTTPS
+```bash
+dotnet dev-certs https --check --trust
+```
+
 # Reference Docs
 - https://docs.servicestack.net/ormlite/reference-support#merge-disconnected-poco-result-sets
 

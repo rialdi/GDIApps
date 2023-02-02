@@ -1,168 +1,193 @@
-<script setup lan="ts">
-import { reactive, computed, onMounted } from "vue";
+<script setup lang="ts">
+import { ref } from "vue"
+// import { formatDate, formatCurrency } from "@/utils"
+import { Client, QueryClients, CreateClient, UpdateClient, DeleteClient } from "@/dtos"
+import { client } from "@/api"
+import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps } from '@progress/kendo-vue-grid';
+import { Button as kbutton} from '@progress/kendo-vue-buttons'
+import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
+import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
+import { showNotifError, showNotifSuccess } from '@/stores/commons'
 
-import Confirmation from "@/components/Confirmation.vue";
 
-// Vue Dataset, for more info and examples you can check out https://github.com/kouts/vue-dataset/tree/next
-import {
-  Dataset,
-  DatasetItem,
-  DatasetInfo,
-  DatasetPager,
-  DatasetSearch,
-  DatasetShow,
-} from "vue-dataset";
+// const ClientTypeList = Object.keys(ClientTYPE)
+// // ClientTypeList.push("ALL");
+// let selectedClientType = ref<ClientTYPE>();
+let ClientData = ref<Client[]>([]);
+let total = ref<number | undefined>(10);
 
-// Get example data
-import users from "@/data/usersDataset.json";
+const sort = ref<SortDescriptor[] | undefined>([]);
+// const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-const modalConfirmationRef = ref()
+const columns = [
+  { field: 'code', title: 'Code' },
+  { field: 'name', title: 'Name' },
+  { field: 'description', title: 'Description' },
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
+  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
+] as GridColumnProps[];
 
-// Helper variables
-const cols = reactive([
-  {
-    name: "Name",
-    field: "name",
-    sort: "",
-  },
-  {
-    name: "Email",
-    field: "email",
-    sort: "",
-  },
-  {
-    name: "Company",
-    field: "company",
-    sort: "",
-  },
-  {
-    name: "Birth date",
-    field: "birthdate",
-    sort: "",
-  },
-]);
+let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 
-// Sort by functionality
-const sortBy = computed(() => {
-  return cols.reduce((acc, o) => {
-    if (o.sort) {
-      o.sort === "asc" ? acc.push(o.field) : acc.push("-" + o.field);
-    }
-    return acc;
-  }, []);
-});
+const refreshDatas = async ( ) => {
+  const api = await client.api(new QueryClients({ }))
+  if (api.succeeded) {
+    ClientData.value = api.response!.results ?? []
 
-// On sort th click
-function onSort(event, i) {
-  let toset;
-  const sortEl = cols[i];
+    gridData.data = process(ClientData.value, {
+      sort: sort.value,
+      // filter: filter.
+    }).data;
 
-  if (!event.shiftKey) {
-    cols.forEach((o) => {
-      if (o.field !== sortEl.field) {
-        o.sort = "";
-      }
-    });
+    // console.log(gridData);
+
+    total.value = process( 
+      ClientData.value,{
+          // filter: filter.value
+      }).total;
   }
-
-  if (!sortEl.sort) {
-    toset = "asc";
-  }
-
-  if (sortEl.sort === "desc") {
-    toset = event.shiftKey ? "" : "asc";
-  }
-
-  if (sortEl.sort === "asc") {
-    toset = "desc";
-  }
-
-  sortEl.sort = toset;
 }
 
-// Apply a few Bootstrap 5 optimizations
-onMounted(() => {
-  // modalConfirmationRef.pro
-  modalConfirmationRef.value.ShowConfirmation({ title: "AAD", questionText: "sasda"})
 
-
-  // Remove labels from
-  document.querySelectorAll("#datasetLength label").forEach((el) => {
-    el.remove();
-  });
-
-  // Replace select classes
-  let selectLength = document.querySelector("#datasetLength select");
-
-  selectLength.classList = "";
-  selectLength.classList.add("form-select");
-  selectLength.style.width = "80px";
+onMounted(async () => {
+  await refreshDatas()
 });
 
+// unMounted
+onUnmounted(() => {
+  
+});
+
+const hasItemsInEdit =  computed(() => 
+  gridData.data.filter(p => p.inEdit).length > 0
+);
+
+const createAppState = (dataState: State) => {
+  sort.value = dataState.sort;
+  refreshDatas();
+};
+
+const dataStateChange = (event: GridDataStateChangeEvent) => {
+  createAppState(event.data);
+}
+
+const itemChange = (e: any) => {
+  if (e.dataItem.id) {
+    let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+    let updated = Object.assign({},gridData.data[index], {[e.field]:e.value});
+    gridData.data.splice(index, 1, updated);
+  } else {
+    e.dataItem[e.field] = e.value;
+  }
+}
+
+const onRemove = async(e: any) => {
+  if( e.dataItem !== null) {
+    let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+    gridData.data.splice(index, 1);
+    const request = new DeleteClient({
+      id: e.dataItem.id
+    });
+    const api = await client.api(request)
+    if (api.succeeded) {
+      showNotifSuccess('Delete Client', 'Successfully deleted data 🎉')
+    }
+  }
+}
+
+const onEdit = (e: any) => {
+  let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+  let updated = Object.assign({},gridData.data[index], {inEdit:true});
+  gridData.data.splice(index, 1, updated);
+}
+
+const onInsert = () => {
+  // Set Default Value
+  const dataItem = { inEdit: true, isActive: true };
+  gridData.data.splice(0, 0, dataItem)
+}
+
+const onCancelChanges = () => {
+  let editedItems = gridData.data.filter((p: { inEdit: boolean; }) => p.inEdit === true);
+    if(editedItems.length){
+      editedItems.forEach(
+(          item: { inEdit: undefined; }) => {
+              item.inEdit = undefined;
+            });
+    }
+  refreshDatas();
+}
+
+const onSave = async (e: any) => {
+  const currData = e.dataItem;
+  if( currData.id == null) {
+    const request = new CreateClient({
+      code: currData.code,
+      name : currData.name,
+      description : currData.description,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+      showNotifSuccess('Add Client', 'Successfully added new Client data 🎉')
+    } else {
+      if(api.error != null) {
+        showNotifError('Add Client', 'Failed to add new Client data.<br/>' + api.error.message)
+      }
+      else {
+        showNotifError('Add Client', 'Failed to add new Client data')
+      }
+    }
+  }
+  else{
+    const request = new UpdateClient({
+      id : currData.id,
+      code: currData.code,
+      name : currData.name,
+      description : currData.description,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+      showNotifSuccess('Update Client', 'Successfully updated Client data 🎉')
+    } 
+  }
+}
+
+const sortChangeHandler = (e: any) => {
+  if(e.sort.length > 0)
+  {
+    let existingSortItem = sort.value
+    if(existingSortItem != undefined && existingSortItem?.length > 0)
+    {
+      existingSortItem[0].dir = (existingSortItem[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = existingSortItem
+    }
+    else{
+      e.sort[0].dir = (e.sort[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = e.sort;
+    }
+    refreshDatas()
+  }
+}
 
 </script>
 
-<style lang="scss" scoped>
-.gg-select {
-  box-sizing: border-box;
-  position: relative;
-  display: block;
-  transform: scale(1);
-  width: 22px;
-  height: 22px;
-}
-.gg-select::after,
-.gg-select::before {
-  content: "";
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  left: 7px;
-  transform: rotate(-45deg);
-}
-.gg-select::before {
-  border-left: 2px solid;
-  border-bottom: 2px solid;
-  bottom: 4px;
-  opacity: 0.3;
-}
-.gg-select::after {
-  border-right: 2px solid;
-  border-top: 2px solid;
-  top: 4px;
-  opacity: 0.3;
-}
-th.sort {
-  cursor: pointer;
-  user-select: none;
-  &.asc {
-    .gg-select::after {
-      opacity: 1;
-    }
-  }
-  &.desc {
-    .gg-select::before {
-      opacity: 1;
-    }
-  }
-}
-</style>
-
 <template>
-  <!-- Hero -->
+  <!-- Hero --> 
   <BasePageHeading
-    title="Table Helpers"
-    subtitle="Custom functionality to further enrich your tables."
+    title="Clients Data"
+    subtitle="Mobile friendly tables that work across all screen sizes."
   >
     <template #extra>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-alt">
           <li class="breadcrumb-item">
-            <a class="link-fx" href="javascript:void(0)">Tables</a>
+            <a class="link-fx" href="javascript:void(0)">Admins</a>
           </li>
-          <li class="breadcrumb-item" aria-current="page">Helpers</li>
+          <li class="breadcrumb-item" aria-current="page">Clients</li>
         </ol>
       </nav>
     </template>
@@ -171,63 +196,45 @@ th.sort {
 
   <!-- Page Content -->
   <div class="content">
-    <Confirmation ref="modalConfirmationRef"/>
-    <BaseBlock title="Vue Dataset" content-full>
-      <Dataset
-        v-slot="{ ds }"
-        :ds-data="users"
-        :ds-sortby="sortBy"
-        :ds-search-in="['name', 'email', 'company', 'birthdate']"
+    <BaseBlock title="Client data">
+      <kGrid ref="grid"
+        ::style="{height: '440px'}"
+            :data-items="gridData"
+            :edit-field="'inEdit'"
+            :sortable="true"
+            :pageable="true"
+            :total="total"
+            @itemchange="itemChange"
+            @datastatechange="dataStateChange"
+            @sortchange="sortChangeHandler"
+            :columns="columns"
       >
-        <div class="row" :data-page-count="ds.dsPagecount">
-          <div id="datasetLength" class="col-md-8 py-2">
-            <DatasetShow />
-          </div>
-          <div class="col-md-4 py-2">
-            <DatasetSearch ds-search-placeholder="Search..." />
-          </div>
-        </div>
-        <hr />
-        <div class="row">
-          <div class="col-md-12">
-            <div class="table-responsive">
-              <table class="table table-striped mb-0">
-                <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th
-                      v-for="(th, index) in cols"
-                      :key="th.field"
-                      :class="['sort', th.sort]"
-                      @click="onSort($event, index)"
-                    >
-                      {{ th.name }} <i class="gg-select float-end"></i>
-                    </th>
-                  </tr>
-                </thead>
-                <DatasetItem tag="tbody" class="fs-sm">
-                  <template #default="{ row, rowIndex }">
-                    <tr>
-                      <th scope="row">{{ rowIndex + 1 }}</th>
-                      <td style="min-width: 150px">{{ row.name }}</td>
-                      <td>{{ row.email }}</td>
-                      <td style="min-width: 150px">{{ row.company }}</td>
-                      <td style="min-width: 150px">{{ row.birthdate }}</td>
-                    </tr>
-                  </template>
-                </DatasetItem>
-              </table>
-            </div>
-          </div> 
-        </div>
-        <div
-          class="d-flex flex-md-row flex-column justify-content-between align-items-center"
-        >
-          <DatasetInfo class="py-3 fs-sm" />
-          <DatasetPager class="flex-wrap py-3 fs-sm" />
-        </div>
-      </Dataset>
+        <kGridToolbar>
+          <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
+              Add new
+          </kbutton>
+          <kbutton v-if="hasItemsInEdit"
+              :theme-color="'info'"
+                  title="Cancel current changes"
+                  @click="onCancelChanges">
+                  Cancel current changes
+          </kbutton>
+        </kGridToolbar>
+        <template v-slot:myTemplate="{props}">
+            <CommandCell :data-item="props.dataItem" 
+                    @edit="onEdit"
+                    @save="onSave" 
+                    @remove="onRemove"
+                    @cancel="onCancelChanges"/>
+        </template>
+        <template v-slot:isActiveTemplate="{ props }">
+          <td :colspan="1" style="text-align:center">
+            <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
+          </td>
+        </template>
+      </kGrid>
     </BaseBlock>
+    <!-- END Partial Table -->
   </div>
   <!-- END Page Content -->
 </template>
