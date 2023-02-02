@@ -1,8 +1,152 @@
+<script setup lang="ts">
+import { ref } from "vue"
+// import { formatDate, formatCurrency } from "@/utils"
+import { Project, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
+import { client } from "@/api"
+import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid';
+import { Button as kbutton} from '@progress/kendo-vue-buttons'
+import { process, SortDescriptor, DataResult } from '@progress/kendo-data-query'
+import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
+import { showNotifError, showNotifSuccess } from '@/stores/commons'
+
+import EditDialog from './EditDialog.vue';
+
+let ProjectData = ref<Project[]>([])
+let total = ref<number | undefined>(10)
+let dataItemInEdit = ref<Project>()
+
+const sort = ref<SortDescriptor[] | undefined>([]);
+// const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
+
+const columns = [
+  { field: 'clientId', title: 'Code' },
+  { field: 'code', title: 'Code' },
+  { field: 'name', title: 'Name' },
+  { field: 'description', title: 'Description' },
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
+  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
+] as GridColumnProps[];
+
+let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
+
+const refreshDatas = async ( ) => {
+  const api = await client.api(new QueryProjects({ }))
+  if (api.succeeded) {
+    ProjectData.value = api.response!.results ?? []
+
+    gridData.data = process(ProjectData.value, {
+      sort: sort.value,
+      // filter: filter.
+    }).data;
+
+    // console.log(gridData);
+
+    total.value = process( 
+      ProjectData.value,{
+          // filter: filter.value
+      }).total;
+    
+      dataItemInEdit.value = undefined
+  }
+}
+
+onMounted(async () => {
+  await refreshDatas()
+});
+
+const hasItemsInEdit =  computed(() => 
+  gridData.data.filter(p => p.inEdit).length > 0
+);
+
+const onRemove = async(e: any) => {
+  if( e.dataItem !== null) {
+    let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
+    gridData.data.splice(index, 1);
+    const request = new DeleteProject({
+      id: e.dataItem.id
+    });
+    const api = await client.api(request)
+    if (api.succeeded) {
+      showNotifSuccess('Delete Project', 'Successfully deleted data 🎉')
+    }
+  }
+}
+
+const onEdit = (e: any) => {
+  dataItemInEdit.value = e.dataItem
+}
+
+const onInsert = () => {
+  // Set Default Value
+  dataItemInEdit.value = {code: 'New Code', name: "Project Name", isActive: true}
+}
+
+const onCancelChanges = () => {
+  dataItemInEdit.value = undefined
+}
+
+const onSave = async (e: any) => {
+  const currData = e.dataItem;
+  if( currData.id == null) {
+    const request = new CreateProject({
+      code: currData.code,
+      name : currData.name,
+      description : currData.description,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+      showNotifSuccess('Add Project', 'Successfully added new Project data 🎉')
+    } else {
+      if(api.error != null) {
+        showNotifError('Add Project', 'Failed to add new Project data.<br/>' + api.error.message)
+      }
+      else {
+        showNotifError('Add Project', 'Failed to add new Project data')
+      }
+    }
+  }
+  else{
+    const request = new UpdateProject({
+      id : currData.id,
+      code: currData.code,
+      name : currData.name,
+      description : currData.description,
+      isActive : currData.isActive
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      refreshDatas();
+      showNotifSuccess('Update Project', 'Successfully updated Project data 🎉')
+    } 
+  }
+}
+
+const sortChangeHandler = (e: any) => {
+  if(e.sort.length > 0)
+  {
+    let existingSortItem = sort.value
+    if(existingSortItem != undefined && existingSortItem?.length > 0)
+    {
+      existingSortItem[0].dir = (existingSortItem[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = existingSortItem
+    }
+    else{
+      e.sort[0].dir = (e.sort[0].dir === "asc") ? "desc" : "asc" 
+      sort.value = e.sort;
+    }
+    refreshDatas()
+  }
+}
+
+</script>
+
 <template>
-  <!-- Hero -->
+  <!-- Hero --> 
   <BasePageHeading
-    title="Lookups Data"
-    subtitle="Mobile friendly tables that work across all screen sizes."
+    title="Projects Data"
+    subtitle="This Project Data Edit is using External Form"
   >
     <template #extra>
       <nav aria-label="breadcrumb">
@@ -10,186 +154,59 @@
           <li class="breadcrumb-item">
             <a class="link-fx" href="javascript:void(0)">Admins</a>
           </li>
-          <li class="breadcrumb-item" aria-current="page">Lookups</li>
+          <li class="breadcrumb-item" aria-current="page">Projects</li>
         </ol>
       </nav>
     </template>
   </BasePageHeading>
   <!-- END Hero -->
 
+  <!-- Page Content -->
   <div class="content">
-    <Create v-if="newBooking" class="max-w-screen-sm" @done="onDone" />
-    <Edit v-else-if="editBookingId" :id="editBookingId" class="max-w-screen-sm" @done="onDone" />
-    <OutlineButton v-else @click="() => reset({newBooking:true})">
-      New Booking
-    </OutlineButton>
-    <!-- Partial Table -->
-    <BaseBlock title="Partial Table">
-      <template #options>
-        <button type="button" class="btn-block-option">
-          <i class="si si-settings"></i>
-        </button>
-      </template>
-
-      <p class="fs-sm text-muted">
-        The second way is to use responsive utility CSS classes for hiding
-        columns in various screen resolutions. This way you can hide less
-        important columns and keep the most valuable on smaller screens. At the
-        following example the <strong>Access</strong> column isn't visible on
-        small and extra small screens and <strong>Email</strong> column isn't
-        visible on extra small screens.
-      </p>
-      <table class="table table-bordered table-striped table-vcenter">
-        <thead>
-          <tr>
-            <!-- <th class="text-center" style="width: 100px">
-              <i class="far fa-user"></i>
-            </th> -->
-            <th>Lookup Type</th>
-            <th class="d-none d-md-table-cell" style="width: 30%">Lookup Value</th>
-            <th class="d-none d-sm-table-cell" style="width: 15%">Lookup Text</th>
-            <th class="text-center" style="width: 100px">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="currData in bookings" :key="currData.id">
-            <!-- <td class="text-center">
-              <img
-                class="img-avatar img-avatar48"
-                :src="`/assets/media/avatars/${user.avatar}.jpg`"
-                alt="Avatar"
-              />
-            </td> -->
-            <td class="fw-semibold fs-sm">
-              {{ currData.name }}
-            </td>
-            <td class="d-none d-md-table-cell fs-sm">
-              {{ currData.roomType }}
-            </td>
-            <td class="d-none d-sm-table-cell">
-              {{ currData.roomNumber }}
-            </td>
-            <td class="text-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-alt-secondary" @click="() => reset({newBooking:true})">
-                  <i class="fa fa-fw fa-pencil-alt"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-alt-secondary">
-                  <i class="fa fa-fw fa-times"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" @save="onSave" @cancel="onCancelChanges">
+    </EditDialog>
+    <BaseBlock title="Project data">
+      <!-- <Create v-if="isNewData" class="max-w-screen-sm" @done="onSave" />
+      <Edit v-else-if="editDataId" :id="editDataId" class="max-w-screen-sm" @done="onSave" />
+      <OutlineButton v-else @click="() => reset({isNewData:true})">
+        New Booking
+      </OutlineButton> -->
+      
+      <kGrid ref="grid"
+        ::style="{height: '440px'}"
+            :data-items="gridData"
+            :sortable="true"
+            :pageable="true"
+            :total="total"
+            @sortchange="sortChangeHandler"
+            :columns="columns"
+      >
+        <kGridToolbar>
+          <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
+              Add new
+          </kbutton>
+          <kbutton v-if="hasItemsInEdit"
+              :theme-color="'info'"
+                  title="Cancel current changes"
+                  @click="onCancelChanges">
+                  Cancel current changes
+          </kbutton>
+        </kGridToolbar>
+        <template v-slot:myTemplate="{props}">
+            <CommandCell :data-item="props.dataItem" 
+                    @edit="onEdit"
+                    @save="onSave" 
+                    @remove="onRemove"
+                    @cancel="onCancelChanges"/>
+        </template>
+        <template v-slot:isActiveTemplate="{ props }">
+          <td :colspan="1" style="text-align:center">
+            <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
+          </td>
+        </template>
+      </kGrid>
     </BaseBlock>
-    <div v-if="bookings.length > 0" class="mt-4 flex flex-col">
-      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-              <tr class="select-none">
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <FluentAddCircle24Regular class="w-6 h-6 cursor-pointer" title="New Booking" @click="() => reset({newBooking:true})" />
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Id
-                </th>
-                <th class="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <span class="hidden sm:inline">Room </span>Type
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <span class="hidden sm:inline">Room </span>No
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cost
-                </th>
-                <th class="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Start Date
-                </th>
-                <th class="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created By
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="(booking, index) in bookings" :key="booking.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <MdiSquareEditOutline class="w-6 h-6 cursor-pointer" title="Edit Booking" @click="() => reset({editBookingId:booking.id})" />
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ booking.id }}
-                </td>
-                <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ booking.name }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ booking.roomType }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ booking.roomNumber }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ formatCurrency(booking.cost) }}
-                </td>
-                <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ formatDate(booking.bookingStartDate) }}
-                </td>
-                <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ booking.createdBy }}
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- END Partial Table -->
   </div>
+  <!-- END Page Content -->
 </template>
-
-<script setup lang="ts">
-import Create from "@/pages/bookings-crud/Create.vue"
-import Edit from "@/pages/bookings-crud/Edit.vue"
-import OutlineButton from "@/components/form/OutlineButton.vue"
-// import AppPage from "@/components/AppPage.vue"
-// import SrcLink from "@/components/SrcLink.vue"
-
-import { ref } from "vue"
-import { formatDate, formatCurrency } from "@/utils"
-import { Booking, QueryBookings } from "@/dtos"
-import { client } from "@/api"
-
-const newBooking = ref<boolean>(false)
-const editBookingId = ref<number|undefined>()
-
-// const expandAbout = ref<boolean>(false)
-
-const bookings = ref<Booking[]>([])
-
-const refreshBookings = async () => {
-  const api = await client.api(new QueryBookings())
-  if (api.succeeded) {
-    bookings.value = api.response!.results ?? []
-  }
-}
-
-onMounted(async () => await refreshBookings())
-
-const reset = (args:{ newBooking?: boolean, editBookingId?:number } = {}) => {
-  newBooking.value = args.newBooking ?? false
-  editBookingId.value = args.editBookingId ?? undefined
-}
-
-const onDone = () => {
-  reset()
-  refreshBookings()
-}
-
-// const toggleAbout = () => expandAbout.value = !expandAbout.value
-
-</script>
