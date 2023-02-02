@@ -2,6 +2,19 @@
     <kDialog @close="onCancel" width="500">
       <div class="k-form k-form-horizontal">
         <div class="k-form-field">
+          <label for="client" class="k-form-label"> Client</label>
+          <div class="k-form-field-wrap">
+            <kComboBox
+                :style="{ width: '230px' }"
+                :data-items="clientList"
+                :value-field="'id'"
+                :text-field="'name'"
+                :value-primitive="true"
+                v-model="dataItemInEdit.clientId"
+            ></kComboBox>
+          </div>
+        </div>
+        <div class="k-form-field">
           <label for="code" class="k-form-label"> Code</label>
           <div class="k-form-field-wrap">
             <kInput
@@ -58,10 +71,12 @@ import { Dialog as kDialog, DialogActionsBar as kDialogActionsBar } from '@progr
 import { Input as kInput, Checkbox as kCheckbox} from '@progress/kendo-vue-inputs';
 import { Label as klabel} from '@progress/kendo-vue-labels';
 import { Button as kButton} from '@progress/kendo-vue-buttons';
+import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns';
 import { Project } from "@/dtos"
 
 const props = defineProps<{
-    dataItem: Object
+    dataItem: object,
+    clientList: any[]
 }>()
 
 const emit = defineEmits<{
@@ -83,11 +98,12 @@ onMounted(async () => {
 // });
 
 const onCancel = async (e: any) => {
-    emit('cancel', {dataItem:props.dataItem} )
+    emit('cancel', {dataItem:dataItemInEdit} )
 }
 
 const onSave = async (e: any) => {
-    emit('save', {dataItem:props.dataItem} )
+    // console.log(dataItemInEdit)
+    emit('save', {dataItem: props.dataItem} )
 }
 
 </script>

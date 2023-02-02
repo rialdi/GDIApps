@@ -10,9 +10,10 @@ namespace GDIApps.ServiceModel;
 [ValidateIsAuthenticated]
 [Tag("Projects")]
 [AutoApply(Behavior.AuditQuery)]
-public class QueryProjects : QueryDb<Project> {
+public class QueryProjects : QueryDb<Project, ProjectView>, IJoin<Project, Client>  {
     public string? Code {get; set;}
     public string? ClientId{get; set;}
+    public string? ClientCode {get; set;}
 }
 
 [ValidateIsAuthenticated]

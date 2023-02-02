@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 // import { formatDate, formatCurrency } from "@/utils"
-import { Client, QueryClients, Project, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
+import { Client, QueryClients, ProjectView, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
 import { client } from "@/api"
 
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid';
@@ -43,15 +43,17 @@ const onCBOClientFilter = (e : any) => {
 /* END of Combobox Client */
 
 /* Code for DataGrid */
-let ProjectData = ref<Project[]>([])
+let ProjectData = ref<ProjectView[]>([])
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 let total = ref<number | undefined>(10)
-let dataItemInEdit = ref<Project>()
+let dataItemInEdit = ref<ProjectView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
 // const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 const gridColumProperties = [
-  { field: 'clientId', title: 'Code' },
+  // { field: 'clientId', title: 'Client', template:'{{ clientCode  | clientName }}' },
+  // { field: 'clientCode', title: 'Client Name',  },
+  { cell: 'clientTemplate', filterable: false, title: 'Client', width:300 },
   { field: 'code', title: 'Code' },
   { field: 'name', title: 'Name' },
   { field: 'description', title: 'Description' },
@@ -101,9 +103,11 @@ const onCancelChanges = () => {
   dataItemInEdit.value = undefined
 }
 const onSave = async (e: any) => {
+  console.log(e)
   const currData = e.dataItem;
   if( currData.id == null) {
     const request = new CreateProject({
+      clientId: currData.clientId,
       code: currData.code,
       name : currData.name,
       description : currData.description,
@@ -125,6 +129,7 @@ const onSave = async (e: any) => {
   else{
     const request = new UpdateProject({
       id : currData.id,
+      clientId: currData.clientId,
       code: currData.code,
       name : currData.name,
       description : currData.description,
@@ -177,7 +182,7 @@ const sortChangeHandler = (e: any) => {
 
   <!-- Page Content -->
   <div class="content">
-    <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" @save="onSave" @cancel="onCancelChanges">
+    <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" :client-list="clientList" @save="onSave" @cancel="onCancelChanges">
     </EditDialog>
     <BaseBlock title="Project data">
       <!-- Page Filter Parameter -->
@@ -212,6 +217,11 @@ const sortChangeHandler = (e: any) => {
                     @save="onSave" 
                     @remove="onRemove"
                     @cancel="onCancelChanges"/>
+        </template>
+        <template v-slot:clientTemplate="{ props }">
+          <td :colspan="1">
+            {{ props.dataItem.clientCode + ' - ' + props.dataItem.clientName}}
+          </td>
         </template>
         <template v-slot:isActiveTemplate="{ props }">
           <td :colspan="1" style="text-align:center">

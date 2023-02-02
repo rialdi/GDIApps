@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-02 12:38:33
+Date: 2023-02-02 15:29:54
 Version: 6.50
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -108,10 +108,10 @@ export class QueryData<T> extends QueryBase
     public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class QueryDb<T> extends QueryBase
+export class QueryDb_1<T> extends QueryBase
 {
 
-    public constructor(init?: Partial<QueryDb<T>>) { super(init); (Object as any).assign(this, init); }
+    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -317,6 +317,20 @@ export class Lookup extends AuditBase
     public lookupDisplay?: string;
 
     public constructor(init?: Partial<Lookup>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryDb_2<From, Into> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryDb_2<From, Into>>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ProjectView extends Project
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<ProjectView>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -892,7 +906,7 @@ export class Register implements IReturn<RegisterResponse>, IPost
 */
 // @Route("/bookings", "GET")
 // @Route("/bookings/{Id}", "GET")
-export class QueryBookings extends QueryDb<Booking> implements IReturn<QueryResponse<Booking>>
+export class QueryBookings extends QueryDb_1<Booking> implements IReturn<QueryResponse<Booking>>
 {
     public id?: number;
 
@@ -903,7 +917,7 @@ export class QueryBookings extends QueryDb<Booking> implements IReturn<QueryResp
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryClients extends QueryDb<Client> implements IReturn<QueryResponse<Client>>
+export class QueryClients extends QueryDb_1<Client> implements IReturn<QueryResponse<Client>>
 {
     public code?: string;
     public isActive?: boolean;
@@ -915,7 +929,7 @@ export class QueryClients extends QueryDb<Client> implements IReturn<QueryRespon
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryContactUses extends QueryDb<ContactUs> implements IReturn<QueryResponse<ContactUs>>
+export class QueryContactUses extends QueryDb_1<ContactUs> implements IReturn<QueryResponse<ContactUs>>
 {
 
     public constructor(init?: Partial<QueryContactUses>) { super(init); (Object as any).assign(this, init); }
@@ -925,7 +939,7 @@ export class QueryContactUses extends QueryDb<ContactUs> implements IReturn<Quer
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryEmails extends QueryDb<Email> implements IReturn<QueryResponse<Email>>
+export class QueryEmails extends QueryDb_1<Email> implements IReturn<QueryResponse<Email>>
 {
     public toContains?: string;
     public subjectContains?: string;
@@ -937,7 +951,7 @@ export class QueryEmails extends QueryDb<Email> implements IReturn<QueryResponse
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryEmailTemplates extends QueryDb<EmailTemplate> implements IReturn<QueryResponse<EmailTemplate>>
+export class QueryEmailTemplates extends QueryDb_1<EmailTemplate> implements IReturn<QueryResponse<EmailTemplate>>
 {
     public code?: EMAIL_TEMPLATE_CODE;
 
@@ -948,7 +962,7 @@ export class QueryEmailTemplates extends QueryDb<EmailTemplate> implements IRetu
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryLookups extends QueryDb<Lookup> implements IReturn<QueryResponse<Lookup>>
+export class QueryLookups extends QueryDb_1<Lookup> implements IReturn<QueryResponse<Lookup>>
 {
     public lookuptype?: LOOKUPTYPE;
 
@@ -959,15 +973,16 @@ export class QueryLookups extends QueryDb<Lookup> implements IReturn<QueryRespon
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryProjects extends QueryDb<Project> implements IReturn<QueryResponse<Project>>
+export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IReturn<QueryResponse<ProjectView>>
 {
     public code?: string;
     public clientId?: string;
+    public clientCode?: string;
 
     public constructor(init?: Partial<QueryProjects>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryProjects'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Project>(); }
+    public createResponse() { return new QueryResponse<ProjectView>(); }
 }
 
 /**

@@ -42,3 +42,9 @@ public class Project : AuditBase
     [Default(typeof(bool), "true")]
     public bool? IsActive { get; set; }
 }
+
+public class ProjectView : Project
+{
+    public string ClientCode { get; set; } = string.Empty;
+    public string ClientName { get; set; } = string.Empty;
+}
