@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{a9615204-cd24-4273-a610-0d96befabeca}</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>vite.config.ts</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>UI</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="kendo-ui-license.txt" />
+    <Content Include="index.html" />
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
+    <None Include="tsconfig.json" />
+    <Content Include="README.md" />
+    <None Include="vite.config.ts" />
+    <Content Include="public\default.css" />
+    <Content Include="public\favicon.ico" />
+    <None Include="src\api.ts" />
+    <None Include="src\auth.ts" />
+    <None Include="src\auto-imports.d.ts" />
+    <None Include="src\components.d.ts" />
+    <None Include="src\dtos.ts" />
+    <None Include="src\env.d.ts" />
+    <None Include="src\gateway.ts" />
+    <None Include="src\main.ts" />
+    <None Include="src\routing.ts" />
+    <None Include="src\utils.ts" />
+    <Content Include="public\assets\img\logo.svg" />
+    <Content Include="public\assets\fonts\simple-line-icons\Simple-Line-Icons.svg" />
+    <Content Include="public\assets\media\avatars\avatar0.jpg" />
+    <Content Include="public\assets\media\avatars\avatar1.jpg" />
+    <Content Include="public\assets\media\avatars\avatar10.jpg" />
+    <Content Include="public\assets\media\avatars\avatar11.jpg" />
+    <Content Include="public\assets\media\avatars\avatar12.jpg" />
+    <Content Include="public\assets\media\avatars\avatar13.jpg" />
+    <Content Include="public\assets\media\avatars\avatar14.jpg" />
+    <Content Include="public\assets\media\avatars\avatar15.jpg" />
+    <Content Include="public\assets\media\avatars\avatar16.jpg" />
+    <Content Include="public\assets\media\avatars\avatar2.jpg" />
+    <Content Include="public\assets\media\avatars\avatar3.jpg" />
+    <Content Include="public\assets\media\avatars\avatar4.jpg" />
+    <Content Include="public\assets\media\avatars\avatar5.jpg" />
+    <Content Include="public\assets\media\avatars\avatar6.jpg" />
+    <Content Include="public\assets\media\avatars\avatar7.jpg" />
+    <Content Include="public\assets\media\avatars\avatar8.jpg" />
+    <Content Include="public\assets\media\avatars\avatar9.jpg" />
+    <Content Include="public\assets\media\favicons\apple-touch-icon-180x180.png" />
+    <Content Include="public\assets\media\favicons\favicon-192x192.png" />
+    <Content Include="public\assets\media\favicons\favicon.png" />
+    <Content Include="public\assets\media\photos\photo1.jpg" />
+    <Content Include="public\assets\media\photos\photo10.jpg" />
+    <Content Include="public\assets\media\photos\photo10@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo11.jpg" />
+    <Content Include="public\assets\media\photos\photo11@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo12.jpg" />
+    <Content Include="public\assets\media\photos\photo12@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo13.jpg" />
+    <Content Include="public\assets\media\photos\photo13@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo14.jpg" />
+    <Content Include="public\assets\media\photos\photo14@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo15.jpg" />
+    <Content Include="public\assets\media\photos\photo15@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo16.jpg" />
+    <Content Include="public\assets\media\photos\photo16@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo17.jpg" />
+    <Content Include="public\assets\media\photos\photo17@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo18.jpg" />
+    <Content Include="public\assets\media\photos\photo18@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo19.jpg" />
+    <Content Include="public\assets\media\photos\photo19@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo1@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo2.jpg" />
+    <Content Include="public\assets\media\photos\photo20.jpg" />
+    <Content Include="public\assets\media\photos\photo20@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo21.jpg" />
+    <Content Include="public\assets\media\photos\photo21@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo22.jpg" />
+    <Content Include="public\assets\media\photos\photo22@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo23.jpg" />
+    <Content Include="public\assets\media\photos\photo23@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo24.jpg" />
+    <Content Include="public\assets\media\photos\photo24@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo25.jpg" />
+    <Content Include="public\assets\media\photos\photo25@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo26.jpg" />
+    <Content Include="public\assets\media\photos\photo26@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo27.jpg" />
+    <Content Include="public\assets\media\photos\photo27@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo28.jpg" />
+    <Content Include="public\assets\media\photos\photo28@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo29.jpg" />
+    <Content Include="public\assets\media\photos\photo29@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo2@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo3.jpg" />
+    <Content Include="public\assets\media\photos\photo30.jpg" />
+    <Content Include="public\assets\media\photos\photo30@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo31.jpg" />
+    <Content Include="public\assets\media\photos\photo31@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo32.jpg" />
+    <Content Include="public\assets\media\photos\photo32@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo33.jpg" />
+    <Content Include="public\assets\media\photos\photo33@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo34.jpg" />
+    <Content Include="public\assets\media\photos\photo34@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo35.jpg" />
+    <Content Include="public\assets\media\photos\photo35@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo36.jpg" />
+    <Content Include="public\assets\media\photos\photo36@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo37.jpg" />
+    <Content Include="public\assets\media\photos\photo37@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo38.jpg" />
+    <Content Include="public\assets\media\photos\photo38@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo39.jpg" />
+    <Content Include="public\assets\media\photos\photo39@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo3@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo4.jpg" />
+    <Content Include="public\assets\media\photos\photo4@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo5.jpg" />
+    <Content Include="public\assets\media\photos\photo5@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo6.jpg" />
+    <Content Include="public\assets\media\photos\photo6@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo7.jpg" />
+    <Content Include="public\assets\media\photos\photo7@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo8.jpg" />
+    <Content Include="public\assets\media\photos\photo8@2x.jpg" />
+    <Content Include="public\assets\media\photos\photo9.jpg" />
+    <Content Include="public\assets\media\photos\photo9@2x.jpg" />
+    <Content Include="public\assets\media\various\ecom_product1.png" />
+    <Content Include="public\assets\media\various\ecom_product10.png" />
+    <Content Include="public\assets\media\various\ecom_product11.png" />
+    <Content Include="public\assets\media\various\ecom_product12.png" />
+    <Content Include="public\assets\media\various\ecom_product2.png" />
+    <Content Include="public\assets\media\various\ecom_product3.png" />
+    <Content Include="public\assets\media\various\ecom_product4.png" />
+    <Content Include="public\assets\media\various\ecom_product5.png" />
+    <Content Include="public\assets\media\various\ecom_product6.png" />
+    <Content Include="public\assets\media\various\ecom_product6_a.png" />
+    <Content Include="public\assets\media\various\ecom_product6_b.png" />
+    <Content Include="public\assets\media\various\ecom_product6_c.png" />
+    <Content Include="public\assets\media\various\ecom_product7.png" />
+    <Content Include="public\assets\media\various\ecom_product8.png" />
+    <Content Include="public\assets\media\various\ecom_product9.png" />
+    <Content Include="public\assets\media\various\hero-promo.png" />
+    <Content Include="public\assets\media\various\little-monster.png" />
+    <Content Include="public\assets\media\various\promo-code.png" />
+    <Content Include="public\modules\ui\docs\CreateBookingsDocs.html" />
+    <Content Include="public\modules\ui\docs\TodosDocs.html" />
+    <Content Include="src\data\usersDataset.json" />
+    <Content Include="src\pages\features.md" />
+    <Content Include="src\pages\hosting.md" />
+    <None Include="src\stores\app.ts" />
+    <None Include="src\stores\commons.ts" />
+    <None Include="src\stores\todos.ts" />
+    <Content Include="src\styles\gdi.css" />
+    <Content Include="src\styles\index.css" />
+    <Content Include="src\styles\main.css" />
+    <Content Include="src\pages\posts\deploy.md" />
+    <Content Include="src\pages\posts\rider.md" />
+    <Content Include="src\pages\posts\typography.md" />
+    <Content Include="src\pages\posts\vs.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NodejsApp1" />
+    <Folder Include="public" />
+    <Folder Include="public\assets" />
+    <Folder Include="public\assets\fonts" />
+    <Folder Include="public\assets\fonts\inter" />
+    <Folder Include="public\assets\fonts\simple-line-icons" />
+    <Folder Include="public\assets\img" />
+    <Folder Include="public\assets\media" />
+    <Folder Include="public\assets\media\avatars" />
+    <Folder Include="public\assets\media\favicons" />
+    <Folder Include="public\assets\media\photos" />
+    <Folder Include="public\assets\media\various" />
+    <Folder Include="public\modules" />
+    <Folder Include="public\modules\ui" />
+    <Folder Include="public\modules\ui\docs" />
+    <Folder Include="src" />
+    <Folder Include="src\assets" />
+    <Folder Include="src\assets\scss" />
+    <Folder Include="src\assets\scss\custom" />
+    <Folder Include="src\assets\scss\oneui" />
+    <Folder Include="src\assets\scss\oneui\forms" />
+    <Folder Include="src\assets\scss\oneui\helpers" />
+    <Folder Include="src\assets\scss\oneui\mixins" />
+    <Folder Include="src\assets\scss\oneui\themes" />
+    <Folder Include="src\assets\scss\vendor" />
+    <Folder Include="src\components" />
+    <Folder Include="src\components\form" />
+    <Folder Include="src\components\grids" />
+    <Folder Include="src\data" />
+    <Folder Include="src\directives" />
+    <Folder Include="src\layouts" />
+    <Folder Include="src\layouts\partials" />
+    <Folder Include="src\layouts\variations" />
+    <Folder Include="src\pages" />
+    <Folder Include="src\pages\backend" />
+    <Folder Include="src\pages\backend\admins" />
+    <Folder Include="src\pages\backend\admins\Projects" />
+    <Folder Include="src\pages\bookings-crud" />
+    <Folder Include="src\pages\errors" />
+    <Folder Include="src\pages\posts" />
+    <Folder Include="src\pages\user" />
+    <Folder Include="src\router" />
+    <Folder Include="src\stores" />
+    <Folder Include="src\styles" />
+    <Folder Include="src\views" />
+    <Folder Include="src\views\auth" />
+    <Folder Include="src\views\backend" />
+    <Folder Include="src\views\backend\blocks" />
+    <Folder Include="src\views\backend\blog" />
+    <Folder Include="src\views\backend\elearning" />
+    <Folder Include="src\views\backend\elements" />
+    <Folder Include="src\views\backend\forms" />
+    <Folder Include="src\views\backend\forum" />
+    <Folder Include="src\views\backend\layout" />
+    <Folder Include="src\views\backend\layout\dark-mode" />
+    <Folder Include="src\views\backend\layout\header" />
+    <Folder Include="src\views\backend\layout\main-content" />
+    <Folder Include="src\views\backend\layout\page" />
+    <Folder Include="src\views\backend\layout\sidebar" />
+    <Folder Include="src\views\backend\layout\side-overlay" />
+    <Folder Include="src\views\backend\pages" />
+    <Folder Include="src\views\backend\pages\generic" />
+    <Folder Include="src\views\backend\plugins" />
+    <Folder Include="src\views\backend\tables" />
+    <Folder Include="src\views\backend-boxed" />
+    <Folder Include="src\views\errors" />
+    <Folder Include="src\views\landing" />
+    <Folder Include="src\views\specials" />
+    <Folder Include="src\views\starter" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
