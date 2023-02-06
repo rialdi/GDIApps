@@ -259,8 +259,9 @@ const sortChangeHandler = (e: any) => {
             </button> -->
     <!-- Partial Table -->
     <!-- <notifications position="bottom left" classes="alert alert-info d-flex align-items-center" /> -->
-    <BaseBlock title="Lookup data">
-      
+    <BaseBlock title="Lookup ">
+      <button type="button" class="btn btn-primary" > test
+            </button> 
       <p>
         <DropDownList
           :data-items="lookupTypeList"
