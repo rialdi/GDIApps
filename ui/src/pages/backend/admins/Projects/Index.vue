@@ -184,18 +184,27 @@ const sortChangeHandler = (e: any) => {
   <div class="content">
     <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" :client-list="clientList" @save="onSave" @cancel="onCancelChanges">
     </EditDialog>
-    <BaseBlock title="Project data">
-      <!-- Page Filter Parameter -->
-      <kComboBox
-          :style="{ width: '230px' }"
-          :data-items="clientList"
-          :value-field="'id'"
-          :text-field="'name'"
-          :filterable="true"
-          @change="cboClientOnChange"
-          @filterchange="onCBOClientFilter"
-      ></kComboBox>
-      <!-- END Page Filter Parameter -->
+    <!-- Page Filter Parameter -->
+    <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
+      <div class="row pb-2">
+        <div class="col-sm-2 text-end">
+          <label class="mr-3 mt-1">Client</label>
+        </div>
+        <div class="col-sm-4">
+          <kComboBox
+              :style="{ width: '230px' }"
+              :data-items="clientList"
+              :value-field="'id'"
+              :text-field="'name'"
+              :filterable="true"
+              @change="cboClientOnChange"
+              @filterchange="onCBOClientFilter"
+          ></kComboBox>
+        </div>
+      </div>
+    </BaseBlock>
+    <!-- END Page Filter Parameter -->
+    <BaseBlock title="Result data" btn-option-fullscreen btn-option-content>  
       <!-- Main Data Grid -->
       <kGrid ref="grid"
         ::style="{height: '440px'}"
