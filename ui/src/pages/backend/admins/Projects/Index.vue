@@ -11,6 +11,8 @@ import { Form as kForm } from "@progress/kendo-vue-form";
 import { Dialog as kDialog, DialogActionsBar as kDialogActionsBar } from '@progress/kendo-vue-dialogs';
 import { process, filterBy, SortDescriptor, DataResult } from '@progress/kendo-data-query'
 
+import { saveExcel } from '@progress/kendo-vue-excel-export';
+
 import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 import FormContent from './FormContent.vue';
@@ -177,6 +179,15 @@ const sortChangeHandler = (e: any) => {
     refreshDatas()
   }
 }
+
+const onExportToExcel = () => {
+  saveExcel({
+      data: gridData.data as any[],
+      fileName: "myFile",
+      columns: gridColumProperties
+  });
+}
+
 /* END Code for DataGrid */
 </script>
 
@@ -243,17 +254,20 @@ const sortChangeHandler = (e: any) => {
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content>  
       <!-- Main Data Grid -->
       <kGrid ref="grid"
-        ::style="{height: '440px'}"
-            :data-items="gridData"
-            :sortable="true"
-            :pageable="true"
-            :total="total"
-            @sortchange="sortChangeHandler"
-            :columns="gridColumProperties"
+          :style="{height: '440px'}"
+          :data-items="gridData"
+          :sortable="true"
+          :pageable="true"
+          :total="total"
+          @sortchange="sortChangeHandler"
+          :columns="gridColumProperties"
       >
         <kGridToolbar>
           <kButton title="Add new" :theme-color="'primary'" @click='onInsert'>
               Add new
+          </kButton>
+          <kButton title="Export to Excel" :theme-color="'primary'" @click='onExportToExcel'>
+            Export to Excel
           </kButton>
         </kGridToolbar>
         <template v-slot:myTemplate="{props}">
