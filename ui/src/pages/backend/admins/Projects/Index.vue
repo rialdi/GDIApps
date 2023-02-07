@@ -5,14 +5,18 @@ import { Client, QueryClients, ProjectView, QueryProjects, CreateProject, Update
 import { client } from "@/api"
 
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid';
-import { Button as kbutton} from '@progress/kendo-vue-buttons'
+import { Button as kButton} from '@progress/kendo-vue-buttons'
 import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns';
+import { Form as kForm } from "@progress/kendo-vue-form";
+import { Dialog as kDialog, DialogActionsBar as kDialogActionsBar } from '@progress/kendo-vue-dialogs';
 import { process, filterBy, SortDescriptor, DataResult } from '@progress/kendo-data-query'
 
 import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
+import FormContent from './FormContent.vue';
 
-import EditDialog from './EditDialog.vue';
+const formContentRef = ref<InstanceType<typeof FormContent>>()
+let kDialogTitle = ref<string>("Add Project")
 
 onMounted(async () => {
   await getClientList()
@@ -22,6 +26,7 @@ onMounted(async () => {
 /* Combobox Client */
 const sourceClientList = ref<Client[]>([])
 let clientList = ref<any[]>([])
+
 const getClientList = async() => {
   const api = await client.api(new QueryClients({ isActive: true }))
   if (api.succeeded) {
@@ -29,6 +34,7 @@ const getClientList = async() => {
     clientList.value = process(sourceClientList.value, {}).data as any[]
   }
 }
+
 const cboClientOnChange = (e: any) => {
   if(e.value) {
     refreshDatas(e.value.id)
@@ -36,6 +42,7 @@ const cboClientOnChange = (e: any) => {
     refreshDatas()
   }
 }
+
 const onCBOClientFilter = (e : any) => {
   const data = process(sourceClientList.value, {}).data as any[]
   clientList.value = filterBy(data, e.filter)
@@ -79,6 +86,7 @@ const refreshDatas = async (selectedClientId?: any ) => {
   }
 }
 const onInsert = () => {
+  kDialogTitle.value = "Add Project"
   // Set Default Value
   dataItemInEdit.value = {code: 'New Code', name: "Project Name", isActive: true}
 }
@@ -91,20 +99,28 @@ const onRemove = async(e: any) => {
     });
     const api = await client.api(request)
     if (api.succeeded) {
-      showNotifSuccess('Delete Project', 'Successfully deleted data 🎉')
+      // showNotifSuccess('Delete Project', 'Successfully deleted data 🎉')
     }
   }
 }
 const onEdit = (e: any) => {
+  kDialogTitle.value = "Edit Project"
   dataItemInEdit.value = e.dataItem
+  formContentRef.value?.focus
+  // alert(JSON.stringify(dataItemInEdit.value, null, 2));
 }
 
 const onCancelChanges = () => {
-  dataItemInEdit.value = undefined
+  dataItemInEdit.value = undefined 
 }
+
+const onResetForm = () => {
+  formContentRef.value?.resetForm()
+}
+
 const onSave = async (e: any) => {
-  console.log(e)
-  const currData = e.dataItem;
+  const currData = e;
+  // console.log(currData)
   if( currData.id == null) {
     const request = new CreateProject({
       clientId: currData.clientId,
@@ -163,10 +179,7 @@ const sortChangeHandler = (e: any) => {
 
 <template>
   <!-- Hero --> 
-  <BasePageHeading
-    title="Projects Data"
-    subtitle="This Project Data Edit is using External Form"
-  >
+  <BasePageHeading title="Projects Data" subtitle="This Project Data Edit is using External Form">
     <template #extra>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-alt">
@@ -180,10 +193,26 @@ const sortChangeHandler = (e: any) => {
   </BasePageHeading>
   <!-- END Hero -->
 
+  <!-- Kendo Dialog for Editing Data -->
+  <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="500" :title-render="'myTemplate'" >
+    <template v-slot:myTemplate="{}">
+        <div :style="{ fontSize: '18px', lineHeight: '1.3em' }">
+          {{ kDialogTitle }} <span class="k-icon k-i-reset"/>
+      </div>
+    </template>
+    <kForm :initialValues="dataItemInEdit" @submit="onSave">
+        <FormContent :client-list="clientList" ref="formContentRef"/>
+    </kForm>
+    <kDialogActionsBar>
+      <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
+      <kButton @click="onResetForm" :theme-color="'warning'"> Reset </kButton>
+      <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!formContentRef?.formAllowSubmit"> Save </kButton>
+    </kDialogActionsBar>
+  </kDialog>
+  <!-- END Kendo Dialog for Editing Data -->
+
   <!-- Page Content -->
   <div class="content">
-    <EditDialog v-if="dataItemInEdit" :data-item="dataItemInEdit" :client-list="clientList" @save="onSave" @cancel="onCancelChanges">
-    </EditDialog>
     <!-- Page Filter Parameter -->
     <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
       <div class="row pb-2">
@@ -204,6 +233,8 @@ const sortChangeHandler = (e: any) => {
       </div>
     </BaseBlock>
     <!-- END Page Filter Parameter -->
+
+    <!-- Result Data Grid -->
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content>  
       <!-- Main Data Grid -->
       <kGrid ref="grid"
@@ -216,9 +247,9 @@ const sortChangeHandler = (e: any) => {
             :columns="gridColumProperties"
       >
         <kGridToolbar>
-          <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
+          <kButton title="Add new" :theme-color="'primary'" @click='onInsert'>
               Add new
-          </kbutton>
+          </kButton>
         </kGridToolbar>
         <template v-slot:myTemplate="{props}">
             <CommandCell :data-item="props.dataItem" 
@@ -240,6 +271,7 @@ const sortChangeHandler = (e: any) => {
       </kGrid>
       <!-- End Main Data Grid -->
     </BaseBlock>
+    <!-- END Result Data Grid -->
   </div>
   <!-- END Page Content -->
 </template>

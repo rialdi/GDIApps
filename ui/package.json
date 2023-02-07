@@ -42,6 +42,7 @@
     "@progress/kendo-vue-data-tools": "^3.8.2",
     "@progress/kendo-vue-dateinputs": "^3.8.2",
     "@progress/kendo-vue-dropdowns": "^3.8.2",
+    "@progress/kendo-vue-form": "^3.8.3",
     "@progress/kendo-vue-grid": "^3.8.2",
     "@progress/kendo-vue-indicators": "^3.8.2",
     "@progress/kendo-vue-inputs": "^3.8.2",

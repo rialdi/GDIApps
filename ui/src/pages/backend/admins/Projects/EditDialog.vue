@@ -1,6 +1,40 @@
 <template>
-    <kDialog @close="onCancel" width="500">
-      <div class="k-form k-form-horizontal">
+    <kDialog @close="onCancel" width="500" class="p-0">
+      <k-form :initialValues="props.dataItem" @submit="onSave">
+      <FormContent />
+   </k-form>
+      <!-- <kForm :initialValues="dataItemInEdit" @submit="onSave" class="m-0">
+        <kFormElement >
+          <fieldset class="k-form-fieldset">
+            <kField :id="'code'" :name="'code'" :label="'Code'" :component="'inputTemplate'"
+                  :validator="requiredValidator" >
+              <template v-slot:inputTemplate="{props}">
+                <FormInput v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus">
+                </FormInput>
+              </template>
+            </kField>
+            <kField :id="'name'" :name="'name'" :label="'Name'" :component="'inputTemplate'"
+                  :validator="requiredValidator" >
+              <template v-slot:inputTemplate="{props}">
+                <FormInput v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus">
+                </FormInput>
+              </template>
+            </kField>
+            <kField :id="'isActive'" :name="'isActive'" :label="'Is Active'" :component="'inputTemplate'">
+              <template v-slot:inputTemplate="{props}">
+                <FormCheckbox v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus">
+                </FormCheckbox>
+              </template>
+            </kField>
+            
+            <kDialogActionsBar>
+              <kButton @click="onCancel"> Cancel </kButton>
+              <kButton :theme-color="'primary'" :type="'submit'" :disabled="!kendoForm?.allowSubmit"> Save </kButton>
+            </kDialogActionsBar>
+          </fieldset>
+        </kFormElement>
+      </kForm> -->
+      <!-- <div class="k-form k-form-horizontal">
         <div class="k-form-field">
           <label for="client" class="k-form-label"> Client</label>
           <div class="k-form-field-wrap">
@@ -59,51 +93,53 @@
             </span>
           </div>
         </div>
-      </div>
-      <kDialogActionsBar>
+      </div> -->
+      <!-- <kDialogActionsBar>
         <kButton @click="onCancel"> Cancel </kButton>
-        <kButton :theme-color="'primary'" @click="onSave"> Save </kButton>
-      </kDialogActionsBar>
+        <kButton :theme-color="'primary'" :type="'submit'" > Save </kButton>
+      </kDialogActionsBar> -->
     </kDialog>
 </template>
 <script setup lang="ts">
-import { Dialog as kDialog, DialogActionsBar as kDialogActionsBar } from '@progress/kendo-vue-dialogs';
-import { Input as kInput, Checkbox as kCheckbox} from '@progress/kendo-vue-inputs';
-import { Label as klabel} from '@progress/kendo-vue-labels';
-import { Button as kButton} from '@progress/kendo-vue-buttons';
-import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns';
+import { Dialog as kDialog } from '@progress/kendo-vue-dialogs';
 import { Project } from "@/dtos"
+import FormContent from './FormContent.vue';
 
 const props = defineProps<{
     dataItem: object,
     clientList: any[]
 }>()
 
-const emit = defineEmits<{
-    (e:'save', dataItem: object): () => void
-    (e:'cancel', dataItem: object): () => void
-}>()
+// const kendoForm = inject<any>('kendoForm', {})
 
-let dataItemInEdit = ref<Project>({
-    code: "",
-    isActive: true
-})
+// const emit = defineEmits<{
+//     (e:'save', dataItem: object): () => void
+//     (e:'cancel', dataItem: object): () => void
+// }>()
+
+let dataItemInEdit = ref<Project>(props.dataItem)
 
 onMounted(async () => {
     dataItemInEdit.value = props.dataItem
-});
+}); 
 
 // onUpdated(async () => {
 //     dataItemInEdit.value = props.dataItem
 // });
 
 const onCancel = async (e: any) => {
-    emit('cancel', {dataItem:dataItemInEdit} )
+    // console.log(kendoForm);
+    // emit('cancel', {dataItem:dataItemInEdit} )
 }
 
 const onSave = async (e: any) => {
-    // console.log(dataItemInEdit)
-    emit('save', {dataItem: props.dataItem} )
+    console.log(e)
+    //emit('save', {dataItem: props.dataItem} )
 }
+
+// const handleSubmit = async (e: any) => {
+//     console.log(e)
+//     //emit('save', {dataItem: props.dataItem} )
+// }
 
 </script>
