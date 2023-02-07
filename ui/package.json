@@ -49,6 +49,7 @@
     "@progress/kendo-vue-inputs": "^3.8.2",
     "@progress/kendo-vue-intl": "^3.8.2",
     "@progress/kendo-vue-popup": "^3.8.2",
+    "@progress/kendo-vue-tooltip": "^3.8.3",
     "@servicestack/client": "^1.2.1",
     "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@tiptap/vue-3": "^2.0.0-beta.90",

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useApp } from "@/api"
+import { Tooltip as kTooltip } from '@progress/kendo-vue-tooltip';
 // import '@progress/kendo-theme-default/dist/all.css';
 // import "@/styles/gdi.css"
 
@@ -18,7 +19,9 @@ app.load()
 </script>
 
 <template>
-  <router-view />
+  <kTooltip :anchor-еlement="'target'"  :open-delay="100" :paren-title="true">
+    <router-view />
+  </kTooltip>
   <!-- <RouterView /> -->
 </template>
 
