@@ -9,16 +9,13 @@ import { Button as kButton} from '@progress/kendo-vue-buttons'
 import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns';
 import { Form as kForm } from "@progress/kendo-vue-form";
 import { Dialog as kDialog, DialogActionsBar as kDialogActionsBar } from '@progress/kendo-vue-dialogs';
-import { process, filterBy, SortDescriptor, DataResult } from '@progress/kendo-data-query'
+import { process, filterBy, SortDescriptor, CompositeFilterDescriptor, DataResult } from '@progress/kendo-data-query'
 
 import { saveExcel } from '@progress/kendo-vue-excel-export';
 
 import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 import FormContent from './FormContent.vue';
-
-// const hideLGColumn = ref<boolean>(false)
-
 
 function useBreakpoints() {
   let windowWidth = ref(window.innerWidth)
@@ -42,8 +39,6 @@ function useBreakpoints() {
 let lastWindowType = ref<string | null>("lg")
 
 const { width, currWindowType } = useBreakpoints()
-
-
 
 const formContentRef = ref<InstanceType<typeof FormContent>>()
 let kDialogTitle = ref<string>("Add Project")
@@ -104,7 +99,7 @@ let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 let total = ref<number | undefined>(10)
 let dataItemInEdit = ref<ProjectView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
-// const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
+const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 let gridColumProperties = [
   { cell: 'responsiveTemplate', filterable: false, title: 'Projects', hidden: true },
@@ -127,7 +122,7 @@ const refreshDatas = async (selectedClientId?: any ) => {
     ProjectData.value = api.response!.results ?? []
     gridData.data = process(ProjectData.value, {
       sort: sort.value,
-      // filter: filter.
+      filter: filter.value
     }).data;
     total.value = process(ProjectData.value,{}).total;
     dataItemInEdit.value = undefined
@@ -226,6 +221,11 @@ const sortChangeHandler = (e: any) => {
   }
 }
 
+const filterChangeHandler = (e: any) => {
+  filter.value = e.filter
+  refreshDatas()
+}
+
 const onExportToExcel = () => {
   saveExcel({
       data: gridData.data as any[],
@@ -308,6 +308,9 @@ const onExportToExcel = () => {
           :sortable="true"
           :pageable="true"
           :total="total"
+          :filterable="true"
+          :filter="filter"
+          @filterchange="filterChangeHandler"
           @sortchange="sortChangeHandler"
           :columns="gridColumProperties"
       >
