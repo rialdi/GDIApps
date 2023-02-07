@@ -63,32 +63,32 @@ const refreshDatas = async ( ) => {
 }
 
 // Helper variables
-let tooltipTriggerList = ref<any>([]);
-let tooltipList = ref<any>([]);
+// let tooltipTriggerList = ref<any>([]);
+// let tooltipList = ref<any>([]);
 
 onMounted(async () => {
   await refreshDatas()
   // Grab all tooltip containers..
-  tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  );
+  // tooltipTriggerList = [].slice.call(
+  //   document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  // );
 
-  // ..and init them
-  tooltipList = tooltipTriggerList.map((tooltipTriggerEl:any) => {
-    return new window.bootstrap.Tooltip(tooltipTriggerEl, {
-      container: tooltipTriggerEl.dataset.bsContainer || "#page-container",
-      animation:
-        tooltipTriggerEl.dataset.bsAnimation &&
-        tooltipTriggerEl.dataset.bsAnimation.toLowerCase() == "true"
-          ? true
-          : false,
-    });
-  });
+  // // ..and init them
+  // tooltipList = tooltipTriggerList.map((tooltipTriggerEl:any) => {
+  //   return new window.bootstrap.Tooltip(tooltipTriggerEl, {
+  //     container: tooltipTriggerEl.dataset.bsContainer || "#page-container",
+  //     animation:
+  //       tooltipTriggerEl.dataset.bsAnimation &&
+  //       tooltipTriggerEl.dataset.bsAnimation.toLowerCase() == "true"
+  //         ? true
+  //         : false,
+  //   });
+  // });
 });
 
 // Dispose tooltips on unMounted
 onUnmounted(() => {
-  tooltipList.forEach((tooltip:any) => tooltip.dispose());
+  // tooltipList.forEach((tooltip:any) => tooltip.dispose());
 });
 
 const hasItemsInEdit =  computed(() => 
@@ -276,6 +276,8 @@ const sortChangeHandler = (e: any) => {
           <kGridToolbar>
             <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
                 Add new
+            </kbutton>
+            <kbutton icon="add" title="Add new" :theme-color="'primary'" @click='onInsert'>
             </kbutton>
             <kbutton v-if="hasItemsInEdit"
                 :theme-color="'info'"

@@ -107,15 +107,13 @@ const sort = ref<SortDescriptor[] | undefined>([]);
 // const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 let gridColumProperties = [
-  // { field: 'clientId', title: 'Client', template:'{{ clientCode  | clientName }}' },
-  // { field: 'clientCode', title: 'Client Name',  },
   { cell: 'responsiveTemplate', filterable: false, title: 'Projects', hidden: true },
   { cell: 'clientTemplate', filterable: false, title: 'Client'},
   { field: 'code', title: 'Code', width:150 },
   { field: 'name', title: 'Name'},
   { field: 'description', title: 'Description'},
   { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
-  { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
+  { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
 const refreshDatas = async (selectedClientId?: any ) => {
@@ -314,12 +312,8 @@ const onExportToExcel = () => {
           :columns="gridColumProperties"
       >
         <kGridToolbar>
-          <kButton title="Add new" :theme-color="'primary'" @click='onInsert'>
-              Add new
-          </kButton>
-          <kButton title="Export to Excel" :theme-color="'primary'" @click='onExportToExcel'>
-            Export to Excel
-          </kButton>
+          <kButton icon="add" title="Add New" :theme-color="'primary'" @click='onInsert'>Add New</kButton>
+          <kButton icon="excel" title="Export to Excel" :theme-color="'primary'" @click='onExportToExcel'>Export to Excel</kButton>
         </kGridToolbar>
         <template v-slot:actionTemplate="{props}">
             <CommandCell :data-item="props.dataItem" 
@@ -357,3 +351,5 @@ const onExportToExcel = () => {
   </div>
   <!-- END Page Content -->
 </template>
+
+

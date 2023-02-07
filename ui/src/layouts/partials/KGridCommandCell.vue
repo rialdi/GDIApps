@@ -18,18 +18,18 @@
             </button>
         </div> -->
         <kbutton
+            icon="edit"
+            title="edit"
             :theme-color="'primary'"
-            style="width:80px"
             class="k-grid-edit-command"
             @click="editHandler">
-            Edit
         </kbutton>
         <kbutton
+            icon="delete"
+            title="delete"
             :theme-color="'error'"
-            style="width:80px"
             class="k-grid-remove-command"
             @click="removeHandler">
-            Remove
         </kbutton>
     </td>
     <td v-else>
