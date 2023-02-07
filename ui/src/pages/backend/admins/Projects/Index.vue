@@ -88,7 +88,10 @@ const refreshDatas = async (selectedClientId?: any ) => {
 const onInsert = () => {
   kDialogTitle.value = "Add Project"
   // Set Default Value
-  dataItemInEdit.value = {code: 'New Code', name: "Project Name", isActive: true}
+  dataItemInEdit.value = {
+    // code: '', name: "Project Name", 
+    isActive: true
+  }
 }
 const onRemove = async(e: any) => {
   if( e.dataItem !== null) {
@@ -196,16 +199,18 @@ const sortChangeHandler = (e: any) => {
   <!-- Kendo Dialog for Editing Data -->
   <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="500" :title-render="'myTemplate'" >
     <template v-slot:myTemplate="{}">
-        <div :style="{ fontSize: '18px', lineHeight: '1.3em' }">
-          {{ kDialogTitle }} <span class="k-icon k-i-reset"/>
-      </div>
+        <div class="w-100">
+          {{ kDialogTitle }} 
+          <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetForm" ></kButton>
+          <!-- <span class="k-icon k-i-reset float-end" v-on:click="onResetForm"/> -->
+        </div>
     </template>
     <kForm :initialValues="dataItemInEdit" @submit="onSave">
         <FormContent :client-list="clientList" ref="formContentRef"/>
     </kForm>
     <kDialogActionsBar>
       <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
-      <kButton @click="onResetForm" :theme-color="'warning'"> Reset </kButton>
+      <!-- <kButton @click="onResetForm" :theme-color="'warning'"> Reset </kButton> -->
       <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!formContentRef?.formAllowSubmit"> Save </kButton>
     </kDialogActionsBar>
   </kDialog>

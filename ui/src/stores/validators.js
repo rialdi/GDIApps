@@ -16,8 +16,8 @@ export const emailValidator = value =>
 export const nameValidator = value =>
   !value
     ? 'Full Name is required'
-    : value.length < 7
-    ? 'Full Name should be at least 7 characters long.'
+    : value.length < 3
+    ? 'Full Name should be at least 3 characters long.'
     : '';
 export const userNameValidator = value =>
   !value

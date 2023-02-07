@@ -5,7 +5,6 @@
         </klabel>
         <div class="k-form-field-wrap">
              <dropdownlist
-                :style="{ width: '230px' }" 
                 :data-items="data" 
                 :valid="valid"
                 :value="value"

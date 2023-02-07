@@ -4,7 +4,7 @@
         {{label}}
         </klabel>
         <div class="k-form-field-wrap">
-            <kinput :style="{ width: '230px' }" 
+            <kinput 
                 :valid="valid"
                 :id="id"
                 :value="value"
@@ -14,12 +14,11 @@
                 @input="handleChange"
                 @blur="handleBlur"
                 @focus="handleFocus"
-                autofocus
                 />
-            <!-- <error v-if="showValidationMessage">
+            <error v-if="showValidationMessage">
                 {{validationMessage}}
-            </error> -->
-            <!-- <hint v-else>{{hint}}</hint> -->
+            </error>
+            <hint v-else>{{hint}}</hint>
         </div>
     </fieldwrapper> 
 </template>
