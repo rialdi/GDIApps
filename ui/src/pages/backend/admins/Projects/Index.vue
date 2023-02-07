@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { computed, onMounted, onUnmounted, ref } from "vue"
 // import { formatDate, formatCurrency } from "@/utils"
 import { Client, QueryClients, ProjectView, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
 import { client } from "@/api"
@@ -17,13 +17,60 @@ import CommandCell from '@/layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 import FormContent from './FormContent.vue';
 
+// const hideLGColumn = ref<boolean>(false)
+
+
+function useBreakpoints() {
+  let windowWidth = ref(window.innerWidth)
+
+  const onWidthChange = () => windowWidth.value = window.innerWidth
+  
+  onMounted(() => window.addEventListener('resize', onWidthChange))
+  onUnmounted(() => window.removeEventListener('resize', onWidthChange))
+
+  const currWindowType = computed(() => {
+    if (windowWidth.value < 550) return 'xs'
+    if (windowWidth.value >= 550 && windowWidth.value < 1200) return 'md'
+    if (windowWidth.value >= 1200) return 'lg'
+    return null; // This is an unreachable line, simply to keep eslint happy.
+  })
+
+  const width = computed(() =>  windowWidth.value)
+  return { width, currWindowType }
+}
+
+let lastWindowType = ref<string | null>("lg")
+
+const { width, currWindowType } = useBreakpoints()
+
+
+
 const formContentRef = ref<InstanceType<typeof FormContent>>()
 let kDialogTitle = ref<string>("Add Project")
 
 onMounted(async () => {
+  window.addEventListener('resize', onShowHideColumns)
   await getClientList()
   await refreshDatas()
 });
+
+onUnmounted(() => window.removeEventListener('resize', onShowHideColumns))
+
+const onShowHideColumns = () => {
+  if(currWindowType.value != lastWindowType.value && width.value > 100) {
+    gridColumProperties.map( col => {
+      if(col.title != "Action") {
+        if(col.title == "Projects"){
+          col.hidden = !col.hidden
+        } else {
+          col.hidden = !col.hidden
+        }
+      }
+    })
+    lastWindowType.value = currWindowType.value
+    refreshDatas()
+  }
+}
 
 /* Combobox Client */
 const sourceClientList = ref<Client[]>([])
@@ -59,15 +106,16 @@ let dataItemInEdit = ref<ProjectView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
 // const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-const gridColumProperties = [
+let gridColumProperties = [
   // { field: 'clientId', title: 'Client', template:'{{ clientCode  | clientName }}' },
   // { field: 'clientCode', title: 'Client Name',  },
-  { cell: 'clientTemplate', filterable: false, title: 'Client', width:300 },
-  { field: 'code', title: 'Code' },
-  { field: 'name', title: 'Name' },
-  { field: 'description', title: 'Description' },
+  { cell: 'responsiveTemplate', filterable: false, title: 'Projects', hidden: true },
+  { cell: 'clientTemplate', filterable: false, title: 'Client'},
+  { field: 'code', title: 'Code', width:150 },
+  { field: 'name', title: 'Name'},
+  { field: 'description', title: 'Description'},
   { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
-  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
+  { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
 ] as GridColumnProps[];
 
 const refreshDatas = async (selectedClientId?: any ) => {
@@ -188,6 +236,8 @@ const onExportToExcel = () => {
   });
 }
 
+
+
 /* END Code for DataGrid */
 </script>
 
@@ -229,6 +279,7 @@ const onExportToExcel = () => {
 
   <!-- Page Content -->
   <div class="content">
+    <!-- <h1>{{ currWindowType + " : " + width + " : " + !(lastWindowType == "lg") }}</h1> -->
     <!-- Page Filter Parameter -->
     <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
       <div class="row pb-2">
@@ -270,12 +321,24 @@ const onExportToExcel = () => {
             Export to Excel
           </kButton>
         </kGridToolbar>
-        <template v-slot:myTemplate="{props}">
+        <template v-slot:actionTemplate="{props}">
             <CommandCell :data-item="props.dataItem" 
                     @edit="onEdit"
                     @save="onSave" 
                     @remove="onRemove"
                     @cancel="onCancelChanges"/>
+        </template>
+        <template v-slot:responsiveTemplate="{ props }">
+          <td :colspan="1">
+            <strong>Client</strong>
+            <p>
+            {{ props.dataItem.clientCode + ' - ' + props.dataItem.clientName }}
+          </p>
+          <strong>Project {{ (props.dataItem.isActive ? "Is Active" : "Not Active" ) }}</strong>
+          <p>
+            {{ props.dataItem.code + ' - ' + props.dataItem.name }}
+          </p>
+          </td>
         </template>
         <template v-slot:clientTemplate="{ props }">
           <td :colspan="1">
