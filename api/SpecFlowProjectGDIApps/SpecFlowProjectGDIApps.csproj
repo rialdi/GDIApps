@@ -7,21 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="ServiceStack" Version="6.6.0" />
-    <PackageReference Include="ServiceStack.Kestrel" Version="6.5.0" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="6.6.0" />
     <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="6.6.0" />
-    <PackageReference Include="ServiceStack.OrmLite.SqlServer" Version="6.6.0" />
+    <PackageReference Include="SpecFlow.Assist.Dynamic" Version="1.4.2" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-    <PackageReference Include="SpecFlow.xUnit" Version="3.9.8" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.9.8" />
+    <PackageReference Include="nunit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
- 
+    <Folder Include="Drivers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessRules\BusinessRules.csproj" />
     <ProjectReference Include="..\GDIApps.ServiceInterface\GDIApps.ServiceInterface.csproj" />
   </ItemGroup>
 
