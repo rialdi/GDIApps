@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Drivers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BusinessRules\BusinessRules.csproj" />
     <ProjectReference Include="..\GDIApps.ServiceInterface\GDIApps.ServiceInterface.csproj" />
   </ItemGroup>

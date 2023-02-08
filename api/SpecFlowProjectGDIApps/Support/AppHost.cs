@@ -19,7 +19,7 @@ namespace SpecFlowProjectGDIApps.Support
 {
     public class AppHost : AppSelfHostBase
     {
-        public AppHost() : base(nameof(Hooks1), typeof(MyServices).Assembly) { }
+        public AppHost() : base(nameof(Hooks1), typeof(TodosServices).Assembly) { }
 
         public override void Configure(Container container)
         {
@@ -59,6 +59,13 @@ namespace SpecFlowProjectGDIApps.Support
             get
             {
                 return Resolve<IDbConnectionFactory>();
+            }
+        }
+        public IAuthRepository Authrepository
+        {
+            get
+            {
+                return Resolve<IAuthRepository>();
             }
         }
 

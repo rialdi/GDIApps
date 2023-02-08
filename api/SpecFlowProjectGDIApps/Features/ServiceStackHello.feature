@@ -9,4 +9,4 @@ Scenario: Connect ke servicestack
 	| UserName        | Password |
 	| admin@email.com | p@55wOrd |
 	When User rquest hello world with name "Adam"
-	Then the hello response should be "Hello Adam"
+	Then the hello response should be "Hello, Adam!"

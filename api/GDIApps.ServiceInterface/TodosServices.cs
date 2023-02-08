@@ -40,4 +40,8 @@ public class TodosServices : Service
     public void Delete(DeleteTodo request) => Todos.TryDeleteById(request.Id);
 
     public void Delete(DeleteTodos request) => Todos.TryDeleteByIds(request.Ids);
+    //public object Any(Hello request)
+    //{
+    //    return new HelloResponse { Result = $"Hello, {request.Name}!" };
+    //}
 }

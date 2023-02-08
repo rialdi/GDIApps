@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Hosting;
 using ServiceStack;
+using ServiceStack.Auth;
+using ServiceStack.Data;
+using SpecFlowProjectGDIApps.Drivers;
 using SpecFlowProjectGDIApps.Support;
 using TechTalk.SpecFlow;
 
@@ -8,6 +11,11 @@ namespace SpecFlowProjectGDIApps.Hooks
     [Binding]
     public sealed class Hooks1
     {
+         enum TestType
+        {
+            UI,API,RULES
+        }
+        static TestType TestMode = TestType.API;
      static  ServiceStackHost appHost;
        const string BaseUri = "http://localhost:5001/";
 
@@ -42,9 +50,18 @@ namespace SpecFlowProjectGDIApps.Hooks
         [BeforeScenario(Order = 0)]
         public void FirstBeforeScenario(ScenarioContext context)
         {
-            IServiceClient client = new JsonServiceClient("http://localhost:5001/");
-            context.Add("Client", client);
-            context.Add("Host", appHost);
+            if (TestMode == TestType.API)
+            {
+                IServiceClient client = new JsonServiceClient("http://localhost:5001/");
+                var db = appHost.Container.Resolve<IDbConnectionFactory>();
+                var authresp = appHost.Container.Resolve<IAuthRepository>();
+                context.Add("DbConn", db);
+                context.Add("AuthRepo", authresp);
+                context.Add("Client", client);
+                context.Add("Host", appHost);
+                //  ServiceStackDriver drv = new ServiceStackDriver(context);
+                context.ScenarioContainer.RegisterTypeAs<ServiceStackDriver, IDriver>();
+            }
             // Example of ordering the execution of hooks
             // See https://docs.specflow.org/projects/specflow/en/latest/Bindings/Hooks.html?highlight=order#hook-execution-order
 

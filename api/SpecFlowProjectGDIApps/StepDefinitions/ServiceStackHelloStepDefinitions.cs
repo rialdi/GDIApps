@@ -5,6 +5,8 @@ using System;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using GDIApps.ServiceModel;
+using SpecFlowProjectGDIApps.Drivers;
+using ServiceStack.Data;
 
 namespace SpecFlowProjectGDIApps.StepDefinitions
 {
@@ -12,15 +14,21 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
     public class ServiceStackHelloStepDefinitions
     {
         ScenarioContext _context;
-        public ServiceStackHelloStepDefinitions(ScenarioContext context)
+        IDriver _driver;
+        DatabaseDriver dbDriver;
+        public ServiceStackHelloStepDefinitions(ScenarioContext context,IDriver driver)
         {
             _context = context;
+            _driver = driver;
+            dbDriver = new DatabaseDriver(_context.Get<IDbConnectionFactory>("DbConn"));
         }
         [Given(@"Exist url service stack  ""([^""]*)""")]
         public void GivenExistUrlServiceStack(string p0)
         {
             var host = _context.Get<AppHost>("Host");
+     
             host.Should().NotBeNull();
+            _driver.CheckHost(p0);
         }
 
         [Given(@"User login as")]
