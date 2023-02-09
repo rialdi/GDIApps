@@ -10,6 +10,8 @@ namespace GDIApps.ServiceModel.Types;
 [ValidateIsAuthenticated]
 public class AppUser : UserAuth
 {
+    [Format(FormatMethods.IconRounded)]
+    [Input(Type = "file"), UploadTo("userprofile")]
     public string ProfileUrl { get; set; } = string.Empty;
     public string LastLoginIp { get; set; } = string.Empty;
     public DateTime? LastLoginDate { get; set; }
@@ -45,7 +47,6 @@ public class GetUserInfoDetail : IReturn<AppUser>
 [ValidateIsAuthenticated]
 public class UpdateAppUser: AppUser
 {
-    
 }
 
 [Tag("appusers")]

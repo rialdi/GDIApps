@@ -2,6 +2,7 @@ using Funq;
 using ServiceStack;
 using GDIApps.ServiceInterface;
 using GDIApps.ServiceModel.Types;
+using ServiceStack.IO;
 
 [assembly: HostingStartup(typeof(GDIApps.AppHost))]
 
@@ -53,5 +54,20 @@ public class AppHost : AppHostBase, IHostingStartup
         );
 
         container.RegisterAs<SmtpEmailer, IEmailer>().ReusedWithin(ReuseScope.Request);
+        
+        var wwwrootVfs = GetVirtualFileSource<FileSystemVirtualFiles>();
+
+        var appFs = new FileSystemVirtualFiles(
+            ContentRootDirectory.RealPath.CombineWith("App_Data").AssertDir()
+        );
+
+        Plugins.Add(new FilesUploadFeature(
+            // User profiles
+            new UploadLocation("userprofile", wwwrootVfs, allowExtensions: FileExt.WebImages,
+                resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/profile/{ctx.FileName}"),
+            // User Cover Photo    
+            new UploadLocation("usercover", wwwrootVfs, allowExtensions: FileExt.WebImages,
+                resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/cover/{ctx.FileName}")
+        ));
     }
 }

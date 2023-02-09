@@ -53,3 +53,6 @@ dotnet dev-certs https --check --trust
 - Right click on => "scripts" => "dtos"
 - Click "Run Script"
 - to ensure New APIs existing in dtos.ts, open dtos.ts inside folder /api/src/
+
+## Upload File Management
+https://docs.servicestack.net/locode/files
