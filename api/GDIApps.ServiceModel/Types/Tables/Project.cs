@@ -39,7 +39,7 @@ public class Project : AuditBase
     public DateTime? ActualtartDate { get; set; }
     public DateTime? ActualEndDate { get; set; }
     
-    [Default(typeof(bool), "true")]
+    // [Default(typeof(bool), "true")]
     public bool? IsActive { get; set; }
 }
 
