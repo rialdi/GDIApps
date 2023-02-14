@@ -23,13 +23,13 @@
               </p>
               <div class="flex justify-center">
                 <div class="btn-group" role="group" aria-label="Horizontal Secondary">
-                        <a class="btn btn-outline-primary" href="/auth/facebook" v-click-ripple>
+                        <a class="btn btn-outline-primary" href="/auth/facebook?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a class="btn btn-outline-primary" href="/auth/google" v-click-ripple>
+                        <a class="btn btn-outline-primary" href="/auth/google?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-google"></i>
                         </a>
-                        <a class="btn btn-outline-primary" href="/auth/microsoft" v-click-ripple>
+                        <a class="btn btn-outline-primary" href="/auth/microsoft?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-microsoft"></i>
                         </a>
                       </div>
