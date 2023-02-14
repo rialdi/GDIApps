@@ -63,11 +63,14 @@ public class AppHost : AppHostBase, IHostingStartup
 
         Plugins.Add(new FilesUploadFeature(
             // User profiles
+            
             new UploadLocation("userprofile", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/profile/{ctx.FileName}"),
             // User Cover Photo    
             new UploadLocation("usercover", wwwrootVfs, allowExtensions: FileExt.WebImages,
-                resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/cover/{ctx.FileName}")
+                resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/cover/{ctx.FileName}"),
+            new UploadLocation("tempUploadFiles", appFs, allowExtensions: FileExt.WebImages,
+                resolvePath: ctx => $"/tempUploadFiles/{ctx.FileName}")
         ));
     }
 }

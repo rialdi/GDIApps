@@ -1,10 +1,84 @@
 <script setup lang="ts">
-import TextInput from "@/components/form/TextInput.vue"
-// import { client } from "@/api"
-// import {GetUserInfoDetail, AppUser} from "@/dtos"
+
 import { auth, appUser, getAppUser } from "@/auth"
 
+import { client } from "@/api"
+import {UpdateAppUser} from "@/dtos"
+
+import { showNotifSuccess } from '@/stores/commons'
+
+import { Form as kForm } from "@progress/kendo-vue-form";
+import { Upload as kUpload } from '@progress/kendo-vue-upload';
+import ProfileEditForm from "./ProfileEditForm.vue";
+ 
 onMounted(async () => await getAppUser(auth.value?.userName))
+
+const onBeforeUpload = (event: any) => {
+  const profileUrl = client.baseUrl + "/assets/media/users/" + appUser.value.id + "/profile/" + event.files[0].name
+  event.additionalData.email = appUser.value.email;
+  event.additionalData.profileUrl = profileUrl;
+}
+
+const onStatusChange = (event: any) => {
+  if (event.response) {
+    getAppUser(auth.value?.userName)
+  }
+}
+
+const onUpdateUserProfile = async (dataItem: any) => {
+
+//     const content = new MultiPartForm
+//   // const filePath = ""
+//   // const fileInfo = new fileInfo()
+// //   const profileImg = await ProfileImageUrl.GetStreamFromUrlAsync();
+// // const createContact = new MultipartFormDataContent()
+// //     .AddParams(new CreateContact
+// //     {
+// //         FirstName = "Cody",
+// //         LastName = "Fisher",
+// //         Email = "cody.fisher@gmail.com",
+// //         JobType = "Security",
+// //         PreferredLocation = "Remote",
+// //         PreferredWorkType = EmploymentType.FullTime,
+// //         AvailabilityWeeks = 1,
+// //         SalaryExpectation = 100_000,
+// //         About = "Lead Security Associate",
+// //     })
+// //     .AddFile(nameof(CreateContact.ProfileUrl), "cody-fisher.png", profileImg);
+
+
+//   console.log(dataItem)
+  // const uploadedImage = (dataItem.profileUrl);
+  // console.log(uploadedImage);
+  const request = new UpdateAppUser({
+      email: dataItem.email,
+      fullName: dataItem.fullName,
+      phoneNumber: dataItem.phoneNumber,
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+      showNotifSuccess('Update Profile', 'Successfully updated Profile data 🎉')
+      await getAppUser(auth.value?.userName)
+    } 
+
+//     using var content = new MultipartFormDataContent()
+//     .AddParam(nameof(MultipartRequest.Id), 1)
+//     .AddParam(nameof(MultipartRequest.String), "foo")
+//     .AddParam(nameof(MultipartRequest.Contact), 
+//         new Contact { Id = 1, FirstName = "First", LastName = "Last" })
+//     .AddJsonParam(nameof(MultipartRequest.PhoneScreen), 
+//         new PhoneScreen { Id = 3, JobApplicationId = 1, Notes = "The Notes"})
+//     .AddCsvParam(nameof(MultipartRequest.Contacts), new[] {
+//         new Contact { Id = 2, FirstName = "First2", LastName = "Last2" },
+//         new Contact { Id = 3, FirstName = "First3", LastName = "Last3" },
+//     })
+//     .AddFile(nameof(MultipartRequest.ProfileUrl), "profile.txt", file1Stream)
+//     .AddFile(nameof(MultipartRequest.UploadedFiles), "uploadedFiles1.txt", file2Stream)
+//     .AddFile(nameof(MultipartRequest.UploadedFiles), "uploadedFiles2.txt", file3Stream));
+
+// var api = await client.ApiFormAsync<MultipartRequest>(typeof(MultipartRequest).ToApiUrl(), content);
+// if (!api.Succeeded) api.Error.PrintDump();
+}
 </script>
 
 <template>
@@ -20,7 +94,7 @@ onMounted(async () => await getAppUser(auth.value?.userName))
           />
         </div>
         <h1 class="h2 text-white mb-0">Edit Account</h1>
-        <h2 class="h4 fw-normal text-white-75">John Parker</h2>
+        <h2 class="h4 fw-normal text-white-75">{{ appUser.fullName }}</h2>
         <RouterLink
           :to="{ name: 'user-profile' }"
           class="btn btn-alt-secondary"
@@ -34,317 +108,36 @@ onMounted(async () => await getAppUser(auth.value?.userName))
 
   <!-- Page Content -->
   <div class="content content-boxed">
-    <!-- User Profile -->
-    <BaseBlock title="User Profile">
-      <form @submit.prevent>
-        <div class="row push">
-          <div class="col-lg-4">
-            <p class="fs-sm text-muted">
-              Your account’s vital info. Your username will be publicly visible.
-            </p>
-          </div>
-          <div class="col-lg-8 col-xl-5">
-            <div class="mb-4">
-              <TextInput id="email" v-model="appUser.email" :showLabel="true" placeholder="Email" />
-            </div>
-            <!-- <div class="mb-4">
-              <TextInput id="userName"  v-model="username"  
-                  :showLabel="true" 
-                  label="User Name or Email" 
-                  placeholder="User Name or Email"/>
-            </div> -->
-            <div class="mb-4">
-              <TextInput id="displayName"  v-model="appUser.displayName"  
-                  :showLabel="true" 
-                  label="Display Name" 
-                  placeholder="First and Last Name"/>
-            </div>
-            <div class="mb-4">
-              <TextInput id="phoneNumber" v-model="appUser.phoneNumber" :showLabel="true" placeholder="phoneNumber" />
-            </div>
-            
-            <div class="mb-4">
-              <label class="form-label">Your Avatar</label>
-              <div class="mb-4">
-                <img
-                  class="img-avatar"
-                  :src="appUser.profileUrl"
-                  alt=""
-                />
-              </div>
-              <div class="mb-4">
-                <label for="one-profile-edit-avatar" class="form-label"
-                  >Choose a new avatar</label
-                >
-                <input
-                  class="form-control"
-                  type="file"
-                  id="one-profile-edit-avatar"
-                />
-              </div>
-            </div>
-            <div class="mb-4">
-              <button type="submit" class="btn btn-alt-primary">Update</button>
-            </div>
-          </div>
-        </div>
-      </form>
+    <!-- Update User Info -->
+    <kForm :initialValues="appUser" @submit="onUpdateUserProfile">
+      <ProfileEditForm />
+    </kForm>
+    <!-- END Update User Info -->
+    
+    <!-- Update User Profile -->
+    <BaseBlock title="Update User Profile" btn-option-fullscreen btn-option-content>
+      <kUpload class="mb-3"
+            :default-files="[]"
+            :list="'myTemplate'"
+            :batch="false"
+            :multiple="false"
+            :with-credentials="false"
+            @beforeupload="onBeforeUpload"
+            @statuschange="onStatusChange" 
+            :save-url="'/api/UploadUserProfile'"
+        >
+        <template v-slot:myTemplate="{props}">
+        <ul>
+            <li v-for="file in props.files" :key="file.name">
+              <img class="h-16 w-16 object-cover rounded-full" 
+                    :src="'/assets/media/users/' + appUser.id + '/profile/' + file.name " 
+                    alt="Current Profile Url"/>
+            </li>
+        </ul>
+        </template>
+      </kUpload>
     </BaseBlock>
-    <!-- END User Profile -->
-
-    <!-- Change Password -->
-    <BaseBlock title="Change Password">
-      <form @submit.prevent>
-        <div class="row push">
-          <div class="col-lg-4">
-            <p class="fs-sm text-muted">
-              Changing your sign in password is an easy way to keep your account
-              secure.
-            </p>
-          </div>
-          <div class="col-lg-8 col-xl-5">
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-password"
-                >Current Password</label
-              >
-              <input
-                type="password"
-                class="form-control"
-                id="one-profile-edit-password"
-                name="one-profile-edit-password"
-              />
-            </div>
-            <div class="row mb-4">
-              <div class="col-12">
-                <label class="form-label" for="one-profile-edit-password-new"
-                  >New Password</label
-                >
-                <input
-                  type="password"
-                  class="form-control"
-                  id="one-profile-edit-password-new"
-                  name="one-profile-edit-password-new"
-                />
-              </div>
-            </div>
-            <div class="row mb-4">
-              <div class="col-12">
-                <label
-                  class="form-label"
-                  for="one-profile-edit-password-new-confirm"
-                  >Confirm New Password</label
-                >
-                <input
-                  type="password"
-                  class="form-control"
-                  id="one-profile-edit-password-new-confirm"
-                  name="one-profile-edit-password-new-confirm"
-                />
-              </div>
-            </div>
-            <div class="mb-4">
-              <button type="submit" class="btn btn-alt-primary">Update</button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </BaseBlock>
-    <!-- END Change Password -->
-
-    <!-- Billing Information -->
-    <BaseBlock title="Billing Information">
-      <form @submit.prevent>
-        <div class="row push">
-          <div class="col-lg-4">
-            <p class="fs-sm text-muted">
-              Your billing information is never shown to other users and only
-              used for creating your invoices.
-            </p>
-          </div>
-          <div class="col-lg-8 col-xl-5">
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-company-name"
-                >Company Name (Optional)</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-company-name"
-                name="one-profile-edit-company-name"
-              />
-            </div>
-            <div class="row mb-4">
-              <div class="col-6">
-                <label class="form-label" for="one-profile-edit-firstname"
-                  >Firstname</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="one-profile-edit-firstname"
-                  name="one-profile-edit-firstname"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label" for="one-profile-edit-lastname"
-                  >Lastname</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="one-profile-edit-lastname"
-                  name="one-profile-edit-lastname"
-                />
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-street-1"
-                >Street Address 1</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-street-1"
-                name="one-profile-edit-street-1"
-              />
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-street-2"
-                >Street Address 2</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-street-2"
-                name="one-profile-edit-street-2"
-              />
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-city">City</label>
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-city"
-                name="one-profile-edit-city"
-              />
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-postal"
-                >Postal code</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-postal"
-                name="one-profile-edit-postal"
-              />
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-vat"
-                >VAT Number</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="one-profile-edit-vat"
-                name="one-profile-edit-vat"
-                value="IT00000000"
-                disabled
-              />
-            </div>
-            <div class="mb-4">
-              <button type="submit" class="btn btn-alt-primary">Update</button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </BaseBlock>
-    <!-- END Billing Information -->
-
-    <!-- Connections -->
-    <BaseBlock title="Connections">
-      <div class="row push">
-        <div class="col-lg-4">
-          <p class="fs-sm text-muted">
-            You can connect your account to third party networks to get extra
-            features.
-          </p>
-        </div>
-        <div class="col-lg-8 col-xl-7">
-          <div class="row mb-4">
-            <div class="col-sm-10 col-md-8 col-xl-6">
-              <a
-                class="btn w-100 btn-alt-danger text-start"
-                href="javascript:void(0)"
-              >
-                <i class="fab fa-fw fa-google opacity-50 me-1"></i> Connect to
-                Google
-              </a>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-sm-10 col-md-8 col-xl-6">
-              <a
-                class="btn w-100 btn-alt-info text-start"
-                href="javascript:void(0)"
-              >
-                <i class="fab fa-fw fa-twitter opacity-50 me-1"></i> Connect to
-                Twitter
-              </a>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-sm-10 col-md-8 col-xl-6">
-              <a
-                class="btn w-100 btn-alt-primary bg-white d-flex align-items-center justify-content-between"
-                href="javascript:void(0)"
-              >
-                <span>
-                  <i class="fab fa-fw fa-facebook me-1"></i> John Doe
-                </span>
-                <i class="fa fa-fw fa-check me-1"></i>
-              </a>
-            </div>
-            <div
-              class="col-sm-12 col-md-4 col-xl-6 mt-1 d-md-flex align-items-md-center fs-sm"
-            >
-              <a
-                class="btn btn-sm btn-alt-secondary rounded-pill"
-                href="javascript:void(0)"
-              >
-                <i class="fa fa-fw fa-pencil-alt me-1"></i> Edit Facebook
-                Connection
-              </a>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-sm-10 col-md-8 col-xl-6">
-              <a
-                class="btn w-100 btn-alt-warning bg-white d-flex align-items-center justify-content-between"
-                href="javascript:void(0)"
-              >
-                <span>
-                  <i class="fab fa-fw fa-instagram me-1"></i> @john_doe
-                </span>
-                <i class="fa fa-fw fa-check me-1"></i>
-              </a>
-            </div>
-            <div
-              class="col-sm-12 col-md-4 col-xl-6 mt-1 d-md-flex align-items-md-center fs-sm"
-            >
-              <a
-                class="btn btn-sm btn-alt-secondary rounded-pill"
-                href="javascript:void(0)"
-              >
-                <i class="fa fa-fw fa-pencil-alt me-1"></i> Edit Instagram
-                Connection
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </BaseBlock>
-    <!-- END Connections -->
+    <!-- END Update User Profile -->
   </div>
   <!-- END Page Content -->
 </template>

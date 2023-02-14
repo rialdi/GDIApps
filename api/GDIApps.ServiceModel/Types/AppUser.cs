@@ -45,8 +45,14 @@ public class GetUserInfoDetail : IReturn<AppUser>
 
 [Tag("appusers")]
 [ValidateIsAuthenticated]
-public class UpdateAppUser: AppUser
+public class UpdateAppUser
 {
+    public string Email {get;set;}  = string.Empty;
+    public string? FullName {get;set;} 
+    public string? PhoneNumber {get;set;} 
+    [Format(FormatMethods.IconRounded)]
+    [Input(Type = "file"), UploadTo("userprofile")]
+    public string? ProfileUrl {get;set;} 
 }
 
 [Tag("appusers")]
@@ -55,4 +61,14 @@ public class AppUserConfirmEmail
     public string UserName { get; set; } = string.Empty;
     [ApiAllowableValues(typeof(EMAIL_TEMPLATE_CODE))]
     public EMAIL_TEMPLATE_CODE EmailTemplateCode { get; set; }   
+}
+
+[Tag("appusers")]
+[Route("/uploaduserprofile/{Id}")]
+public class UploadUserProfile : IPost, IReturn<UploadUserProfile>
+{
+    public string Email {get;set;} = string.Empty;
+
+    [Input(Type = "file"), UploadTo("userprofile")]
+    public string? ProfileUrl {get;set;} 
 }
