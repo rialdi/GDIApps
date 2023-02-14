@@ -8,7 +8,7 @@
         <div class="p-4 w-100 flex-grow-1 d-flex align-items-center">
           <div class="w-100">
             <!-- Header -->
-            <div class="text-center mb-5">
+            <div class="text-center mb-3">
               <p class="mb-3">
                 <i class="fa fa-2x fa-circle-notch text-primary-light"></i>
               </p>
@@ -18,6 +18,22 @@
                 <RouterLink :to="{ name: 'auth-signup' }">sign up</RouterLink>
                 for a new account.
               </p>
+              <p class="fw-medium text-muted">
+                --- sign in with ---
+              </p>
+              <div class="flex justify-center">
+                <div class="btn-group" role="group" aria-label="Horizontal Secondary">
+                        <a class="btn btn-outline-primary" href="/auth/facebook" v-click-ripple>
+                          <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="btn btn-outline-primary" href="/auth/google" v-click-ripple>
+                          <i class="fab fa-google"></i>
+                        </a>
+                        <a class="btn btn-outline-primary" href="/auth/microsoft" v-click-ripple>
+                          <i class="fab fa-microsoft"></i>
+                        </a>
+                      </div>
+                    </div>
             </div>
             <!-- END Header -->
 
@@ -46,18 +62,19 @@
                         <PrimaryButton class="ml-3">Sign In</PrimaryButton>
                       </div>
                     </div>
+                    
                   </div>
                 </form>
               </div>
+              
             </div>
             <!-- END Sign In Form -->
 
-            <div class="col-5">
+            
         <!-- <div class="row justify-content-end mt-5" style="max-width:300px">
             <nav-button-group class="nav-button-group" 
                 :items="store.nav.navItemsMap.auth" :attributes="store.userAttributes" :baseHref="store.nav.baseUrl" block lg />
         </div> -->
-    </div>
           </div>
         </div>
         <div class="px-4 py-3 w-100 d-lg-none d-flex flex-column flex-sm-row justify-content-between fs-sm text-center text-sm-start">
