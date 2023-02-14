@@ -6,8 +6,10 @@ import { client } from "@/api"
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps } from '@progress/kendo-vue-grid';
 import { Button as kbutton} from '@progress/kendo-vue-buttons'
 import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
-import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
+import CommandCell from '../../../../layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
+
+import ProjectGrid from '../Projects/ProjectGrid.vue'
 
 
 // const ClientTypeList = Object.keys(ClientTYPE)
@@ -173,6 +175,9 @@ const sortChangeHandler = (e: any) => {
   }
 }
 
+const gridExpandChange = (e: any) => {
+  e.dataItem[e.target.$props.expandField] = e.value;
+}
 </script>
 
 <template>
@@ -198,16 +203,19 @@ const sortChangeHandler = (e: any) => {
   <div class="content">
     <BaseBlock title="Client data">
       <kGrid ref="grid"
-        ::style="{height: '440px'}"
-            :data-items="gridData"
-            :edit-field="'inEdit'"
-            :sortable="true"
-            :pageable="true"
-            :total="total"
-            @itemchange="itemChange"
-            @datastatechange="dataStateChange"
-            @sortchange="sortChangeHandler"
-            :columns="columns"
+        :style="{height: '440px'}"
+        :data-items="gridData"
+        :edit-field="'inEdit'"
+        :sortable="true"
+        :pageable="true"
+        :total="total"
+        @itemchange="itemChange"
+        @datastatechange="dataStateChange"
+        @sortchange="sortChangeHandler"
+        :columns="columns"
+        :detail="'gridDetailTemplate'"
+        @expandchange="gridExpandChange"
+        :expand-field="'expanded'"
       >
         <kGridToolbar>
           <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
@@ -220,6 +228,15 @@ const sortChangeHandler = (e: any) => {
                   Cancel current changes
           </kbutton>
         </kGridToolbar>
+        <template v-slot:gridDetailTemplate="{props}">
+            <ProjectGrid 
+              :selected-client-id="props.dataItem.id" 
+              :client-list="gridData.data" 
+              :filterable="false" 
+              :sortable="true" 
+              :pageable="true" 
+              :show-export-button="false"/>
+        </template>
         <template v-slot:myTemplate="{props}">
             <CommandCell :data-item="props.dataItem" 
                     @edit="onEdit"

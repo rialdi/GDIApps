@@ -30,7 +30,7 @@ const AuthReminder = () => import("@/views/auth/ReminderView.vue");
 
 // Admin: Pages
 const LookupPages = () => import("@/pages/backend/admins/Lookups.vue");
-const ClientPages = () => import("@/pages/backend/admins/Clients.vue");
+const ClientPages = () => import("@/pages/backend/admins/Clients/Clients.vue");
 const ProjectPages = () => import("@/pages/backend/admins/Projects/Index.vue");
 
 // Backend: Pages
