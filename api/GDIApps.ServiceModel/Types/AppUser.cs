@@ -19,6 +19,17 @@ public class AppUser : UserAuth
     public Department Department {get; set;} = Department.None;
     public bool IsArchived { get; set; } = false;
     public DateTime? ArchivedDate { get; set; }
+
+    // public string TwitterUserId { get; set; }
+    // public string TwitterScreenName { get; set; }
+
+    // public string FacebookUserId { get; set; }
+
+    // public string GoogleUserId { get; set; }
+
+    // public string GoogleProfilePageUrl { get; set; }
+
+    // public string MicrosoftUserId { get; set; }
 }
 
 [Tag("appusers")]

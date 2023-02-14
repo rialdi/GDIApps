@@ -51,6 +51,13 @@
               </div>
             </div>
             <!-- END Sign In Form -->
+
+            <div class="col-5">
+        <!-- <div class="row justify-content-end mt-5" style="max-width:300px">
+            <nav-button-group class="nav-button-group" 
+                :items="store.nav.navItemsMap.auth" :attributes="store.userAttributes" :baseHref="store.nav.baseUrl" block lg />
+        </div> -->
+    </div>
           </div>
         </div>
         <div class="px-4 py-3 w-100 d-lg-none d-flex flex-column flex-sm-row justify-content-between fs-sm text-center text-sm-start">
