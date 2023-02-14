@@ -14,26 +14,32 @@ using System.Threading.Tasks;
 using Funq;
 using ServiceStack.Web;
 using SpecFlowProjectGDIApps.Hooks;
+using FluentAssertions.Common;
+using BusinessRules;
 
 namespace SpecFlowProjectGDIApps.Support
 {
     public class AppHost : AppSelfHostBase
     {
-        public AppHost() : base(nameof(Hooks1), typeof(TodosServices).Assembly) { }
+        IDbConnectionFactory _db;
+        public AppHost(IDbConnectionFactory db) : base(nameof(Hooks1), typeof(TodosServices).Assembly) {
+            _db = db;
+        }
 
         public override void Configure(Container container)
         {
-            // SetConfig(new HostConfig { WebHostUrl = BaseUri, DebugMode = true });
-            var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+            SetConfig(new HostConfig { DebugMode = true });
+         
 
 
-
-            container.AddSingleton<IDbConnectionFactory>(db);
+            container.AddSingleton<IDbConnectionFactory>(_db);
+           
             container.AddSingleton<IAuthRepository>(c =>
                 new OrmLiteAuthRepository<AppUser, UserAuthDetails>(c.Resolve<IDbConnectionFactory>())
                 {
                     UseDistinctRoleTables = true
                 });
+           
             Plugins.Add(new AuthFeature(() => new CustomUserSession(),
             GetAuthProviders()));
             var authRepo = container.Resolve<IAuthRepository>();
@@ -41,8 +47,21 @@ namespace SpecFlowProjectGDIApps.Support
             CreateUser(authRepo, "admin@email.com", "Admin User", "p@55wOrd", roles: new[] { RoleNames.Admin });
             CreateUser(authRepo, "manager@email.com", "The Manager", "p@55wOrd", roles: new[] { "Employee", "Manager" });
             CreateUser(authRepo, "employee@email.com", "A Employee", "p@55wOrd", roles: new[] { "Employee" });
+           
 
+            container.AddSingleton<ICrudEvents>(c =>
+               new OrmLiteCrudEvents(c.Resolve<IDbConnectionFactory>()));
 
+            Plugins.Add(new AutoQueryDataFeature());
+
+            // For Bookings https://github.com/NetCoreApps/BookingsCrud
+            Plugins.Add(new AutoQueryFeature
+            {
+                MaxLimit = 1000,
+                //IncludeTotal = true,
+            });
+
+            Resolve<ICrudEvents>().InitSchema();
             this.AssertPlugin<AuthFeature>().AuthEvents.Add(new AppUserAuthEvents());
         }
         public void CreateUser(IAuthRepository authRepo, string email, string name, string password, string[] roles)
@@ -51,6 +70,8 @@ namespace SpecFlowProjectGDIApps.Support
             {
                 var newAdmin = new AppUser { Email = email, DisplayName = name };
                 var user = authRepo.CreateUserAuth(newAdmin, password);
+                
+
                 authRepo.AssignRoles(user, roles);
             }
         }

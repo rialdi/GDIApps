@@ -17,6 +17,7 @@ public class AppUser : UserAuth
     public Department Department {get; set;} = Department.None;
     public bool IsArchived { get; set; } = false;
     public DateTime? ArchivedDate { get; set; }
+   
 }
 
 [Tag("appusers")]

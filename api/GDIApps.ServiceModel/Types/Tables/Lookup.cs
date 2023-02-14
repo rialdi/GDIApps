@@ -10,7 +10,9 @@ namespace GDIApps.ServiceModel.Types;
 public class Lookup : AuditBase
 {
     [AutoIncrement]
-    public int Id { get; set; }  
+    public int Id { get; set; }
+
+   
     [Required]
     [StringLength(100)]
     public LOOKUPTYPE LookupType { get; set; }    

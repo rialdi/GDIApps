@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using BusinessRules;
+using Dynamitey;
+using Microsoft.Extensions.Hosting;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Data;
+using ServiceStack.OrmLite;
 using SpecFlowProjectGDIApps.Drivers;
 using SpecFlowProjectGDIApps.Support;
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist.ValueRetrievers;
 
 namespace SpecFlowProjectGDIApps.Hooks
 {
@@ -27,15 +31,23 @@ namespace SpecFlowProjectGDIApps.Hooks
         //        .Start(BaseUri);
 
         //}
-
+       
         // For additional details on SpecFlow hooks see http://go.specflow.org/doc-hooks
         [BeforeTestRun]
         public static void InitHost()
         {
-            Licensing.RegisterLicense("18930-e1JlZjoxODkzMCxOYW1lOlNhbmR5IEt3YXJ5LFR5cGU6SW5kaWUsTWV0YTowLEhhc2g6RTNYNmMyR0E5VzBHdTZQWDVyTmd4bmllSjNra2dRUGovdFVrTjR3aXZYVXpjTlRwN25ZMFVoOGUzS29IQzczTEZ3TnZqcmpyQVZEYnNWYzVTMFZ6OFlCcmhBakdJTGJWbndOd05uVnVXQXBRNjIzbmRHVThnc1dVRHdxaWlTNDNXdGpJeHFrbWdybTg4a09BWkFTYnh2Z0NncVFwK1dtZVhTTmdobHIwZWZVPSxFeHBpcnk6MjAyMy0wOS0wM30=");
-            AppHost host = new AppHost();
-            appHost = host.Init()
-                .Start(BaseUri);
+            //add null suppport
+            TechTalk.SpecFlow.Assist.Service.Instance.ValueRetrievers.Register(new NullValueRetriever("<null>"));
+
+            if (TestMode == TestType.API)
+            {
+                Licensing.RegisterLicense("18930-e1JlZjoxODkzMCxOYW1lOlNhbmR5IEt3YXJ5LFR5cGU6SW5kaWUsTWV0YTowLEhhc2g6RTNYNmMyR0E5VzBHdTZQWDVyTmd4bmllSjNra2dRUGovdFVrTjR3aXZYVXpjTlRwN25ZMFVoOGUzS29IQzczTEZ3TnZqcmpyQVZEYnNWYzVTMFZ6OFlCcmhBakdJTGJWbndOd05uVnVXQXBRNjIzbmRHVThnc1dVRHdxaWlTNDNXdGpJeHFrbWdybTg4a09BWkFTYnh2Z0NncVFwK1dtZVhTTmdobHIwZWZVPSxFeHBpcnk6MjAyMy0wOS0wM30=");
+                var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+
+                AppHost host = new AppHost(db);
+                appHost = host.Init()
+                    .Start(BaseUri);
+            }
         }
 
         [BeforeScenario("@tag1")]
@@ -55,6 +67,16 @@ namespace SpecFlowProjectGDIApps.Hooks
                 IServiceClient client = new JsonServiceClient("http://localhost:5001/");
                 var db = appHost.Container.Resolve<IDbConnectionFactory>();
                 var authresp = appHost.Container.Resolve<IAuthRepository>();
+                if (context.ScenarioInfo.Tags.Contains("mockCommonService"))
+                {
+                    Moq.Mock<IExternalData> _externalData = new Moq.Mock<IExternalData>();
+                    appHost.Container.AddSingleton<IExternalData>(_externalData.Object);
+                    context.Add("MockExternalData", _externalData);
+                }
+                else
+                {
+                    appHost.Container.AddTransient<IExternalData, CommonService>();
+                }
                 context.Add("DbConn", db);
                 context.Add("AuthRepo", authresp);
                 context.Add("Client", client);

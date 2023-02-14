@@ -36,7 +36,7 @@ public class Project : AuditBase
     public int? DurationDays { get; set; }
     public DateTime? EstimatedStartDate { get; set; }
     public DateTime? EstimatedEndDate { get; set; }
-    public DateTime? ActualtartDate { get; set; }
+    public DateTime? ActualStartDate { get; set; }
     public DateTime? ActualEndDate { get; set; }
     
     [Default(typeof(bool), "true")]
