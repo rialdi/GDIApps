@@ -6,10 +6,10 @@ import { client } from "@/api"
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps } from '@progress/kendo-vue-grid';
 import { Button as kbutton} from '@progress/kendo-vue-buttons'
 import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
-import CommandCell from '../../../../layouts/partials/KGridCommandCell.vue';
+import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 
-import ProjectGrid from '../Projects/ProjectGrid.vue'
+import ProjectGrid from './Projects/ProjectGrid.vue'
 
 
 // const ClientTypeList = Object.keys(ClientTYPE)
@@ -26,7 +26,7 @@ const columns = [
   { field: 'name', title: 'Name' },
   { field: 'description', title: 'Description' },
   { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 },
-  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:200 }
+  { cell: 'myTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;

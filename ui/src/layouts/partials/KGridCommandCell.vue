@@ -34,18 +34,22 @@
     </td>
     <td v-else>
             <kbutton
+                icon="save"
+                :title="(dataItem as any).id? 'Update' : 'Add'"
                 :theme-color="'warning'"
-                style="width:80px;margin-right:8px"
+                style="width:30px; height:30px; margin-right:8px; color: white;"
                 class="k-grid-save-command"
                 @click="addUpdateHandler">
-                {{(dataItem as any).id? 'Update' : 'Add'}}
+                <!-- {{(dataItem as any).id? 'Update' : 'Add'}} -->
             </kbutton>
             <kbutton
+                icon="undo"
+                :title="(dataItem as any).id? 'Cancel' : 'Discard'"
                 :theme-color="'info'"
-                style="width:80px"
+                style="width:30px; height:30px;"
                 class="k-grid-cancel-command"
                 @click="cancelDiscardHandler">
-                {{(dataItem as any).id? 'Cancel' : 'Discard'}}
+                <!-- {{(dataItem as any).id? 'Cancel' : 'Discard'}} -->
             </kbutton>
         </td>
     <!-- </div> -->

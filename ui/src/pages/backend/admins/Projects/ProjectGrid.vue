@@ -9,11 +9,11 @@
             </div>
         </template>
         <kForm :initialValues="dataItemInEdit" @submit="onSave">
-            <FormContent :client-list="props.clientList" ref="formContentRef"/>
+            <EditForm :client-list="props.clientList" ref="editFormRef"/>
         </kForm>
         <kDialogActionsBar>
         <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
-        <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!formContentRef?.formAllowSubmit"> Save </kButton>
+        <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton>
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
@@ -79,7 +79,7 @@ import { saveExcel } from '@progress/kendo-vue-excel-export';
 import { process, SortDescriptor, CompositeFilterDescriptor, DataResult } from '@progress/kendo-data-query'
 
 import CommandCell from '@/layouts/partials/KGridCommandCell.vue'
-import FormContent from './FormContent.vue'
+import EditForm from './EditForm.vue'
 
 const props = defineProps<{
     selectedClientId: any,
@@ -113,7 +113,7 @@ let lastWindowType = ref<string | null>("lg")
 
 const { width, currWindowType } = useBreakpoints()
 
-const formContentRef = ref<InstanceType<typeof FormContent>>()
+const editFormRef = ref<InstanceType<typeof EditForm>>()
 let kDialogTitle = ref<string>("Add Project")
 
 const onShowHideColumns = () => {
@@ -195,7 +195,7 @@ const onRemove = async(e: any) => {
 const onEdit = (e: any) => {
   kDialogTitle.value = "Edit Project"
   dataItemInEdit.value = e.dataItem
-  formContentRef.value?.focus
+  editFormRef.value?.focus
 }
 
 const onCancelChanges = () => {
@@ -203,7 +203,7 @@ const onCancelChanges = () => {
 }
 
 const onResetForm = () => {
-  formContentRef.value?.resetForm()
+  editFormRef.value?.resetForm()
 }
 
 const onSave = async (e: any) => {
