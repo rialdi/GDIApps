@@ -1,14 +1,120 @@
 <script setup>
 import { useTemplateStore } from "@/stores/template";
+import { ScrollView as kScrollView } from "@progress/kendo-vue-scrollview";
+import {
+  Card as kCard,
+  CardHeader as kCardHeader,
+  CardBody as kCardBody,
+  CardTitle as kCardTitle,
+  CardSubtitle as kCardSubtitle,
+  CardImage as kCardImage,
+  CardActions as kCardActions,
+  Avatar as kAvatar
+} from "@progress/kendo-vue-layout";
 
 // Main store
 const store = useTemplateStore();
+
+const dsScrollViewImages = [
+  {
+    title: 'Balloons',
+    position: 1,
+    url: '/assets/img/home/1.jpeg',
+    path: '/home',
+    buttons:[
+      { text:'Home', class:'btn btn-primary', style:'position: absolute;left: 100px;', path:'/home'},
+      { text:'Dashboard', class:'btn btn-danger', style:'position: absolute;left: 300px;', path:'/backend'}
+    ]
+  },
+  {
+    title: 'Forest',
+    position: 2,
+    url: '/assets/img/home/2.jpeg',
+  },
+  {
+    title: 'Flower',
+    position: 3,
+    url: '/assets/img/home/3.jpeg',
+  },
+  {
+    title: 'Painting',
+    position: 4,
+    url: '/assets/img/home/4.jpeg',
+  },
+  {
+    title: 'Grass',
+    position: 5,
+    url: '/assets/img/home/5.jpeg',
+  },
+]
+
+const dsManagement= [
+  { 
+    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/01.jpg",
+    profileName : "Sandy Kwary",
+    profileTitle : "CEO", 
+  },
+  { 
+    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+    profileName : "Aminullah",
+    profileTitle : "CTO", 
+  }
+]
 </script>
 
 <template>
   <div>
     <!-- Hero -->
     <div id="one-vue-hero" class="bg-body-extra-light">
+      <div>
+        <kScrollView
+          :style="{ width: '100%', height: '384px',}"
+          :data-items="dsScrollViewImages"
+          :content="'content'"
+          :automatic-view-change="true"
+          :endless="true"
+          :active-view="3"
+        >
+          <template v-slot:content="{ props }">
+            <div class="image-with-text">
+              <div v-for="(button, index) in props.item.buttons" :key="index">
+                <a :class="button.class" :style="button.style" :href="button.path">{{ button.text }}</a>
+              </div>
+              <img
+                :src="props.item.url"
+                :alt="`Photo ${props.item.position}`"
+                :style="{ width: '100%', height: '384px',}"
+                :draggable="false"
+              />
+                
+            </div>
+          </template>
+        </kScrollView>
+      </div>
+      <!-- Management -->
+    <div style="text-align:center;">
+      <h1>Management</h1>
+      <div style="display:flex; justify-content: space-evenly; flex-wrap: wrap;">
+        <div v-for="(card, index) in dsManagement" :key="index">
+            <card style="width: 260px; box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, .1); margin-top:15px">
+                <cardHeader class="k-hbox" style="background: transparent">
+                        <avatar type="image" size="medium" shape="circle">
+                            <img style="width: 45px; height: 45px;" :src="card.profileImage"/>
+                        </avatar>
+                        <div>
+                        <cardTitle style="margin-bottom: 4px">
+                            {{card.profileName}}
+                        </cardTitle>
+                        <cardSubtitle>
+                            <p>{{card.profileTitle}}</p>
+                        </cardSubtitle>
+                        </div>
+                </cardHeader>
+                <cardImage :src="card.profileImage" style="height: 185px; max-width: 100%;"/>
+            </card>
+        </div>
+      </div>
+    </div>
       <div class="content content-full">
         <div class="row g-0 justify-content-center text-center">
           <div class="col-md-10 pt-7 pb-9">
@@ -41,11 +147,11 @@ const store = useTemplateStore();
               <i class="fa fa-fw fa-desktop opacity-50 me-1"></i> Live preview
             </RouterLink> -->
             <RouterLink
-              :to="{ name: 'auth-signin' }"
+              :to="{ name: 'backend-dashboard' }"
               class="btn btn-primary py-2 px-3 m-1"
               v-click-ripple
             >
-              <i class="fa fa-fw fa-desktop opacity-50 me-1"></i> SignIn
+              <i class="fa fa-fw fa-desktop opacity-50 me-1"></i> Dashboard
             </RouterLink>
             <a
               class="btn btn-alt-primary py-2 px-3 m-1"
