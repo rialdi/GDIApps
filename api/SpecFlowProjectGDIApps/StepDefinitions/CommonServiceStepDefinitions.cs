@@ -7,6 +7,7 @@ using TechTalk.SpecFlow.Assist;
 using ServiceStack;
 using Microsoft.Extensions.Hosting;
 using SpecFlowProjectGDIApps.Support;
+using System.Xml.Linq;
 
 namespace SpecFlowProjectGDIApps.StepDefinitions
 {
@@ -47,10 +48,12 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
             if (_context.ScenarioInfo.Tags.Contains("mockCommonService"))
             {
                 var mock = _context.Get<Mock<IExternalData>>("MockExternalData");
+                List<Employee> emps=new List<Employee>();
                 foreach (var empInput in empInputs)
                 {
                     string empId = empInput.EMPLOYEE_ID;
                     string name = empInput.NAME;
+                   
                     mock.Setup(x => x.GetEmployeeById(empId)).Returns(new Employee() { 
                         EMPLOYEE_ID = empId,
                         NAME = name,
@@ -61,7 +64,19 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
                         MOR_NAME= empInput.MOR_NAME,
                         MOR_POS= empInput.MOR_POS
                     });
+                    emps.Add(new Employee()
+                    {
+                        EMPLOYEE_ID = empId,
+                        NAME = name,
+                        POSITION_ID = empInput.POSITION_ID,
+                        POS_DEPT = empInput.POS_DEPT,
+                        SUPERIOR_NAME = empInput.SUPERIOR_NAME,
+                        SUPERIOR_POS = empInput.SUPERIOR_POS,
+                        MOR_NAME = empInput.MOR_NAME,
+                        MOR_POS = empInput.MOR_POS
+                    });
                 }
+                mock.Setup(x => x.ExecutequeryByParam<List<Employee>>("QRY_EMP_APPROVAL", It.IsAny<string>())).Returns(emps);
             }
 
         }

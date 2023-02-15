@@ -1,4 +1,5 @@
 ﻿using BusinessRules.CommonServiceData;
+using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace SpecFlowProjectGDIApps.Drivers
         void CheckHost(string p0);
         void CreateDraftClaim(string p0, Table table);
         void DeleteLookupById(int id);
-        List<Employee> GetEmployeeOptionsByLoggedUser();
+        List<EmployeeOption> GetEmployeeOptionsByLoggedUser();
         void InputNewLookupSet(Table table);
         void UpdateLookup(Lookup lookup);
     }

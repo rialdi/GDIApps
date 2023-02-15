@@ -21,18 +21,19 @@ namespace SpecFlowProjectGDIApps.Support
 {
     public class AppHost : AppSelfHostBase
     {
-        IDbConnectionFactory _db;
-        public AppHost(IDbConnectionFactory db) : base(nameof(Hooks1), typeof(TodosServices).Assembly) {
-            _db = db;
+      
+        public AppHost() : base(nameof(Hooks1), typeof(TodosServices).Assembly) {
+         //   _db = db;
         }
 
         public override void Configure(Container container)
         {
             SetConfig(new HostConfig { DebugMode = true });
-         
 
 
-            container.AddSingleton<IDbConnectionFactory>(_db);
+           // var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+            var db = new OrmLiteConnectionFactory("testDb.asqlite", SqliteDialect.Provider);
+            container.AddSingleton<IDbConnectionFactory>(db);
            
             container.AddSingleton<IAuthRepository>(c =>
                 new OrmLiteAuthRepository<AppUser, UserAuthDetails>(c.Resolve<IDbConnectionFactory>())

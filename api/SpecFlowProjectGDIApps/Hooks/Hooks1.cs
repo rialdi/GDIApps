@@ -1,6 +1,7 @@
 ﻿using BusinessRules;
 using Dynamitey;
 using Microsoft.Extensions.Hosting;
+using NUnit.Framework.Internal;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Data;
@@ -42,9 +43,11 @@ namespace SpecFlowProjectGDIApps.Hooks
             if (TestMode == TestType.API)
             {
                 Licensing.RegisterLicense("18930-e1JlZjoxODkzMCxOYW1lOlNhbmR5IEt3YXJ5LFR5cGU6SW5kaWUsTWV0YTowLEhhc2g6RTNYNmMyR0E5VzBHdTZQWDVyTmd4bmllSjNra2dRUGovdFVrTjR3aXZYVXpjTlRwN25ZMFVoOGUzS29IQzczTEZ3TnZqcmpyQVZEYnNWYzVTMFZ6OFlCcmhBakdJTGJWbndOd05uVnVXQXBRNjIzbmRHVThnc1dVRHdxaWlTNDNXdGpJeHFrbWdybTg4a09BWkFTYnh2Z0NncVFwK1dtZVhTTmdobHIwZWZVPSxFeHBpcnk6MjAyMy0wOS0wM30=");
-                var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
-
-                AppHost host = new AppHost(db);
+                  var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+                
+             //   var db = new OrmLiteConnectionFactory("TestDb.sqlite", SqliteDialect.Provider);
+                
+                AppHost host = new AppHost();
                 appHost = host.Init()
                     .Start(BaseUri);
             }

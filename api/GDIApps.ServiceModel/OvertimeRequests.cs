@@ -21,6 +21,6 @@ namespace GDIApps.ServiceModel
     }
     public class CreateClaimResponse
     {
-        public List<CreateClaimItemResponse> Items { get; set; }
+        public List<CreateClaimItemResponse> Items { get; set; }=new List<CreateClaimItemResponse>();
     }
 }

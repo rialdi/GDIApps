@@ -23,7 +23,7 @@ namespace GDIApps.ServiceInterface
                 try
                 {
                     DateTime dt = DateTime.ParseExact(request.OtDate, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-US"));
-                    string newOtNuumber = _rules.CreateNewOvertimeDraft(dt, empId);
+                    string newOtNuumber = Rules.CreateNewOvertimeDraft(dt, empId);
                     itemResponse.Success = true;
                     itemResponse.OtNumber = newOtNuumber;
 
@@ -37,6 +37,20 @@ namespace GDIApps.ServiceInterface
             }
             return response;
 
+        }
+
+        public EmployeeSelectionsResponse Get(EmployeeSelections request)
+        {
+         var employees=  Rules.GetEmployeeSelections();
+            return new EmployeeSelectionsResponse()
+            {
+                Employees = employees.Select(d => new EmployeeOption()
+                {
+                    EMPLOYEE_ID = d.EMPLOYEE_ID,
+                    NAME = d.NAME,
+                    POS_DEPT = d.POS_DEPT
+                }).ToList()
+            };
         }
         LogicRules _rules = null;
     private LogicRules Rules

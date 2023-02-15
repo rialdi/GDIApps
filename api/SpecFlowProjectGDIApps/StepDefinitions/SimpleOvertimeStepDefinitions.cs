@@ -1,5 +1,6 @@
 using BusinessRules;
 using BusinessRules.CommonServiceData;
+using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
 using GDIApps.ServiceModel.Types.Tables;
 using Moq;
@@ -90,7 +91,7 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
         {
             var supposedOptions = table.CreateDynamicSet(doTypeConversion: false);
 
-          List<Employee> emps=   _driver.GetEmployeeOptionsByLoggedUser();
+          List<EmployeeOption> emps=   _driver.GetEmployeeOptionsByLoggedUser();
             foreach(dynamic dataExpexted in supposedOptions) {
                 var emp = emps.FirstOrDefault(e => e.EMPLOYEE_ID == dataExpexted.EMPLOYEE_ID);
                 emp.Should().NotBeNull();

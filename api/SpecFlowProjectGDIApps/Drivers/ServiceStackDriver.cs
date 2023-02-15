@@ -50,8 +50,28 @@ namespace SpecFlowProjectGDIApps.Drivers
         {
             var date = DateTime.ParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"));
             DateTime.TryParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"),DateTimeStyles.None,out var resultParse).Should().BeTrue();
-            IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet();
-            
+            IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet(doTypeConversion:false);
+            List<string> empIds=new List<string>();
+            foreach(var empData in selectedEmployees)
+            {
+                string id = empData.EMPLOYEE_ID;
+                empIds.Add(id);
+            }
+            var client = _context.Get<IServiceClient>("Client");
+
+            client.Send(new Authenticate()
+            {
+                provider = CredentialsAuthProvider.Name,
+                UserName = _context.Get<string>("UserName"),
+                Password = _context.Get<string>("Password")
+            });
+            var resp = client.Post(new CreateOvertimeDraft { OtDate = p0, EmployeeIds = empIds });
+           resp.Items.Count.Should().BeGreaterThan(0);
+            foreach(var dataResp in resp.Items)
+            {
+                dataResp.Success.Should().BeTrue();
+              
+            }
         }
 
         public void DeleteLookupById(int id)
@@ -68,10 +88,18 @@ namespace SpecFlowProjectGDIApps.Drivers
             client.Api(delRequest);
         }
 
-        public List<Employee> GetEmployeeOptionsByLoggedUser()
+        public List<EmployeeOption> GetEmployeeOptionsByLoggedUser()
         {
-            var userName = _context.Get<string>("UserName");
-             throw new NotImplementedException();
+            var client = _context.Get<IServiceClient>("Client");
+
+            client.Send(new Authenticate()
+            {
+                provider = CredentialsAuthProvider.Name,
+                UserName = _context.Get<string>("UserName"),
+                Password = _context.Get<string>("Password")
+            });
+        var resp=    client.Get(new EmployeeSelections { });
+            return resp.Employees;
         }
 
         public async void InputNewLookupSet(Table table)
@@ -120,5 +148,7 @@ namespace SpecFlowProjectGDIApps.Drivers
             resp.Response.ResponseStatus.IsSuccess().Should().BeTrue();
             resp.Response.Id.Should().BeGreaterThan(0);
         }
+
+      
     }
 }

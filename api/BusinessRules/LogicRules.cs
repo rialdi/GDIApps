@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ServiceStack.OrmLite;
+using BusinessRules.CommonServiceData;
+
 namespace BusinessRules
 {
     public class LogicRules
@@ -24,7 +26,6 @@ namespace BusinessRules
         public string CreateNewOvertimeDraft(DateTime otDate, string employeeId)
         {
           
-               
                 var emp = _externalData.GetEmployeeById(employeeId);
                 Overtime data = new Overtime();
                 data.STATUS = "DRAFT";
@@ -52,6 +53,11 @@ namespace BusinessRules
         public void sendEmail(string recipient,string subject,string body,string cc )
         {
 
+        }
+
+        public List<Employee> GetEmployeeSelections()
+        {
+           return _externalData.ExecutequeryByParam<List<Employee>>("QRY_EMP_APPROVAL", "");
         }
     }
 }
