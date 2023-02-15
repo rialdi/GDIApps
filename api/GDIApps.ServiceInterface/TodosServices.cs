@@ -32,30 +32,7 @@ public class TodosServices : Service
         Todos.Add(newTodo);
         return newTodo;
     }
-    public CreateClaimResponse Post(CreateOvertimeDraft request)
-    {
-        CreateClaimResponse response= new CreateClaimResponse();
-        foreach(var empId in request.EmployeeIds)
-        {
-            var itemResponse = new CreateClaimItemResponse();
-            try
-            {
-                DateTime dt=DateTime.ParseExact(request.OtDate,"dd-MMM-yyyy",CultureInfo.GetCultureInfo("en-US"));
-                string newOtNuumber = _rules.CreateNewOvertimeDraft(dt, empId);
-                itemResponse.Success= true;
-                itemResponse.OtNumber = newOtNuumber;
-                
-            }
-            catch (Exception ex)
-            {
-                itemResponse.Success = false;
-                itemResponse.ErrorMessage = ex.Message;
-            }
-            response.Items.Add(itemResponse);
-        }
-        return response;
-       
-    }
+   
     public Todo Put(UpdateTodo request)
     {
         var todo = request.ConvertTo<Todo>();

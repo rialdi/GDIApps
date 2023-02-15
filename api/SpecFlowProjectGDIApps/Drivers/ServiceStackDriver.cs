@@ -70,7 +70,8 @@ namespace SpecFlowProjectGDIApps.Drivers
 
         public List<Employee> GetEmployeeOptionsByLoggedUser()
         {
-            throw new NotImplementedException();
+            var userName = _context.Get<string>("UserName");
+             throw new NotImplementedException();
         }
 
         public async void InputNewLookupSet(Table table)

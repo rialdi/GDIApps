@@ -1,6 +1,8 @@
 ﻿Feature: SimpleOvertime
 
 A short summary of the feature
+***Mockup:***
+![Create Claim Mockup](./Mockups/CreateClaim.png)
 Background: 
 Given Exist Following Employees Data From Common Service
 | EMPLOYEE_ID | NAME       | POSITION_ID | POS_DEPT        | SUPERIOR_NAME              | SUPERIOR_POS                   | MOR_NAME                         | MOR_POS                      |

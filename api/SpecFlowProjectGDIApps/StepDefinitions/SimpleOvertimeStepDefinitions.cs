@@ -36,7 +36,7 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
         public void GivenExistEmployeeADUserInformationFromCommonService(Table table)
         {
             IEnumerable<dynamic> existUser = table.CreateDynamicSet(doTypeConversion: false);
-            if (_context.ScenarioInfo.Tags.Contains("mockingCommonService"))
+            if (_context.ScenarioInfo.Tags.Contains("mockCommonService"))
             {
                 var mock = _context.Get<Mock<IExternalData>>("MockExternalData");
                 List<ActiveDirectoryUser> users = new List<ActiveDirectoryUser>();
@@ -44,10 +44,10 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
                 {
                     var user = new ActiveDirectoryUser()
                     {
-                        EMAIL = userData.Email,
-                        EMPLOYEEID = userData.EMPLOYEEID,
+                        EMAIL = userData.EMAIL,
+                        EMPLOYEEID = userData.EMPLOYEE_ID,
                         FULL_NAME = userData.FULL_NAME,
-                        EMPLOYEE_ID = userData.EMPLOYEEID,
+                        EMPLOYEE_ID = userData.EMPLOYEE_ID,
                         USERNAME = userData.USERNAME
                     };
                     users.Add(user);

@@ -21,7 +21,7 @@ namespace SpecFlowProjectGDIApps.Drivers
 
         internal void AddLookupIfNotExist(Table table)
         {
-            IEnumerable<dynamic> setData = table.CreateDynamicSet();
+            IEnumerable<dynamic> setData = table.CreateDynamicSet(doTypeConversion: false);
             List<Lookup> lokups = new List<Lookup>();
             using (var cn = _dbConn.Open())
             {
