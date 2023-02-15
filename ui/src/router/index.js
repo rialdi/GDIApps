@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import { attrs, loading } from "../auth"
 // import { NavigationGuardNext, RouteLocationNormalized, Router } from "vue-router"
@@ -264,7 +264,8 @@ const routes = [
 ];
     // Create Router
 const router = createRouter({
-  history: createWebHashHistory(),
+  // mode: 'history',
+  history: createWebHistory(),
   linkActiveClass: "active",
   linkExactActiveClass: "",
   scrollBehavior() {

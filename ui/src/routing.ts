@@ -17,7 +17,8 @@ const ROUTE_GUARDS:RouteGuard[] = [
 ]
 
 export function configRouter(router:Router)  {
-    console.log(router)
+    // console.log('Router') 
+    // console.log(router)
     const invalidAttrRedirect = (to:RouteLocationNormalized, guardAttr:string, userAttrs:string[]) => userAttrs.indexOf('auth') === -1
         ? Routes.signin(to.path)
         : Routes.forbidden()
@@ -25,7 +26,8 @@ export function configRouter(router:Router)  {
     // Validate Route guards against Authenticated User's Attributes
     const validateRoute = (to:RouteLocationNormalized, next:NavigationGuardNext, attrs:string[]) => {
         for (let i=0; i<ROUTE_GUARDS.length; i++) {
-            console.log(to)
+            // console.log('To Path') 
+            // console.log(to)
             const { path, attr } = ROUTE_GUARDS[i]
             if (!to.path.startsWith(path)) continue
             if (attrs.indexOf(attr) === -1) {

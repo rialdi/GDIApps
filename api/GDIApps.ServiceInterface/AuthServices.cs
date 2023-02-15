@@ -15,8 +15,12 @@ public class AuthServices : Service
 
     public object Any (UpdateAppUser request)
     {
-        var existingUser = AuthRepository.GetUserAuthByUserName(request.Email);
-        return AuthRepository.UpdateUserAuth(existingUser, request);
+        var existingUser = AuthRepository.GetUserAuthByUserName(request.Email) as AppUser;
+        var updateUser = existingUser;
+        updateUser.FullName = request.FullName != null ? request.FullName : existingUser.FullName;
+        updateUser.PhoneNumber = request.PhoneNumber != null ? request.PhoneNumber : existingUser.PhoneNumber;
+        updateUser.ProfileUrl = request.ProfileUrl != null ? request.ProfileUrl : existingUser.ProfileUrl;
+        return AuthRepository.UpdateUserAuth(existingUser, updateUser);
     }
 
     // public object Any (GetUserInfo request)
@@ -27,5 +31,13 @@ public class AuthServices : Service
     public object Any (GetUserInfoDetail request)
     {   
         return AuthRepository.GetUserAuthByUserName(request.UserNameOrEmail);
+    }
+
+    public object Any(UploadUserProfile request) 
+    {
+        var existingUser = AuthRepository.GetUserAuthByUserName(request.Email) as AppUser;
+        var updateUser = existingUser;
+        updateUser.ProfileUrl = request.ProfileUrl != null ? request.ProfileUrl : existingUser.ProfileUrl;
+        return AuthRepository.UpdateUserAuth(existingUser, updateUser);
     }
 }

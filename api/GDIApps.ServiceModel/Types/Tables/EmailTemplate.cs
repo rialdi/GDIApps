@@ -18,7 +18,7 @@ public class EmailTemplate : AuditBase
     [StringLength(1000)]    
     public string Description { get; set; } = string.Empty;
 
-    [Default(typeof(bool), "true")]
+    // [Default(typeof(bool), "true")]
     public bool? IsActive { get; set; }
 
     [Required]

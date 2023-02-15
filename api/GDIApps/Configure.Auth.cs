@@ -46,6 +46,12 @@ public class ConfigureAuth : IHostingStartup
                 IncludeDefaultLogin = false
             });
 
+            appHost.RegisterService(typeof(RegisterService).AddAttributes(
+                new RequiredRoleAttribute(
+                    appSettings.GetList("ApplicationRoles").ToArray()
+                )
+            ));
+
             appHost.Plugins.Add(new RegistrationFeature()); //Enable /register Service
 
             //override the default registration validation with your own custom implementation

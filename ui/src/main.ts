@@ -1,6 +1,6 @@
 import "@/styles/index.css"
 import "@/styles/main.css"
-
+import '@progress/kendo-theme-default/dist/all.css';
 
 import { createApp } from "vue"
 import { createPinia } from "pinia"

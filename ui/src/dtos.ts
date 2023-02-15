@@ -1,6 +1,6 @@
 /* Options:
-Date: 2023-02-02 15:29:54
-Version: 6.50
+Date: 2023-02-14 09:48:52
+Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
 
@@ -26,6 +26,10 @@ export interface IReturnVoid
     createResponse(): void;
 }
 
+export interface IPost
+{
+}
+
 export interface IHasSessionId
 {
     sessionId?: string;
@@ -34,10 +38,6 @@ export interface IHasSessionId
 export interface IHasBearerToken
 {
     bearerToken?: string;
-}
-
-export interface IPost
-{
 }
 
 export interface IPut
@@ -58,14 +58,6 @@ export interface IPatchDb<Table>
 
 export interface IDeleteDb<Table>
 {
-}
-
-export enum Department
-{
-    None = 'None',
-    QualityAssurance = 'QualityAssurance',
-    Developer = 'Developer',
-    Management = 'Management',
 }
 
 export enum EMAIL_TEMPLATE_CODE
@@ -149,9 +141,7 @@ export enum RoomType
     Suite = 'Suite',
 }
 
-/**
-* Booking Details
-*/
+/** @description Booking Details */
 export class Booking extends AuditBase
 {
     public id?: number;
@@ -241,9 +231,7 @@ export class ContactUs extends AuditBase
     public constructor(init?: Partial<ContactUs>) { super(init); (Object as any).assign(this, init); }
 }
 
-/**
-* Emails
-*/
+/** @description Emails */
 export class Email extends AuditBase
 {
     // @Required()
@@ -351,6 +339,14 @@ export class ResponseError
     public constructor(init?: Partial<ResponseError>) { (Object as any).assign(this, init); }
 }
 
+export enum Department
+{
+    None = 'None',
+    QualityAssurance = 'QualityAssurance',
+    Developer = 'Developer',
+    Management = 'Management',
+}
+
 export class UserAuth
 {
     public id?: number;
@@ -419,7 +415,9 @@ export class ResponseStatus
 // @ValidateRequest(Validator="IsAuthenticated")
 export class AppUser extends UserAuth
 {
+    // @Input(Type="file")
     public profileUrl?: string;
+
     public lastLoginIp?: string;
     public lastLoginDate?: string;
     public employeeId?: string;
@@ -428,6 +426,19 @@ export class AppUser extends UserAuth
     public archivedDate?: string;
 
     public constructor(init?: Partial<AppUser>) { super(init); (Object as any).assign(this, init); }
+}
+
+// @Route("/uploaduserprofile/{Id}")
+export class UploadUserProfile implements IReturn<UploadUserProfile>, IPost
+{
+    public email?: string;
+    // @Input(Type="file")
+    public profileUrl?: string;
+
+    public constructor(init?: Partial<UploadUserProfile>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UploadUserProfile'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new UploadUserProfile(); }
 }
 
 export class ContactUsEmailResponse
@@ -622,10 +633,15 @@ export class UpdatePassword implements IReturn<ResponseStatus>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class UpdateAppUser extends AppUser
+export class UpdateAppUser
 {
+    public email?: string;
+    public fullName?: string;
+    public phoneNumber?: string;
+    // @Input(Type="file")
+    public profileUrl?: string;
 
-    public constructor(init?: Partial<UpdateAppUser>) { super(init); (Object as any).assign(this, init); }
+    public constructor(init?: Partial<UpdateAppUser>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateAppUser'; }
     public getMethod() { return 'POST'; }
     public createResponse() {}
@@ -741,18 +757,14 @@ export class DeleteTodos implements IReturnVoid, IDelete
     public createResponse() {}
 }
 
-/**
-* Sign In
-*/
+/** @description Sign In */
 // @Route("/auth", "OPTIONS,GET,POST,DELETE")
 // @Route("/auth/{provider}", "OPTIONS,GET,POST,DELETE")
 // @Api(Description="Sign In")
 // @DataContract
 export class Authenticate implements IReturn<AuthenticateResponse>, IPost
 {
-    /**
-    * AuthProvider, e.g. credentials
-    */
+    /** @description AuthProvider, e.g. credentials */
     // @DataMember(Order=1)
     public provider?: string;
 
@@ -857,9 +869,7 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public createResponse() { return new UnAssignRolesResponse(); }
 }
 
-/**
-* Sign Up
-*/
+/** @description Sign Up */
 // @Route("/register", "PUT,POST")
 // @Api(Description="Sign Up")
 // @DataContract
@@ -901,9 +911,7 @@ export class Register implements IReturn<RegisterResponse>, IPost
     public createResponse() { return new RegisterResponse(); }
 }
 
-/**
-* Find Bookings
-*/
+/** @description Find Bookings */
 // @Route("/bookings", "GET")
 // @Route("/bookings/{Id}", "GET")
 export class QueryBookings extends QueryDb_1<Booking> implements IReturn<QueryResponse<Booking>>
@@ -985,16 +993,12 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
     public createResponse() { return new QueryResponse<ProjectView>(); }
 }
 
-/**
-* Create a new Booking
-*/
+/** @description Create a new Booking */
 // @Route("/bookings", "POST")
 // @ValidateRequest(Validator="HasRole(`Employee`)")
 export class CreateBooking implements IReturn<IdResponse>, ICreateDb<Booking>
 {
-    /**
-    * Name this Booking is for
-    */
+    /** @description Name this Booking is for */
     // @Validate(Validator="NotEmpty")
     public name?: string;
 
@@ -1016,9 +1020,7 @@ export class CreateBooking implements IReturn<IdResponse>, ICreateDb<Booking>
     public createResponse() { return new IdResponse(); }
 }
 
-/**
-* Update an existing Booking
-*/
+/** @description Update an existing Booking */
 // @Route("/booking/{Id}", "PATCH")
 // @ValidateRequest(Validator="HasRole(`Employee`)")
 export class UpdateBooking implements IReturn<IdResponse>, IPatchDb<Booking>
@@ -1043,9 +1045,7 @@ export class UpdateBooking implements IReturn<IdResponse>, IPatchDb<Booking>
     public createResponse() { return new IdResponse(); }
 }
 
-/**
-* Delete a Booking
-*/
+/** @description Delete a Booking */
 // @Route("/booking/{Id}", "DELETE")
 // @ValidateRequest(Validator="HasRole(`Manager`)")
 export class DeleteBooking implements IReturnVoid, IDeleteDb<Booking>

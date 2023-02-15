@@ -21,7 +21,7 @@ public class ConfigureAutoQuery : IHostingStartup
             // For Bookings https://github.com/NetCoreApps/BookingsCrud
             appHost.Plugins.Add(new AutoQueryFeature {
                 MaxLimit = 1000,
-                //IncludeTotal = true,
+                IncludeTotal = true
             });
 
             appHost.Resolve<ICrudEvents>().InitSchema();

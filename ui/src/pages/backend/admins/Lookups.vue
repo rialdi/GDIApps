@@ -63,32 +63,32 @@ const refreshDatas = async ( ) => {
 }
 
 // Helper variables
-let tooltipTriggerList = ref<any>([]);
-let tooltipList = ref<any>([]);
+// let tooltipTriggerList = ref<any>([]);
+// let tooltipList = ref<any>([]);
 
 onMounted(async () => {
   await refreshDatas()
   // Grab all tooltip containers..
-  tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  );
+  // tooltipTriggerList = [].slice.call(
+  //   document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  // );
 
-  // ..and init them
-  tooltipList = tooltipTriggerList.map((tooltipTriggerEl:any) => {
-    return new window.bootstrap.Tooltip(tooltipTriggerEl, {
-      container: tooltipTriggerEl.dataset.bsContainer || "#page-container",
-      animation:
-        tooltipTriggerEl.dataset.bsAnimation &&
-        tooltipTriggerEl.dataset.bsAnimation.toLowerCase() == "true"
-          ? true
-          : false,
-    });
-  });
+  // // ..and init them
+  // tooltipList = tooltipTriggerList.map((tooltipTriggerEl:any) => {
+  //   return new window.bootstrap.Tooltip(tooltipTriggerEl, {
+  //     container: tooltipTriggerEl.dataset.bsContainer || "#page-container",
+  //     animation:
+  //       tooltipTriggerEl.dataset.bsAnimation &&
+  //       tooltipTriggerEl.dataset.bsAnimation.toLowerCase() == "true"
+  //         ? true
+  //         : false,
+  //   });
+  // });
 });
 
 // Dispose tooltips on unMounted
 onUnmounted(() => {
-  tooltipList.forEach((tooltip:any) => tooltip.dispose());
+  // tooltipList.forEach((tooltip:any) => tooltip.dispose());
 });
 
 const hasItemsInEdit =  computed(() => 
@@ -243,69 +243,64 @@ const sortChangeHandler = (e: any) => {
 
   <!-- Page Content -->
   <div class="content">
-    <!-- <button
-            type="button"
-            class="btn btn-primary w-100"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Top Tooltip"
-          >
-            Top
-          </button>
-          <button type="button" class="btn btn-sm btn-alt-danger" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Top Tooltip"> 
-            <i class="fa fa-fw fa-times"></i>
-            </button> -->
-    <!-- Partial Table -->
-    <!-- <notifications position="bottom left" classes="alert alert-info d-flex align-items-center" /> -->
-    <BaseBlock title="Lookup data">
-      
-      <p>
-        <DropDownList
-          :data-items="lookupTypeList"
-          @change="handleDropDownChange"
-          :default-value="'ALL'"
-        ></DropDownList>&nbsp; Selected category ID:
-        <!-- <strong>{{ dropdownlistLookupType }}</strong> -->
-      </p>
-
-      <kGrid ref="grid"
-        ::style="{height: '440px'}"
-            :data-items="gridData"
-            :edit-field="'inEdit'"
-            :sortable="true"
-            :pageable="true"
-            :total="total"
-            @itemchange="itemChange"
-            @datastatechange="dataStateChange"
-            @sortchange="sortChangeHandler"
-            :columns="columns"
-      >
-        <kGridToolbar>
-          <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
-              Add new
-          </kbutton>
-          <kbutton v-if="hasItemsInEdit"
-              :theme-color="'info'"
-                  title="Cancel current changes"
-                  @click="onCancelChanges">
-                  Cancel current changes
-          </kbutton>
-        </kGridToolbar>
-        <template v-slot:myTemplate="{props}">
-            <CommandCell :data-item="props.dataItem" 
-                    @edit="onEdit"
-                    @save="onSave" 
-                    @remove="onRemove"
-                    @cancel="onCancelChanges"/>
-        </template>
-        <template v-slot:isActiveTemplate="{ props }">
-          <td :colspan="1" style="text-align:center">
-            <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
-          </td>
-        </template>
-      </kGrid>
+    <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
+      <div class="row pb-2">
+        <div class="col-sm-2 text-end">
+          <label class="mr-3 mt-1" for="cboLookupType">Lookup Type</label>
+        </div>
+        <div class="col-sm-4">
+          <DropDownList
+            :data-items="lookupTypeList"
+            @change="handleDropDownChange"
+            :default-value="'ALL'" 
+            name="cboLookupType"
+          ></DropDownList>
+        </div>
+      </div>
+    </BaseBlock>
+    <BaseBlock title="Result Data" btn-option-fullscreen btn-option-content> 
+      <!-- <div class="row">
+        <div class="col-12"> -->
+        <kGrid ref="grid"
+              :style="{height: '440px'}"
+              :data-items="gridData"
+              :edit-field="'inEdit'"
+              :sortable="true"
+              :pageable="true"
+              :total="total"
+              @itemchange="itemChange"
+              @datastatechange="dataStateChange"
+              @sortchange="sortChangeHandler"
+              :columns="columns"
+        >
+          <kGridToolbar>
+            <kbutton title="Add new" :theme-color="'primary'" @click='onInsert'>
+                Add new
+            </kbutton>
+            <kbutton icon="add" title="Add new" :theme-color="'primary'" @click='onInsert'>
+            </kbutton>
+            <kbutton v-if="hasItemsInEdit"
+                :theme-color="'info'"
+                    title="Cancel current changes"
+                    @click="onCancelChanges">
+                    Cancel current changes
+            </kbutton>
+          </kGridToolbar>
+          <template v-slot:myTemplate="{props}">
+              <CommandCell :data-item="props.dataItem" 
+                      @edit="onEdit"
+                      @save="onSave" 
+                      @remove="onRemove"
+                      @cancel="onCancelChanges"/>
+          </template>
+          <template v-slot:isActiveTemplate="{ props }">
+            <td :colspan="1" style="text-align:center">
+              <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
+            </td>
+          </template>
+        </kGrid>
+      <!-- </div>
+    </div> -->
     </BaseBlock>
     <!-- END Partial Table -->
   </div>

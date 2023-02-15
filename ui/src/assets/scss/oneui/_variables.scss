@@ -8,10 +8,12 @@ $primary-light: tint-color($primary, 35%) !default;
 $primary-lighter: tint-color($primary, 65%) !default;
 $primary-dark: #4b5563 !default;
 $primary-darker: #1f2937 !default;
+$secondary-light: tint-color($secondary, 35%) !default;
+$secondary-lighter: tint-color($secondary, 65%) !default;
 $success-light: tint-color($success, 80%) !default;
-$info-light: tint-color($info, 80%) !default;
-$warning-light: tint-color($warning, 80%) !default;
-$danger-light: tint-color($danger, 80%) !default;
+$info-light: tint-color($info, 35%) !default;
+$warning-light: tint-color($warning, 35%) !default;
+$danger-light: tint-color($danger, 35%) !default;
 
 $body-bg-dark: darken($body-bg, 4.5%) !default;
 $body-bg-light: lighten($body-bg, 3.5%) !default;
