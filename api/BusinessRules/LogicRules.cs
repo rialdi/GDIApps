@@ -37,6 +37,9 @@ namespace BusinessRules
                 data.POS_DEPT = emp.POS_DEPT;
                 data.POSITION_ID= emp.POSITION_ID;
             data.OT_NUMBER = GenerateOtNumbers(employeeId,data.CreatedDate);
+            data.CreatedBy = _user.UserName;
+            data.ModifiedBy= _user.UserName;
+            data.ModifiedDate = DateTime.Now;
                 using(var cn = _db.Open())
                 {
                     cn.Insert<Overtime>(data);

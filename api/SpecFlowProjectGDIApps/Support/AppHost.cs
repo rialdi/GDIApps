@@ -69,7 +69,9 @@ namespace SpecFlowProjectGDIApps.Support
         {
             if (authRepo.GetUserAuthByUserName(email) == null)
             {
-                var newAdmin = new AppUser { Email = email, DisplayName = name };
+                var userName = email.Split("@")[0];
+
+                var newAdmin = new AppUser { UserName =userName,Email = email, DisplayName = name };
                 var user = authRepo.CreateUserAuth(newAdmin, password);
                 
 
