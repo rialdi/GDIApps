@@ -36,7 +36,7 @@ namespace BusinessRules
                 data.NAME = emp.NAME;
                 data.POS_DEPT = emp.POS_DEPT;
                 data.POSITION_ID= emp.POSITION_ID;
-            data.OT_NUMBER = GenerateOtNumbers(employeeId);
+            data.OT_NUMBER = GenerateOtNumbers(employeeId,data.CreatedDate);
                 using(var cn = _db.Open())
                 {
                     cn.Insert<Overtime>(data);
@@ -45,9 +45,17 @@ namespace BusinessRules
             
         }
 
-        private string GenerateOtNumbers(string employeeId)
+        private string GenerateOtNumbers(string employeeId,DateTime date)
         {
-           throw new NotImplementedException();
+            DateTime startDate = new DateTime(date.Year, date.Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+            string seqFormat = "";
+          using(var cn = _db.Open())
+            {
+             var cntr=   cn.Select<Overtime>(o => o.EMPLOYEE_ID == employeeId && o.OT_DATE >= startDate && o.OT_DATE <= endDate).Count;
+                seqFormat = string.Format("{0:0000}", cntr);
+            }
+            return string.Format("OTS-{0}-{1}-{2}-{3}", seqFormat, startDate.Month, startDate.Year, employeeId.TrimStart('0'));
         }
 
         public void sendEmail(string recipient,string subject,string body,string cc )

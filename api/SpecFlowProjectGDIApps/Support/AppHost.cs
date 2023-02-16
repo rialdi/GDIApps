@@ -32,7 +32,7 @@ namespace SpecFlowProjectGDIApps.Support
 
 
            // var db = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
-            var db = new OrmLiteConnectionFactory("testDb.asqlite", SqliteDialect.Provider);
+            var db = new OrmLiteConnectionFactory("testDb.db", SqliteDialect.Provider);
             container.AddSingleton<IDbConnectionFactory>(db);
            
             container.AddSingleton<IAuthRepository>(c =>
