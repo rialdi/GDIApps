@@ -48,7 +48,7 @@ const refreshDatas = async ( ) => {
   //   lookuptype: selectedLookupType.value as LOOKUPTYPE
   // }))
 
-  const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE}))
+  const api = await client.api(new QueryLookups({ lookupType: selectedLookupType.value as LOOKUPTYPE}))
   if (api.succeeded) {
     lookupData.value = api.response!.results ?? []
 
