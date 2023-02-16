@@ -11,16 +11,21 @@ public class Lookup : AuditBase
 {
     [AutoIncrement]
     public int Id { get; set; }  
+    
     [Required]
     [StringLength(100)]
     public LOOKUPTYPE LookupType { get; set; }    
+    
     [Required]
     [StringLength(100)]    
     public string LookupValue { get; set; } = string.Empty;
+    
     [Required]
     [StringLength(1000)]
     public string LookupText { get; set; } = string.Empty;
+    
     public bool? IsActive { get; set; }
+    
     [Compute, Ignore]
     public string LookupDisplay {
         get {

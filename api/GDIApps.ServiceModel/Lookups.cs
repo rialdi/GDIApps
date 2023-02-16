@@ -12,7 +12,8 @@ namespace GDIApps.ServiceModel;
 [Tag("Lookups")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryLookups : QueryDb<Lookup> {
-    public LOOKUPTYPE? LOOKUPTYPE { get; set; } 
+    public LOOKUPTYPE? LookupType { get; set; } 
+    public string[]? LookupValues { get; set; }
     
 }
 

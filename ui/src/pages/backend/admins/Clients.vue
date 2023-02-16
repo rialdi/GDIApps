@@ -235,7 +235,7 @@ const gridExpandChange = (e: any) => {
               :filterable="false" 
               :sortable="true" 
               :pageable="true" 
-              :show-export-button="false"/>
+              :show-export-button="true"/>
         </template>
         <template v-slot:myTemplate="{props}">
             <CommandCell :data-item="props.dataItem" 

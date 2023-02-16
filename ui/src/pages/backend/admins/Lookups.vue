@@ -9,7 +9,7 @@ import { Button as kbutton} from '@progress/kendo-vue-buttons'
 import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data-query'
 import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
-
+ 
 // import DropDownCell from '../../../components/grids/DropDownCell.vue';
 // const ddChange = (e: any, dataItem: any) => {
 //   const currData = dataItem;
@@ -44,6 +44,10 @@ const columns = [
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 
 const refreshDatas = async ( ) => {
+  // const api2 = await client.api(new QueryLookups({
+  //   lookuptype: selectedLookupType.value as LOOKUPTYPE
+  // }))
+
   const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE}))
   if (api.succeeded) {
     lookupData.value = api.response!.results ?? []

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-14 09:48:52
+Date: 2023-02-16 08:10:06
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -487,6 +487,42 @@ export class QueryResponse<Todo>
 }
 
 // @DataContract
+export class RegisterResponse implements IHasSessionId, IHasBearerToken
+{
+    // @DataMember(Order=1)
+    public userId?: string;
+
+    // @DataMember(Order=2)
+    public sessionId?: string;
+
+    // @DataMember(Order=3)
+    public userName?: string;
+
+    // @DataMember(Order=4)
+    public referrerUrl?: string;
+
+    // @DataMember(Order=5)
+    public bearerToken?: string;
+
+    // @DataMember(Order=6)
+    public refreshToken?: string;
+
+    // @DataMember(Order=7)
+    public roles?: string[];
+
+    // @DataMember(Order=8)
+    public permissions?: string[];
+
+    // @DataMember(Order=9)
+    public responseStatus?: ResponseStatus;
+
+    // @DataMember(Order=10)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
 export class AuthenticateResponse implements IHasSessionId, IHasBearerToken
 {
     // @DataMember(Order=1)
@@ -562,42 +598,6 @@ export class UnAssignRolesResponse
     public responseStatus?: ResponseStatus;
 
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class RegisterResponse implements IHasSessionId, IHasBearerToken
-{
-    // @DataMember(Order=1)
-    public userId?: string;
-
-    // @DataMember(Order=2)
-    public sessionId?: string;
-
-    // @DataMember(Order=3)
-    public userName?: string;
-
-    // @DataMember(Order=4)
-    public referrerUrl?: string;
-
-    // @DataMember(Order=5)
-    public bearerToken?: string;
-
-    // @DataMember(Order=6)
-    public refreshToken?: string;
-
-    // @DataMember(Order=7)
-    public roles?: string[];
-
-    // @DataMember(Order=8)
-    public permissions?: string[];
-
-    // @DataMember(Order=9)
-    public responseStatus?: ResponseStatus;
-
-    // @DataMember(Order=10)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -757,6 +757,48 @@ export class DeleteTodos implements IReturnVoid, IDelete
     public createResponse() {}
 }
 
+/** @description Sign Up */
+// @Route("/register", "PUT,POST")
+// @Api(Description="Sign Up")
+// @DataContract
+export class Register implements IReturn<RegisterResponse>, IPost
+{
+    // @DataMember(Order=1)
+    public userName?: string;
+
+    // @DataMember(Order=2)
+    public firstName?: string;
+
+    // @DataMember(Order=3)
+    public lastName?: string;
+
+    // @DataMember(Order=4)
+    public displayName?: string;
+
+    // @DataMember(Order=5)
+    public email?: string;
+
+    // @DataMember(Order=6)
+    public password?: string;
+
+    // @DataMember(Order=7)
+    public confirmPassword?: string;
+
+    // @DataMember(Order=8)
+    public autoLogin?: boolean;
+
+    // @DataMember(Order=10)
+    public errorView?: string;
+
+    // @DataMember(Order=11)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'Register'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new RegisterResponse(); }
+}
+
 /** @description Sign In */
 // @Route("/auth", "OPTIONS,GET,POST,DELETE")
 // @Route("/auth/{provider}", "OPTIONS,GET,POST,DELETE")
@@ -869,48 +911,6 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public createResponse() { return new UnAssignRolesResponse(); }
 }
 
-/** @description Sign Up */
-// @Route("/register", "PUT,POST")
-// @Api(Description="Sign Up")
-// @DataContract
-export class Register implements IReturn<RegisterResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public userName?: string;
-
-    // @DataMember(Order=2)
-    public firstName?: string;
-
-    // @DataMember(Order=3)
-    public lastName?: string;
-
-    // @DataMember(Order=4)
-    public displayName?: string;
-
-    // @DataMember(Order=5)
-    public email?: string;
-
-    // @DataMember(Order=6)
-    public password?: string;
-
-    // @DataMember(Order=7)
-    public confirmPassword?: string;
-
-    // @DataMember(Order=8)
-    public autoLogin?: boolean;
-
-    // @DataMember(Order=10)
-    public errorView?: string;
-
-    // @DataMember(Order=11)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'Register'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new RegisterResponse(); }
-}
-
 /** @description Find Bookings */
 // @Route("/bookings", "GET")
 // @Route("/bookings/{Id}", "GET")
@@ -927,7 +927,10 @@ export class QueryBookings extends QueryDb_1<Booking> implements IReturn<QueryRe
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryClients extends QueryDb_1<Client> implements IReturn<QueryResponse<Client>>
 {
-    public code?: string;
+    public ids?: number[];
+    public codes?: string[];
+    public codeEndsWith?: string;
+    public name?: string;
     public isActive?: boolean;
 
     public constructor(init?: Partial<QueryClients>) { super(init); (Object as any).assign(this, init); }
@@ -972,7 +975,8 @@ export class QueryEmailTemplates extends QueryDb_1<EmailTemplate> implements IRe
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryLookups extends QueryDb_1<Lookup> implements IReturn<QueryResponse<Lookup>>
 {
-    public lookuptype?: LOOKUPTYPE;
+    public lookupType?: LOOKUPTYPE;
+    public lookupValues?: string[];
 
     public constructor(init?: Partial<QueryLookups>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryLookups'; }
@@ -984,8 +988,14 @@ export class QueryLookups extends QueryDb_1<Lookup> implements IReturn<QueryResp
 export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IReturn<QueryResponse<ProjectView>>
 {
     public code?: string;
-    public clientId?: string;
-    public clientCode?: string;
+    public clientId?: number;
+    // @Validate(Validator="Null")
+    public clientCodes?: string[];
+
+    public clientCodeContains?: string;
+    public clientNameContains?: string;
+    public nameContains?: string;
+    public codeContains?: string;
 
     public constructor(init?: Partial<QueryProjects>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryProjects'; }

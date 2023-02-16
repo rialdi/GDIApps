@@ -3,6 +3,7 @@ using ServiceStack.Configuration;
 
 using System.Collections;
 using System.Collections.Generic;
+using ServiceStack.DataAnnotations;
 using GDIApps.ServiceModel.Types;
 
 namespace GDIApps.ServiceModel;
@@ -11,9 +12,17 @@ namespace GDIApps.ServiceModel;
 [Tag("Projects")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryProjects : QueryDb<Project, ProjectView>, IJoin<Project, Client>  {
-    public string? Code {get; set;}
-    public string? ClientId{get; set;}
-    public string? ClientCode {get; set;}
+    public string? Code { get; set; }
+    public int? ClientId { get; set; }
+
+    [ValidateNull]
+    public string[]? ClientCodes {get; set;}
+
+    public string? ClientCodeContains { get; set; }
+    public string? ClientNameContains { get; set; }
+
+    public string? NameContains { get; set; }
+    public string? CodeContains { get; set; }
 }
 
 [ValidateIsAuthenticated]
