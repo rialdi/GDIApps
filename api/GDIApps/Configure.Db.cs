@@ -1,5 +1,7 @@
+using GDIApps.ServiceModel.Types;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
+using System.Reflection.Metadata;
 
 [assembly: HostingStartup(typeof(GDIApps.ConfigureDb))]
 
@@ -18,5 +20,39 @@ public class ConfigureDb : IHostingStartup
      public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context,services) => services.AddSingleton<IDbConnectionFactory>(new OrmLiteConnectionFactory(
             context.Configuration.GetConnectionString("DefaultConnection") ?? "App_Data/db.sqlite",
-            SqliteDialect.Provider)));
+            SqliteDialect.Provider)))
+         .ConfigureAppHost(afterConfigure: appHost => {
+             appHost.ScriptContext.ScriptMethods.Add(new DbScriptsAsync());
+
+             // Create non-existing Table and add Seed Data Example
+             using var db = appHost.Resolve<IDbConnectionFactory>().Open();
+             // var isExistTable = false;
+
+             // db.DropAndCreateTable<AppUser>();                
+
+             //if (db.CreateTableIfNotExists<Lookup>())
+             //{
+             //    db.Insert(new Lookup
+             //    {
+             //        LookupType = LOOKUPTYPE.WORKGROUP,
+             //        LookupValue = "NEW",
+             //        LookupText = "NEW",
+             //        IsActive = true,
+             //        CreatedBy = "ADMIN",
+             //        ModifiedBy = "ADMIN",
+             //        CreatedDate = DateTime.Now,
+             //        ModifiedDate = DateTime.Now
+             //    });
+             //}
+             //db.CreateTableIfNotExists<Equipment>();
+             //db.CreateTableIfNotExists<MaintenanceReq>();
+
+             //db.CreateTableIfNotExists<WorkExecution>();
+             //db.CreateTableIfNotExists<WEActivity>();
+             //db.CreateTableIfNotExists<WEWorkOrder>();
+
+             //db.CreateTableIfNotExists<RoleWorkgroup>();
+             //db.CreateTableIfNotExists<GENERALPARAMETER>();
+
+         });
 }

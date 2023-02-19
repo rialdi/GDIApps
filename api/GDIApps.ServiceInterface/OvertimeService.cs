@@ -9,14 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using GDIApps.ServiceModel;
 using System.Globalization;
+using GDIApps.ValeCommonRules;
 
 namespace GDIApps.ServiceInterface
 {
     public class OvertimeService:Service
     {
-        public CreateClaimResponse Post(CreateOvertimeDraft request)
+        public CreateOvertimeResponse Post(CreateOvertimeDraft request)
         {
-            CreateClaimResponse response = new CreateClaimResponse();
+            CreateOvertimeResponse response = new CreateOvertimeResponse();
             foreach (var empId in request.EmployeeIds)
             {
                 var itemResponse = new CreateClaimItemResponse();
@@ -34,6 +35,25 @@ namespace GDIApps.ServiceInterface
                     itemResponse.ErrorMessage = ex.Message;
                 }
                 response.Items.Add(itemResponse);
+            }
+            return response;
+
+        }
+        public SubmitClaimResponse Post(SubmitClaimRequest request)
+        {
+            var response = new SubmitClaimResponse();
+            response.OtNumber = request.OtNumber;
+            try
+            {
+                Rules.SubmitClaim(request.OtNumber, request.ReasonCode, request.OtHour);
+                response.Success = true;
+             
+
+            }catch(Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+             
             }
             return response;
 
@@ -64,7 +84,7 @@ namespace GDIApps.ServiceInterface
                 var session = SessionAs<AuthUserSession>();
                 IUserAuth user2 = AuthRepository.GetUserAuth(session.UserAuthId);
                 var authSession = this.GetSession();
-                var externalData = this.TryResolve<IExternalData>();
+                var externalData = this.TryResolve<ICommonService>();
                 if (authSession != null)
                 {
                     var user = this.GetSession().GetUserAuthName();

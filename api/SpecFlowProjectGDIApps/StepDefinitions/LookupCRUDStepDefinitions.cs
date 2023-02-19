@@ -46,6 +46,8 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
         {
 
             dbDriver.CheckIsLookupExist(_context.Get<IEnumerable<dynamic>>("LookupInputTable"));
+ 
+            //  Console.WriteLine()
         }
 
         [Given(@"Exist Lookup data in following")]

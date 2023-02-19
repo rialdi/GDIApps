@@ -1,4 +1,4 @@
-﻿using BusinessRules.CommonServiceData;
+﻿
 using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
 using System;
@@ -17,6 +17,7 @@ namespace SpecFlowProjectGDIApps.Drivers
         void DeleteLookupById(int id);
         List<EmployeeOption> GetEmployeeOptionsByLoggedUser();
         void InputNewLookupSet(Table table);
+        void SubmitOvertime(string otnumber, Table table);
         void UpdateLookup(Lookup lookup);
     }
 }

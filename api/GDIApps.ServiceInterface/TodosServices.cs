@@ -6,6 +6,7 @@ using BusinessRules;
 using ServiceStack.Auth;
 using ServiceStack.Data;
 using System.Globalization;
+using GDIApps.ValeCommonRules;
 
 namespace GDIApps.ServiceInterface;
 
@@ -51,7 +52,7 @@ public class TodosServices : Service
                 var session = SessionAs<AuthUserSession>();
                 IUserAuth user2 = AuthRepository.GetUserAuth(session.UserAuthId);
                 var authSession = this.GetSession();
-                var externalData=this.TryResolve<IExternalData>();
+                var externalData=this.TryResolve<ICommonService>();
                 if (authSession != null)
                 {
                     var user = this.GetSession().GetUserAuthName();

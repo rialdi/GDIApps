@@ -77,24 +77,24 @@ namespace SpecFlowProjectGDIApps.Features
         {
 #line 4
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "Code",
                         "Name",
                         "Description"});
-            table8.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "PTVI",
                         "Vale",
                         "PT Vale Indonesia"});
-            table8.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "SMI",
                         "Sampoerna",
                         "PT Sampoerna Indonesia"});
-            table8.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "POI",
                         "Premier Oil",
                         "PT Premier"});
 #line 5
-testRunner.Given("Exist Active Client data in following", ((string)(null)), table8, "Given ");
+testRunner.Given("Exist Active Client data in following", ((string)(null)), table10, "Given ");
 #line hidden
         }
         
@@ -175,46 +175,46 @@ this.FeatureBackground();
 #line 17
 testRunner.When("User pick client with code \"PTVI\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "Label",
                             "Input"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Code",
                             "ODS"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Name",
                             "ODS"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Description",
                             "untuk monitor data"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "ProjectOwner",
                             "Aan"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "ProjectManager",
                             "Aminullah"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "NominalValue",
                             "345000000"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "DurationDays",
                             "120"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "EstimatedStartDate",
                             "12-Jan-2022"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "EstimatedEndDate",
                             "14-Mar-2022"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "ActualStartDate",
                             "15-Jan-2022"});
-                table9.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "ActualEndDate",
                             "9-Mar-2022"});
 #line 18
-testRunner.And("Add following project input", ((string)(null)), table9, "And ");
+testRunner.And("Add following project input", ((string)(null)), table11, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "Code",
                             "Name",
                             "ClientCode",
@@ -228,7 +228,7 @@ testRunner.And("Add following project input", ((string)(null)), table9, "And ");
                             "EstimatedEndDate",
                             "ActualStartDate",
                             "ActualEndDate"});
-                table10.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "ODS",
                             "ODS",
                             "PTVI",
@@ -243,7 +243,7 @@ testRunner.And("Add following project input", ((string)(null)), table9, "And ");
                             "15-Jan-2022",
                             "9-Mar-2022"});
 #line 31
-testRunner.Then("Exist the inputed data projects with code \"PTVI\"", ((string)(null)), table10, "Then ");
+testRunner.Then("Exist the inputed data projects with code \"PTVI\"", ((string)(null)), table12, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

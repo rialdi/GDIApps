@@ -3,6 +3,7 @@ using ServiceStack;
 using GDIApps.ServiceInterface;
 using GDIApps.ServiceModel.Types;
 using ServiceStack.IO;
+using GDIApps.ValeCommonRules;
 
 [assembly: HostingStartup(typeof(GDIApps.AppHost))]
 
@@ -52,9 +53,13 @@ public class AppHost : AppHostBase, IHostingStartup
                 Password = "ADD_PASSWORD"
             })
         );
-
+     
         container.RegisterAs<SmtpEmailer, IEmailer>().ReusedWithin(ReuseScope.Request);
-        
+
+        var commonServiceConfig = appSettings.Get<CommonServiceConfig>("CommonServiceConfig");
+        CommonService commonService = new CommonService(commonServiceConfig);
+        container.AddSingleton<ICommonService>(commonService);
+
         var wwwrootVfs = GetVirtualFileSource<FileSystemVirtualFiles>();
 
         var appFs = new FileSystemVirtualFiles(

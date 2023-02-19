@@ -33,7 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessRules\BusinessRules.csproj" />
     <ProjectReference Include="..\GDIApps.ServiceInterface\GDIApps.ServiceInterface.csproj" />
     <ProjectReference Include="..\GDIApps.ServiceModel\GDIApps.ServiceModel.csproj" />
+    <ProjectReference Include="..\GDIApps.ValeCommonRules\GDIApps.ValeCommonRules.csproj" />
   </ItemGroup>
 </Project>

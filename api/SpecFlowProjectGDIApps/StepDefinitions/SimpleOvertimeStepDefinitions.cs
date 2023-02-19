@@ -1,8 +1,10 @@
 using BusinessRules;
-using BusinessRules.CommonServiceData;
+
 using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
 using GDIApps.ServiceModel.Types.Tables;
+using GDIApps.ValeCommonRules;
+using GDIApps.ValeCommonRules.CommonServiceData;
 using Moq;
 using ServiceStack;
 using ServiceStack.Data;
@@ -31,46 +33,52 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
                // cn.CreateTableIfNotExists<Lookup>();
             }
         }
-       
-
-        [Given(@"Exist Employee AD user information From Common Service")]
-        public void GivenExistEmployeeADUserInformationFromCommonService(Table table)
+        [Given(@"Exist following overtime reasons")]
+        public void GivenExistFollowingOvertimeReasons(Table table)
         {
-            IEnumerable<dynamic> existUser = table.CreateDynamicSet(doTypeConversion: false);
-            if (_context.ScenarioInfo.Tags.Contains("mockCommonService"))
-            {
-                var mock = _context.Get<Mock<IExternalData>>("MockExternalData");
-                List<ActiveDirectoryUser> users = new List<ActiveDirectoryUser>();
-                foreach(var userData in existUser)
-                {
-                    var user = new ActiveDirectoryUser()
-                    {
-                        EMAIL = userData.EMAIL,
-                        EMPLOYEEID = userData.EMPLOYEE_ID,
-                        FULL_NAME = userData.FULL_NAME,
-                        EMPLOYEE_ID = userData.EMPLOYEE_ID,
-                        USERNAME = userData.USERNAME
-                    };
-                    users.Add(user);
-                }
-                mock.Setup(x => x.ExecutequeryByParam<List<ActiveDirectoryUser>>(It.IsAny<string>(), It.IsAny<string>()))
-                    .Returns(users);
-            }
-            else
-            {
-                var commonService = new CommonService();
-                foreach(var userData in existUser)
-                {
-                    ActiveDirectoryUser  userAd = commonService.GetADUserById(userData.EMPLOYEE_ID);
-                    userAd.Should().NotBeNull();
-                    userAd.USERNAME.Should().Be(userData.USERNAME); 
-                    userAd.EMAIL.Should().Be(userData.EMAIL);
-                    userAd.EMPLOYEE_ID.Should().Be(userData.EMPLOYEE_ID);
-                    userAd.FULL_NAME.Should().Be(userData.FULL_NAME);
-                    
-                }
-            }
+            IEnumerable<dynamic> lookups = table.CreateDynamicSet(doTypeConversion:false).Select(x => new { LookupValue = x.Reason, LookupText = x.Reason }).ToList();
+            dbDriver.AddLookupIfNotExist(lookups, LOOKUPTYPE.OT_REASON);
         }
+
+
+        //[Given(@"Exist Employee AD user information From Common Service")]
+        //public void GivenExistEmployeeADUserInformationFromCommonService(Table table)
+        //{
+        //    IEnumerable<dynamic> existUser = table.CreateDynamicSet(doTypeConversion: false);
+        //    if (_context.ScenarioInfo.Tags.Contains("mockCommonService"))
+        //    {
+        //        var mock = _context.Get<Mock<ICommonService>>("MockExternalData");
+        //        List<ActiveDirectoryUser> users = new List<ActiveDirectoryUser>();
+        //        foreach(var userData in existUser)
+        //        {
+        //            var user = new ActiveDirectoryUser()
+        //            {
+        //                EMAIL = userData.EMAIL,
+        //                EMPLOYEEID = userData.EMPLOYEE_ID,
+        //                FULL_NAME = userData.FULL_NAME,
+        //                EMPLOYEE_ID = userData.EMPLOYEE_ID,
+        //                USERNAME = userData.USERNAME
+        //            };
+        //            users.Add(user);
+        //        }
+        //        mock.Setup(x => x.ExecutequeryByParam<List<ActiveDirectoryUser>>(It.IsAny<string>(), It.IsAny<string>()))
+        //            .Returns(users);
+        //    }
+        //    else
+        //    {
+        //        var commonService = new CommonService();
+        //        foreach(var userData in existUser)
+        //        {
+        //            ActiveDirectoryUser  userAd = commonService.GetADUserById(userData.EMPLOYEE_ID);
+        //            userAd.Should().NotBeNull();
+        //            userAd.USERNAME.Should().Be(userData.USERNAME); 
+        //            userAd.EMAIL.Should().Be(userData.EMAIL);
+        //            userAd.EMPLOYEE_ID.Should().Be(userData.EMPLOYEE_ID);
+        //            userAd.FULL_NAME.Should().Be(userData.FULL_NAME);
+
+        //        }
+        //    }
+        //}
 
         [Given(@"Todays date is ""([^""]*)""")]
         public void GivenTodaysDateIs(string p0)
@@ -114,23 +122,17 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
             dbDriver.CheckIfOTExisitWithStatus(status, table);
         }
 
-        [Then(@"With following overtime data to be inputed for each overtime record")]
-        public void ThenWithFollowingOvertimeDataToBeInputedForEachOvertimeRecord(Table table)
+
+
+        [When(@"User submit an overtime with ot number ""([^""]*)"" with following entries")]
+        public void WhenUserSubmitAnOvertimeWithOtNumberWithFollowingEntries(string otnumber, Table table)
         {
-            throw new PendingStepException();
+
+            _driver.SubmitOvertime(otnumber, table);
         }
 
-        [When(@"User select an overtime with ot number ""([^""]*)"" and do the following changes")]
-        public void WhenUserSelectAnOvertimeWithOtNumberAndDoTheFollowingChanges(string p0, Table table)
-        {
-            throw new PendingStepException();
-        }
 
-        [When(@"User Submit the overtime")]
-        public void WhenUserSubmitTheOvertime()
-        {
-            throw new PendingStepException();
-        }
+
         [Given(@"Following user is logged in as ""([^""]*)"" at Screen Approval")]
         public void GivenFollowingUserIsLoggedInAsAtScreenApproval(string tEAMLEADER, Table table)
         {

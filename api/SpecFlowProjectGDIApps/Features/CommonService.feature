@@ -1,6 +1,8 @@
 ﻿Feature: CommonService
 
 test penggunaan common service, koneksi VPN diperlukan
+Background: Config param
+Given BaseAPIUrl is "http://sorappsrvp04/PTVI.CommonServices/api/externaldata/"
 @tag1
 Scenario: Get Employee from Common Service
 	When calling common service with code "QRY_EMP_APPROVAL" and parameter "$top=10"

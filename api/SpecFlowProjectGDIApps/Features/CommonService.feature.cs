@@ -73,6 +73,15 @@ namespace SpecFlowProjectGDIApps.Features
             testRunner.CollectScenarioErrors();
         }
         
+        public virtual void FeatureBackground()
+        {
+#line 4
+#line hidden
+#line 5
+testRunner.Given("BaseAPIUrl is \"http://sorappsrvp04/PTVI.CommonServices/api/externaldata/\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+        }
+        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get Employee from Common Service")]
         [NUnit.Framework.CategoryAttribute("tag1")]
@@ -82,7 +91,7 @@ namespace SpecFlowProjectGDIApps.Features
                     "tag1"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Employee from Common Service", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 5
+#line 7
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -102,10 +111,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 8
  testRunner.When("calling common service with code \"QRY_EMP_APPROVAL\" and parameter \"$top=10\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 7
+#line 9
  testRunner.Then("the result is contains 10 data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -119,7 +131,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Employee By badge number", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 9
+#line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -139,10 +151,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 10
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 12
  testRunner.When("calling common service employee with BN \"0000007710\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 11
+#line 13
  testRunner.Then("the result is contains 1 data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -158,7 +173,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "mockCommonService"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Mocking Common Service", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 14
+#line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -178,6 +193,9 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                             "EMPLOYEE_ID",
                             "NAME",
@@ -196,13 +214,13 @@ this.ScenarioInitialize(scenarioInfo);
                             "E00124 - SUPV, FURNACE SHIFT D",
                             "0000008989 - REZA PRIBADI UMBARA",
                             "DPPGM5 - MGR, SMELTER FURNAC"});
-#line 15
+#line 17
  testRunner.Given("Exist Following Employees Data From Common Service", ((string)(null)), table1, "Given ");
 #line hidden
-#line 18
+#line 20
  testRunner.When("calling common service via injection to get employee with BN \"0000007142\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 19
+#line 21
  testRunner.Then("the result is contains 1 data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

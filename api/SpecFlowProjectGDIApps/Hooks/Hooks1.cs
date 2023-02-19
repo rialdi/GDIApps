@@ -1,5 +1,6 @@
-﻿using BusinessRules;
+﻿
 using Dynamitey;
+using GDIApps.ValeCommonRules;
 using Microsoft.Extensions.Hosting;
 using NUnit.Framework.Internal;
 using ServiceStack;
@@ -72,13 +73,15 @@ namespace SpecFlowProjectGDIApps.Hooks
                 var authresp = appHost.Container.Resolve<IAuthRepository>();
                 if (context.ScenarioInfo.Tags.Contains("mockCommonService"))
                 {
-                    Moq.Mock<IExternalData> _externalData = new Moq.Mock<IExternalData>();
-                    appHost.Container.AddSingleton<IExternalData>(_externalData.Object);
+                    Moq.Mock<ICommonService> _externalData = new Moq.Mock<ICommonService>();
+                    appHost.Container.AddSingleton<ICommonService>(_externalData.Object);
                     context.Add("MockExternalData", _externalData);
                 }
                 else
                 {
-                    appHost.Container.AddTransient<IExternalData, CommonService>();
+                    var commonService = new CommonService();
+                    appHost.Container.AddSingleton<ICommonService>(commonService);
+                  //  appHost.Container.AddTransient<IExternalData, CommonService>();
                 }
                 context.Add("DbConn", db);
                 context.Add("AuthRepo", authresp);

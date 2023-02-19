@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace BusinessRules
 {
 
-    public class CommonService : IExternalData
+    public class CommonService : ICommonService
     {
         const string PARAM_FOR_EMPLOYEE_ID = "@badgeno";
-         const string PARAM_FOR_TAP_DATE_START = "@date_start";
-         const string PARAM_FOR_TAP_DATE_END = "@date_end";
+        const string PARAM_FOR_TAP_DATE_START = "@date_start";
+        const string PARAM_FOR_TAP_DATE_END = "@date_end";
         public T ExecutequeryByParam<T>(string code, string paramurl)
         {
             var url = string.Format("{0}/executequerybyparam/{1}", GetBaseWebAPI(), code);

@@ -7,11 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CommonServiceData\**" />
+    <EmbeddedResource Remove="CommonServiceData\**" />
+    <None Remove="CommonServiceData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="CommonService.cs" />
+    <Compile Remove="ICommonService.cs" />
+    <Compile Remove="IExternalData.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ServiceStack.OrmLite" Version="6.6.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GDIApps.ServiceModel\GDIApps.ServiceModel.csproj" />
+    <ProjectReference Include="..\GDIApps.ValeCommonRules\GDIApps.ValeCommonRules.csproj" />
   </ItemGroup>
 
 </Project>

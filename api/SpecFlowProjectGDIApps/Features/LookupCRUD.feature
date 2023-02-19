@@ -12,6 +12,7 @@ Scenario: Create Lookup
 	| PRIORITY   | HIGH        | HIGH       |
 	| PRIORITY   | MED         | MEDIUM     |
 	| PRIORITY   | LOW         | LOW        |
+	| PRIORITY   | HIGH        | HIGH       |
 	Then The new lookup saved
 
 Scenario: Update Lookup
