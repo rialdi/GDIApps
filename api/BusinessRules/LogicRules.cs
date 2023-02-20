@@ -12,6 +12,7 @@ using GDIApps.ValeCommonRules.CommonServiceData;
 using ServiceStack;
 using Microsoft.Extensions.DependencyInjection;
 using GDIApps.ServiceModel.Types;
+using GDIApps.ServiceModel.Types.Tables;
 
 namespace BusinessRules
 {
@@ -40,8 +41,7 @@ namespace BusinessRules
         private T CreateAuditBase<T>() where T : AuditBase, new()
         {
             var obj = new T();
-            var username = _user == null ? "anonymous" : _user.UserName;
-
+             var username = ( _user == null || _user.UserName==null )? "anonymous" : _user.UserName;
             obj.CreatedBy = username;
             obj.CreatedDate = DateTime.Now;
             obj.ModifiedBy = username; ;
@@ -50,15 +50,19 @@ namespace BusinessRules
         }
         private void UpdateAudit<T>(T data) where T : AuditBase
         {
-            var username = _user == null ? "anonymous" : _user.UserName;
+            var username = ( _user == null || _user.UserName==null )? "anonymous" : _user.UserName;
             data.ModifiedBy = username;
             data.ModifiedDate = DateTime.Now;
         }
         private void DeleteAudit<T>(T data) where T : AuditBase
         {
-            var username = _user == null ? "anonymous" : _user.UserName;
+             var username = ( _user == null || _user.UserName==null )? "anonymous" : _user.UserName;
             data.DeletedBy = username;
             data.DeletedDate = DateTime.Now;
         }
+
+       
+
+      
     }
 }
