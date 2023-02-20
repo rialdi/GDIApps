@@ -25,7 +25,7 @@ public class ConfigureDb : IHostingStartup
              appHost.ScriptContext.ScriptMethods.Add(new DbScriptsAsync());
 
              // Create non-existing Table and add Seed Data Example
-             using var db = appHost.Resolve<IDbConnectionFactory>().Open();
+           //  using var db = appHost.Resolve<IDbConnectionFactory>().Open();
              // var isExistTable = false;
 
              // db.DropAndCreateTable<AppUser>();                

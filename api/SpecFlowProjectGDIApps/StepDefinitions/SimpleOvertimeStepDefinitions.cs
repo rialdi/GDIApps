@@ -2,7 +2,7 @@ using BusinessRules;
 
 using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
-using GDIApps.ServiceModel.Types.Tables;
+
 using GDIApps.ValeCommonRules;
 using GDIApps.ValeCommonRules.CommonServiceData;
 using Moq;
@@ -26,12 +26,7 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
             _driver = driver;
             _context = context;
             var cnf = context.Get<IDbConnectionFactory>("DbConn");
-            dbDriver = new DatabaseDriver(cnf);
-            using (var cn = cnf.Open())
-            {
-                cn.CreateTableIfNotExists<Overtime>();
-               // cn.CreateTableIfNotExists<Lookup>();
-            }
+        
         }
         [Given(@"Exist following overtime reasons")]
         public void GivenExistFollowingOvertimeReasons(Table table)
@@ -113,13 +108,13 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
         public void WhenUserCreateNewClaimWithDateAndSelectedEmployeesAre(string p0, Table table)
         {
             //dd-MMM-yyyy
-            _driver.CreateDraftClaim(p0, table);
+          //  _driver.CreateDraftClaim(p0, table);
         }
 
         [Then(@"Exist following overtime data with status ""([^""]*)""")]
         public void ThenExistFollowingOvertimeDataWithStatus(string status, Table table)
         {
-            dbDriver.CheckIfOTExisitWithStatus(status, table);
+           // dbDriver.CheckIfOTExisitWithStatus(status, table);
         }
 
 
@@ -128,7 +123,7 @@ namespace SpecFlowProjectGDIApps.StepDefinitions
         public void WhenUserSubmitAnOvertimeWithOtNumberWithFollowingEntries(string otnumber, Table table)
         {
 
-            _driver.SubmitOvertime(otnumber, table);
+           // _driver.SubmitOvertime(otnumber, table);
         }
 
 

@@ -105,14 +105,14 @@ this.ScenarioInitialize(scenarioInfo);
 #line 7
  testRunner.Given("Exist url service stack  \"http://localhost:5001/\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "UserName",
                             "Password"});
-                table13.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "admin@email.com",
                             "p@55wOrd"});
 #line 8
- testRunner.And("User login as", ((string)(null)), table13, "And ");
+ testRunner.And("User login as", ((string)(null)), table11, "And ");
 #line hidden
 #line 11
  testRunner.When("User rquest hello world with name \"Adam\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

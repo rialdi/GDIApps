@@ -78,7 +78,7 @@ namespace SpecFlowProjectGDIApps.Features
         {
 #line 6
 #line hidden
-            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                         "EMPLOYEE_ID",
                         "NAME",
                         "POSITION_ID",
@@ -87,7 +87,7 @@ namespace SpecFlowProjectGDIApps.Features
                         "SUPERIOR_POS",
                         "MOR_NAME",
                         "MOR_POS"});
-            table14.AddRow(new string[] {
+            table12.AddRow(new string[] {
                         "0000007142",
                         "NASARUDDIN",
                         "FPOCR4",
@@ -97,41 +97,41 @@ namespace SpecFlowProjectGDIApps.Features
                         "0000008989 - REZA PRIBADI UMBARA",
                         "DPPGM5 - MGR, SMELTER FURNAC"});
 #line 7
-testRunner.Given("Exist Following Employees Data From Common Service", ((string)(null)), table14, "Given ");
+testRunner.Given("Exist Following Employees Data From Common Service", ((string)(null)), table12, "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "EMPLOYEE_ID",
                         "FULL_NAME",
                         "USERNAME",
                         "EMAIL"});
-            table15.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         "0000007142",
                         "NASARUDIN",
                         "nzr150",
                         "nasarudin@vale.com"});
-            table15.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         "0000005664",
                         "MUJAHID LAOLA",
                         "mu3210",
                         "mujahid.laola@vale.com"});
-            table15.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         "0000008989",
                         "REZA PRIBADI UMBARA",
                         "rzp145",
                         "rezaumbara@vale.com"});
 #line 10
-testRunner.And("Exist Employee AD user information From Common Service", ((string)(null)), table15, "And ");
+testRunner.And("Exist Employee AD user information From Common Service", ((string)(null)), table13, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reason"});
-            table16.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Training"});
-            table16.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Emergency"});
-            table16.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Leave"});
 #line 15
-testRunner.And("Exist following overtime reasons", ((string)(null)), table16, "And ");
+testRunner.And("Exist following overtime reasons", ((string)(null)), table14, "And ");
 #line hidden
 #line 21
 testRunner.And("Todays date is \"19-FEB-2023\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -172,39 +172,39 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "UserName",
                             "Password"});
-                table17.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "admin@email.com",
                             "p@55wOrd"});
 #line 25
- testRunner.Given("following user is logged in as admin", ((string)(null)), table17, "Given ");
+ testRunner.Given("following user is logged in as admin", ((string)(null)), table15, "Given ");
 #line hidden
 #line 28
  testRunner.And("user able to select date from 30 days ago until today", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "EMPLOYEE_ID",
                             "NAME",
                             "POS_DEPT"});
-                table18.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "0000007142",
                             "NASARUDDIN",
                             "SMELTER FURNACE"});
 #line 29
- testRunner.And("user able to select these following employee data", ((string)(null)), table18, "And ");
+ testRunner.And("user able to select these following employee data", ((string)(null)), table16, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "EMPLOYEE_ID",
                             "NAME"});
-                table19.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "0000007142",
                             "NASARUDDIN"});
 #line 32
- testRunner.When("User Create new Claim with date \"19-FEB-2023\" and selected employees are", ((string)(null)), table19, "When ");
+ testRunner.When("User Create new Claim with date \"19-FEB-2023\" and selected employees are", ((string)(null)), table17, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "OT_NUMBER",
                             "OT_DATE",
                             "OT_HOUR",
@@ -213,7 +213,7 @@ this.FeatureBackground();
                             "NAME",
                             "POS_DEPT",
                             "POSITION_ID"});
-                table20.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "OTS-0000-02-2023-7142",
                             "19-02-2023",
                             "<null>",
@@ -223,22 +223,22 @@ this.FeatureBackground();
                             "SMELTER FURNACE",
                             "FPOCR4"});
 #line 35
- testRunner.Then("Exist following overtime data with status \"DRAFT\"", ((string)(null)), table20, "Then ");
+ testRunner.Then("Exist following overtime data with status \"DRAFT\"", ((string)(null)), table18, "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "Label",
                             "Input"});
-                table21.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "OT_HOUR",
                             "4"});
-                table21.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "OT_REASON",
                             "Training"});
 #line 38
  testRunner.When("User submit an overtime with ot number \"OTS-0000-02-2023-7142\" with following ent" +
-                        "ries", ((string)(null)), table21, "When ");
+                        "ries", ((string)(null)), table19, "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
                             "OT_NUMBER",
                             "OT_DATE",
                             "OT_HOUR",
@@ -251,7 +251,7 @@ this.FeatureBackground();
                             "FIRST_APPROVER_NAME",
                             "SECONDARY_APPROVER_ID",
                             "SECONDARY_APPROVER_NAME"});
-                table22.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "OTS-0000-02-2023-7142",
                             "19-02-2023",
                             "4",
@@ -265,7 +265,7 @@ this.FeatureBackground();
                             "0000008989",
                             "REZA PRIBADI UMBARA"});
 #line 43
- testRunner.Then("Exist following overtime data with status \"WAITING FOR FIRST APPROVAL\"", ((string)(null)), table22, "Then ");
+ testRunner.Then("Exist following overtime data with status \"WAITING FOR FIRST APPROVAL\"", ((string)(null)), table20, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

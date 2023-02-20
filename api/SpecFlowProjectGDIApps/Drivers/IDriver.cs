@@ -13,11 +13,11 @@ namespace SpecFlowProjectGDIApps.Drivers
     {
         void CheckAndLogIfUserAdmin(Table table);
         void CheckHost(string p0);
-        void CreateDraftClaim(string p0, Table table);
+      
         void DeleteLookupById(int id);
         List<EmployeeOption> GetEmployeeOptionsByLoggedUser();
         void InputNewLookupSet(Table table);
-        void SubmitOvertime(string otnumber, Table table);
+     
         void UpdateLookup(Lookup lookup);
     }
 }

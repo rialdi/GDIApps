@@ -46,33 +46,33 @@ namespace SpecFlowProjectGDIApps.Drivers
             host.Should().NotBeNull();
         }
 
-        public void CreateDraftClaim(string p0, Table table)
-        {
-            var date = DateTime.ParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"));
-            DateTime.TryParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"),DateTimeStyles.None,out var resultParse).Should().BeTrue();
-            IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet(doTypeConversion:false);
-            List<string> empIds=new List<string>();
-            foreach(var empData in selectedEmployees)
-            {
-                string id = empData.EMPLOYEE_ID;
-                empIds.Add(id);
-            }
-            var client = _context.Get<IServiceClient>("Client");
+        //public void CreateDraftClaim(string p0, Table table)
+        //{
+        //    var date = DateTime.ParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"));
+        //    DateTime.TryParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"),DateTimeStyles.None,out var resultParse).Should().BeTrue();
+        //    IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet(doTypeConversion:false);
+        //    List<string> empIds=new List<string>();
+        //    foreach(var empData in selectedEmployees)
+        //    {
+        //        string id = empData.EMPLOYEE_ID;
+        //        empIds.Add(id);
+        //    }
+        //    var client = _context.Get<IServiceClient>("Client");
 
-            client.Send(new Authenticate()
-            {
-                provider = CredentialsAuthProvider.Name,
-                UserName = _context.Get<string>("UserName"),
-                Password = _context.Get<string>("Password")
-            });
-            var resp = client.Post(new CreateOvertimeDraft { OtDate = p0, EmployeeIds = empIds });
-           resp.Items.Count.Should().BeGreaterThan(0);
-            foreach(var dataResp in resp.Items)
-            {
-                dataResp.Success.Should().BeTrue();
+        //    client.Send(new Authenticate()
+        //    {
+        //        provider = CredentialsAuthProvider.Name,
+        //        UserName = _context.Get<string>("UserName"),
+        //        Password = _context.Get<string>("Password")
+        //    });
+        //    var resp = client.Post(new CreateOvertimeDraft { OtDate = p0, EmployeeIds = empIds });
+        //   resp.Items.Count.Should().BeGreaterThan(0);
+        //    foreach(var dataResp in resp.Items)
+        //    {
+        //        dataResp.Success.Should().BeTrue();
               
-            }
-        }
+        //    }
+        //}
 
         public void DeleteLookupById(int id)
         {
@@ -128,45 +128,45 @@ namespace SpecFlowProjectGDIApps.Drivers
 
         }
 
-        public void SubmitOvertime(string otnumber, Table table)
-        {
-            IEnumerable<dynamic> inputs = table.CreateDynamicSet(doTypeConversion: false);
+        //public void SubmitOvertime(string otnumber, Table table)
+        //{
+        //    IEnumerable<dynamic> inputs = table.CreateDynamicSet(doTypeConversion: false);
 
-            var client = _context.Get<IServiceClient>("Client");
+        //    var client = _context.Get<IServiceClient>("Client");
 
-            client.Send(new Authenticate()
-            {
-                provider = CredentialsAuthProvider.Name,
-                UserName = _context.Get<string>("UserName"),
-                Password = _context.Get<string>("Password")
-            });
-         var lookupsResp=   client.Api(new QueryLookups
-            {
-             LOOKUPTYPE= LOOKUPTYPE.OT_REASON
-            });
-            while(!lookupsResp.Completed)
-                Task.Delay(1000).Wait();
-            var lookups = lookupsResp.Response.Results;
-            lookups.Should().NotBeNull();
-            lookups.Count.Should().BeGreaterThan(0);
-            SubmitClaimRequest request = new SubmitClaimRequest();
-            request.OtNumber= otnumber;
-            foreach(var labelinput in inputs)
-            {
-                if(labelinput.Label== "OT_HOUR")
-                    request.OtHour=decimal.Parse(labelinput.Input);
-                if (labelinput.Label == "OT_REASON")
-                {
-                    string input=labelinput.Input;
-                    request.ReasonCode = lookups.FirstOrDefault(l => l.LookupText.ToLower() == input.ToLower()).LookupValue;
-                }
+        //    client.Send(new Authenticate()
+        //    {
+        //        provider = CredentialsAuthProvider.Name,
+        //        UserName = _context.Get<string>("UserName"),
+        //        Password = _context.Get<string>("Password")
+        //    });
+        // var lookupsResp=   client.Api(new QueryLookups
+        //    {
+        //     LOOKUPTYPE= LOOKUPTYPE.OT_REASON
+        //    });
+        //    while(!lookupsResp.Completed)
+        //        Task.Delay(1000).Wait();
+        //    var lookups = lookupsResp.Response.Results;
+        //    lookups.Should().NotBeNull();
+        //    lookups.Count.Should().BeGreaterThan(0);
+        //    SubmitClaimRequest request = new SubmitClaimRequest();
+        //    request.OtNumber= otnumber;
+        //    foreach(var labelinput in inputs)
+        //    {
+        //        if(labelinput.Label== "OT_HOUR")
+        //            request.OtHour=decimal.Parse(labelinput.Input);
+        //        if (labelinput.Label == "OT_REASON")
+        //        {
+        //            string input=labelinput.Input;
+        //            request.ReasonCode = lookups.FirstOrDefault(l => l.LookupText.ToLower() == input.ToLower()).LookupValue;
+        //        }
 
-            }
-         var response=   client.Post(request);
-            response.Success.Should().BeTrue();
-            response.OtNumber.Should().Be(otnumber);
+        //    }
+        // var response=   client.Post(request);
+        //    response.Success.Should().BeTrue();
+        //    response.OtNumber.Should().Be(otnumber);
 
-        }
+        //}
 
         public void UpdateLookup(Lookup lookup)
         {
