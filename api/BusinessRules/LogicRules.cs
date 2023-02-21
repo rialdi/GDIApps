@@ -12,7 +12,7 @@ using GDIApps.ValeCommonRules.CommonServiceData;
 using ServiceStack;
 using Microsoft.Extensions.DependencyInjection;
 using GDIApps.ServiceModel.Types;
-using GDIApps.ServiceModel.Types.Tables;
+
 
 namespace BusinessRules
 {
