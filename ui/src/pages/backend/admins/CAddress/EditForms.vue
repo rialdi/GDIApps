@@ -4,7 +4,7 @@
 
     <div class="row">
         <div class="col-12 p-1">
-            <KTextInput id="Address Name" v-model="dataItemInEdit.addressName" 
+            <KTextInput id="Address Name" v-model="dataItemInEdit.addressName" :validator="nameValidator"
                 :showLabel="true" :label="'Address Name'" :type="'string'" :required="true" :hint="'Hint : Address Name'"/>
         </div>
     </div>
@@ -98,14 +98,27 @@
     </div>
     <div class="row">
         <div class="col-6 p-1">
-            <KMaskedTextBox id="phoneNo"  v-model="dataItemInEdit.phoneNo" 
-                :showLabel="true" :label="'Phone No Mask'" :mask="'+6200000000000'"/>
+            <KTextInput id="phoneNo" v-model="dataItemInEdit.phoneNo" :validator="phoneValidator"
+                :showLabel="true" :label="'Phone No'" :type="'string'" :required="true"/>
+            <!-- <KMaskedTextBox id="phoneNo"  v-model="dataItemInEdit.phoneNo" :validator="phoneValidator"
+                :showLabel="true" :label="'Phone No Mask'" :mask="'+6200000000000'"/> -->
         </div>
         <div class="col-6 p-1">
+            
             <KCheckbox id="isMain" v-model="dataItemInEdit.isMain" 
                 :showLabel="true" :label="'Is Active'" />
         </div>
     </div>
+    <!-- <div class="row">
+        <div class="col-6 p-1">
+            <KTextInput id="phoneNo" v-model="dataItemInEdit.phoneNo" :validator="emailValidator"
+                :showLabel="true" :label="'Phone No'" :type="'email'" :required="true"/>
+        </div>
+        <div class="col-6 p-1">
+            <KTextInput id="phoneNo" v-model="dataItemInEdit.phoneNo" :validator="passwordValidator" 
+                :showLabel="true" :label="'Phone No'" :type="'password'" :required="true"/>
+        </div>
+    </div> -->
 
     <!-- <span>{{ dataItemInEdit.phoneNo }}</span> -->
     <!-- <span>{{ indonesiRegionStore.availablePostalCodes }}</span> -->
@@ -139,9 +152,12 @@ import KDropDownList from "@/components/kendo/KDropDownList.vue"
 import KCheckbox from "@/components/kendo/KCheckbox.vue"
 import KTextArea from "@/components/kendo/KTextArea.vue"
 import KTextInput from "@/components/kendo/KTextInput.vue"
-import KMaskedTextBox from "@/components/kendo/KMaskedTextBox.vue"
+// import KMaskedTextBox from "@/components/kendo/KMaskedTextBox.vue"
 
 import { useIndonesiaRegionStore } from "@/stores/regionindonesia"
+
+import { nameValidator, phoneValidator } from "@/stores/validators"
+// import { passwordValidator, emailValidator } from "@/stores/validators"
 
 let dataItemInEdit = ref<CAddress>(new CAddress())
 

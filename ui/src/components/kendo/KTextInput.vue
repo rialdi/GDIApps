@@ -1,11 +1,12 @@
 <template>
-    <KLabel :editor-id="id" :disabled="disabled" :optional="optional" class="form-label">
+    <KLabel :editor-id="id" :editor-valid="isValid" :disabled="disabled" :optional="optional" class="form-label">
         {{label}}
     </KLabel>
     <div class="k-form-field-wrap">
         <KInput 
             :id="id"
             :type="type"
+            :valid="isValid"
             :value="modelValue"
             :disabled="disabled"
             :placeholder="placeholder"
@@ -15,8 +16,8 @@
             @blur="handleBlur"
             @focus="handleFocus"
             />
-        <KError v-if="showValidationMessage">
-            {{validationMessage}}
+        <KError v-if="!isValid">
+            {{ valMessage }}
         </KError>
         <KHint v-else>{{hint}}</KHint>
     </div>
@@ -39,7 +40,8 @@ defineProps<{
     hint?: string ,
     disabled?: boolean | false,
     placeholder? : string | undefined,
-    required?: boolean | false
+    required?: boolean | false,
+    validator?: Function
     // status?: ResponseStatus|null
  }>()
 
@@ -51,10 +53,25 @@ defineProps<{
     (e:'focus', value:any): () => void
 }>()
 
-const showValidationMessage = computed( () => props.validationMessage )
+// const showValidationMessage = computed( () => props.validationMessage )
+// let showValidationMessage = ref<boolean | undefined>(false)
+let isValid = ref<boolean | undefined>(true)
+let valMessage = ref<string | undefined>()
+// const isValid = computed( (e : any) => props.validator ? props.validator(e) : true)
 // const showHint = computed( () => !showValidationMessage && props.hint )
 
 const handleChange = (e : any) =>{
+    // console.log(props.validator)
+    
+    if (props.validator)
+    {
+        valMessage.value = props.validator(e.target.value) 
+        isValid.value = !valMessage.value
+        // showValidationMessage.value = !(isValid.value)
+        // console.log(valMessage.value)
+        // console.log("isValid : " + isValid.value)
+        // console.log("showValidationMessage: " + isValid.value)
+    }
     emit('update:modelValue', e.target.value)
     emit('change', e);
 }
