@@ -2856,6 +2856,14 @@
     background: $primary;
 }
 
+.k-form .k-label,
+.k-form kendo-label,
+.k-form .k-form-label {
+    margin-bottom: 5px;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
 .k-form,
 .k-form-inline {
     color: $dark;

@@ -15,9 +15,9 @@ export const emailValidator = value =>
     : 'Email is not in a valid format.';
 export const nameValidator = value =>
   !value
-    ? 'Full Name is required'
+    ? 'This field is required.'
     : value.length < 3
-    ? 'Full Name should be at least 3 characters long.'
+    ? 'This field should be at least 3 characters long.'
     : '';
 export const userNameValidator = value =>
   !value
@@ -55,7 +55,7 @@ export const arrivalDateValidator = value =>
   value ? '' : 'Arrival Date is required.';
 export const colorValidator = value => (value ? '' : 'Color is required.');
 export const requiredValidator = value =>
-  value ? '' : 'Error: This field is required.';
+  value ? '' : 'This field is required.';
 export const passwordValidator = value =>
   value && value.length > 7 ? '' : 'Password must be at least 7 symbols.';
 export const addressValidator = value => (value ? '' : 'Address is required.');

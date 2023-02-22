@@ -11,7 +11,7 @@
             :disabled="disabled"
             :placeholder="placeholder"
             :required="required"
-            :validation-message="validationMessage"
+            :validation-message="valMessage"
             @input="handleChange"
             @blur="handleBlur"
             @focus="handleFocus"
@@ -53,25 +53,23 @@ defineProps<{
     (e:'focus', value:any): () => void
 }>()
 
-// const showValidationMessage = computed( () => props.validationMessage )
-// let showValidationMessage = ref<boolean | undefined>(false)
-let isValid = ref<boolean | undefined>(true)
 let valMessage = ref<string | undefined>()
-// const isValid = computed( (e : any) => props.validator ? props.validator(e) : true)
-// const showHint = computed( () => !showValidationMessage && props.hint )
+const isValid = computed( () => getIsValid(props.modelValue))
+const getIsValid = (currValue : any) => {
+    if (props.validator) {
+        valMessage.value = props.validator(currValue) 
+        return !valMessage.value
+    }
+    else if(props.required) {
+        valMessage.value = props.validationMessage
+        return !(!currValue) 
+    }
+    else {
+        return true
+    }
+}
 
 const handleChange = (e : any) =>{
-    // console.log(props.validator)
-    
-    if (props.validator)
-    {
-        valMessage.value = props.validator(e.target.value) 
-        isValid.value = !valMessage.value
-        // showValidationMessage.value = !(isValid.value)
-        // console.log(valMessage.value)
-        // console.log("isValid : " + isValid.value)
-        // console.log("showValidationMessage: " + isValid.value)
-    }
     emit('update:modelValue', e.target.value)
     emit('change', e);
 }

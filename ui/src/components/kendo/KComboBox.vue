@@ -13,9 +13,9 @@
                 :text-field="textField"
                 :value-primitive="true"
                 :value="value"
-                :valid="valid"
                 :filterable="true"
-                :disabled="disable"
+                :disabled="disabled"
+                :required="required"
                 @filterchange="handleFilterChange"
                 @change="handleChange"
                 @blur="handleBlur"
@@ -45,7 +45,8 @@ defineProps<{
     validationMessage?: string,
     touched?: boolean | false,
     hint?: string ,
-    disable?: boolean | false
+    disabled?: boolean | false,
+    required? : boolean | false
     // status?: ResponseStatus|null
  }>()
 

@@ -4,13 +4,13 @@
     <div class="row">
         <div class="col-6 p-1">
             <KComboBox 
-                :id="'client'" :label="'Client'" :valueField="'id'" :textField="'name'"
+                :id="'client'" :label="'Client'" :valueField="'id'" :textField="'name'" :required="true"
                 :dataItems="clientList" v-model="dataItemInEdit.clientId" :value="dataItemInEdit.clientId" :valid="true" :showLabel="true"
             />
         </div>
         <div class="col-6 p-1">
             <KTextInput id="Address Name" v-model="dataItemInEdit.addressName" :validator="nameValidator"
-                :showLabel="true" :label="'Address Name'" :type="'string'" :required="true"/>
+                :showLabel="true" :label="'Address Name'" :type="'string'" />
         </div>
     </div>
     <!-- <div class="row mb-1">
@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-6 p-2">
             <KComboBox 
-                :id="'Country'" :label="'Country'" :valueField="'name'" :textField="'name'"
+                :id="'Country'" :label="'Country'" :valueField="'name'" :textField="'name'" :required="true"
                 :dataItems="indonesiRegionStore.countryList" v-model="dataItemInEdit.country" :value="dataItemInEdit.country" :valid="true" :showLabel="true"
                 @change="indonesiRegionStore.onChangeCountry" @filterchange="indonesiRegionStore.onFilterCountry"
                 :hint="'Country'" :touched="false" :validationMessage="'Ok'" 
@@ -55,7 +55,7 @@
             <KComboBox 
                 :id="'Province'" :label="'Province'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.provinceList" v-model="dataItemInEdit.province" :value="dataItemInEdit.province" :valid="true" :showLabel="true"
-                @change="indonesiRegionStore.onChangeProvince" @filterchange="indonesiRegionStore.onFilterProvince" :disable="!indonesiRegionStore.selectedCountry"
+                @change="indonesiRegionStore.onChangeProvince" @filterchange="indonesiRegionStore.onFilterProvince" :disabled="!indonesiRegionStore.selectedCountry"
             />
         </div>
     </div>
@@ -64,7 +64,7 @@
             <KComboBox 
                 :id="'City'" :label="'City'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.cityList" v-model="dataItemInEdit.city" :value="dataItemInEdit.city" :valid="true" :showLabel="true"
-                :disable="!indonesiRegionStore.selectedProvince"
+                :disabled="!indonesiRegionStore.selectedProvince"
                 @change="indonesiRegionStore.onChangeCity" @filterchange="indonesiRegionStore.onFilterCity"
             />
         </div>
@@ -72,7 +72,7 @@
             <KComboBox 
                 :id="'District'" :label="'District'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.districtList" v-model="dataItemInEdit.district" :value="dataItemInEdit.district" :valid="true" :showLabel="true"
-                :disable="!indonesiRegionStore.selectedCity"
+                :disabled="!indonesiRegionStore.selectedCity"
                 @change="indonesiRegionStore.onChangeDistrict" @filterchange="indonesiRegionStore.onFilterDistrict"
             />
         </div>
@@ -82,13 +82,13 @@
             <KComboBox 
                 :id="'Village'" :label="'Village'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.villageList" v-model="dataItemInEdit.village" :value="dataItemInEdit.village" :valid="true" :showLabel="true"
-                :disable="!indonesiRegionStore.selectedDistrict"
+                :disabled="!indonesiRegionStore.selectedDistrict"
                 @change="indonesiRegionStore.onChangeVillage" @filterchange="indonesiRegionStore.onFilterVillage"
             />
         </div>
         <div class="col-6 p-1">
             <KTextInput id="postalCode"  v-model="indonesiRegionStore.availablePostalCodes" 
-                :showLabel="true" :label="'Postal Code'" :type="'string'" :required="false"/>
+                :showLabel="true" :label="'Postal Code'" :type="'string'" :validator="requiredValidator"/>
         </div>
     </div>
     <div class="row">
@@ -104,7 +104,7 @@
     <div class="row">
         <div class="col-6 p-1">
             <KTextInput id="phoneNo" v-model="dataItemInEdit.phoneNo" :validator="phoneValidator"
-                :showLabel="true" :label="'Phone No'" :type="'string'" :required="true"/>
+                :showLabel="true" :label="'Phone No'" :type="'string'"/>
             <!-- <KMaskedTextBox id="phoneNo"  v-model="dataItemInEdit.phoneNo" :validator="phoneValidator"
                 :showLabel="true" :label="'Phone No Mask'" :mask="'+6200000000000'"/> -->
         </div>
@@ -158,7 +158,7 @@ import KTextInput from "@/components/kendo/KTextInput.vue"
 
 import { useIndonesiaRegionStore } from "@/stores/regionindonesia"
 
-import { nameValidator, phoneValidator } from "@/stores/validators"
+import { requiredValidator, nameValidator, phoneValidator } from "@/stores/validators"
 // import { passwordValidator, emailValidator } from "@/stores/validators"
 
 let dataItemInEdit = ref<CAddress>(new CAddress())
