@@ -11,11 +11,11 @@ namespace GDIApps.ServiceModel;
 [ValidateIsAuthenticated]
 [Tag("Projects")]
 [AutoApply(Behavior.AuditQuery)]
-public class QueryProjects : QueryDb<Project, ProjectView>, IJoin<Project, Client, CContract>  {
+public class QueryProjects : QueryDb<Project, ProjectView>, IJoin<Project, Client>  {
     public string? Code { get; set; }
     public int? ClientId { get; set; }
-    public int? CContractId { get; set; }
-    public string? CContractContractNoContains { get; set; }
+    // public int? CContractId { get; set; }
+    // public string? CContractContractNoContains { get; set; }
 
     [ValidateNull]
     public string[]? ClientCodes {get; set;}

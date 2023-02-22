@@ -42,6 +42,7 @@ declare module '@vue/runtime-core' {
     KComboBox: typeof import('./components/kendo/KComboBox.vue')['default']
     KDropDownList: typeof import('./components/kendo/KDropDownList.vue')['default']
     KMaskedTextBox: typeof import('./components/kendo/KMaskedTextBox.vue')['default']
+    KStandardGrid: typeof import('./components/grids/KStandardGrid.vue')['default']
     KTextArea: typeof import('./components/kendo/KTextArea.vue')['default']
     KTextInput: typeof import('./components/kendo/KTextInput.vue')['default']
     MarkdownPage: typeof import('./components/MarkdownPage.vue')['default']

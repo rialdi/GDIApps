@@ -1,44 +1,3 @@
-<script setup lang="ts">
-import { onMounted, ref } from "vue"
-import { Client, QueryClients } from "@/dtos"
-import { client } from "@/api"
-import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
-import { process, filterBy } from '@progress/kendo-data-query'
-import CBankGrid from "./CBankGrid.vue"
-
-const mainGridtRef = ref<InstanceType<typeof CBankGrid>>()
-
-onMounted(async () => {
-  await getClientList()
-});
-
-/* Combobox Client */
-const sourceClientList = ref<Client[]>([])
-let clientList = ref<any[]>([])
-
-const getClientList = async() => {
-  const api = await client.api(new QueryClients({ isActive: true }))
-  if (api.succeeded) {
-    sourceClientList.value = api.response!.results ?? []
-    clientList.value = process(sourceClientList.value, {}).data as any[]
-  }
-}
-
-const cboClientOnChange = (e: any) => {
-  selectedClientId.value = e.value ? e.value.id : undefined
-  mainGridtRef.value?.refreshDatas(selectedClientId.value)
-}
-
-const onCBOClientFilter = (e : any) => {
-  const data = process(sourceClientList.value, {}).data as any[]
-  clientList.value = filterBy(data, e.filter)
-}
-
-let selectedClientId = ref<number | undefined>()
-/* END of Combobox Client */
-
-</script>
-
 <template>
   <!-- Hero --> 
   <BasePageHeading title="Client Address Data" subtitle="This Client Address Data Edit is using External Form">
@@ -94,5 +53,48 @@ let selectedClientId = ref<number | undefined>()
   </div>
   <!-- END Page Content -->
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from "vue"
+import { Client, QueryClients } from "@/dtos"
+import { client } from "@/api"
+import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
+import { process, filterBy } from '@progress/kendo-data-query'
+import CBankGrid from "./CBankGrid.vue"
+
+const mainGridtRef = ref<InstanceType<typeof CBankGrid>>()
+
+onMounted(async () => {
+  await getClientList()
+});
+
+/* Combobox Client */
+const sourceClientList = ref<Client[]>([])
+let clientList = ref<any[]>([])
+let selectedClientId = ref<number | undefined>()
+
+const getClientList = async() => {
+  const api = await client.api(new QueryClients({ isActive: true }))
+  if (api.succeeded) {
+    sourceClientList.value = api.response!.results ?? []
+    clientList.value = process(sourceClientList.value, {}).data as any[]
+  }
+}
+
+const cboClientOnChange = (e: any) => {
+  selectedClientId.value = e.value ? e.value.id : undefined
+  mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
+  mainGridtRef.value?.refreshDatas()
+}
+
+const onCBOClientFilter = (e : any) => {
+  const data = process(sourceClientList.value, {}).data as any[]
+  clientList.value = filterBy(data, e.filter)
+}
+
+/* END of Combobox Client */
+</script>
+
+
 
 
