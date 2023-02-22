@@ -107,7 +107,7 @@ namespace BusinessRules
         private T CreateAuditBase<T>() where T : AuditBase, new()
         {
             var obj = new T();
-            var username = _user == null ? "anonymous" : _user.UserName;
+            var username = _user == null || string.IsNullOrWhiteSpace(_user.UserName)? "anonymous" : _user.UserName;
 
             obj.CreatedBy = username;
             obj.CreatedDate = DateTime.Now;
@@ -117,13 +117,15 @@ namespace BusinessRules
         }
         private void UpdateAudit<T>(T data) where T : AuditBase
         {
-            var username = _user == null ? "anonymous" : _user.UserName;
+            var username = _user == null || string.IsNullOrWhiteSpace(_user.UserName) ? "anonymous" : _user.UserName;
+
             data.ModifiedBy = username;
             data.ModifiedDate = DateTime.Now;
         }
         private void DeleteAudit<T>(T data) where T : AuditBase
         {
-            var username = _user == null ? "anonymous" : _user.UserName;
+            var username = _user == null || string.IsNullOrWhiteSpace(_user.UserName) ? "anonymous" : _user.UserName;
+
             data.DeletedBy = username;
             data.DeletedDate = DateTime.Now;
         }

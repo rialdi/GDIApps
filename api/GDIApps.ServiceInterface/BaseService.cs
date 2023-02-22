@@ -14,7 +14,7 @@ namespace GDIApps.ServiceInterface
     public  class BaseService:Service
     {
         LogicRules _rules;
-        private LogicRules Rules
+        protected LogicRules Rules
         {
             get
             {
