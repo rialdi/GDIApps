@@ -77,14 +77,14 @@ namespace SpecFlowProjectGDIApps.Features
         {
 #line 3
 #line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "UserName",
                         "Password"});
-            table4.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "admin@email.com",
                         "p@55wOrd"});
 #line 4
-testRunner.Given("following user is logged in as admin", ((string)(null)), table4, "Given ");
+testRunner.Given("following user is logged in as admin", ((string)(null)), table2, "Given ");
 #line hidden
         }
         
@@ -124,28 +124,28 @@ this.ScenarioInitialize(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "LookupType",
                             "LookupValue",
                             "LookupText"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "PRIORITY",
                             "HIGH",
                             "HIGH"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "PRIORITY",
                             "MED",
                             "MEDIUM"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "PRIORITY",
                             "LOW",
                             "LOW"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "PRIORITY",
                             "HIGH",
                             "HIGH"});
 #line 10
- testRunner.When("User Input new lookup", ((string)(null)), table5, "When ");
+ testRunner.When("User Input new lookup", ((string)(null)), table3, "When ");
 #line hidden
 #line 16
  testRunner.Then("The new lookup saved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -184,35 +184,35 @@ this.ScenarioInitialize(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                             "LookupType",
                             "LookupValue",
                             "LookupText"});
-                table6.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "PRIORITY",
                             "HIGH",
                             "HIGH"});
-                table6.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "PRIORITY",
                             "MED",
                             "MEDIUM"});
-                table6.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "PRIORITY",
                             "LOW",
                             "LOW"});
 #line 19
- testRunner.Given("Exist Lookup data in following", ((string)(null)), table6, "Given ");
+ testRunner.Given("Exist Lookup data in following", ((string)(null)), table4, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "LookupType",
                             "LookupValue",
                             "LookupText"});
-                table7.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "PRIORITY",
                             "NORMAL",
                             "NORMAL"});
 #line 24
- testRunner.And("User Change lookup with LookupType \"PRIORITY\" and value \"MED\" into", ((string)(null)), table7, "And ");
+ testRunner.And("User Change lookup with LookupType \"PRIORITY\" and value \"MED\" into", ((string)(null)), table5, "And ");
 #line hidden
 #line 27
  testRunner.When("User Save Lookup", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -254,38 +254,38 @@ this.ScenarioInitialize(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "LookupType",
                             "LookupValue",
                             "LookupText"});
-                table8.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "PRIORITY",
                             "HIGH",
                             "HIGH"});
-                table8.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "PRIORITY",
                             "MED",
                             "MEDIUM"});
-                table8.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "PRIORITY",
                             "LOW",
                             "LOW"});
 #line 31
- testRunner.Given("Exist Lookup data in following", ((string)(null)), table8, "Given ");
+ testRunner.Given("Exist Lookup data in following", ((string)(null)), table6, "Given ");
 #line hidden
 #line 36
  testRunner.When("User Delete lookup data with type \"PRIORITY\" and value \"LOW\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                             "LookupType",
                             "LookupValue",
                             "LookupText"});
-                table9.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "PRIORITY",
                             "LOW",
                             "LOW"});
 #line 37
- testRunner.Then("following lookup is not exists", ((string)(null)), table9, "Then ");
+ testRunner.Then("following lookup is not exists", ((string)(null)), table7, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
