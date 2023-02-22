@@ -27,6 +27,7 @@ export const getAppUser = async (userName:string|undefined) => {
     const api = await client.api(new GetUserInfoDetail({ userNameOrEmail: userName}))
     if (api.succeeded) {
         appUser.value = api.response! ?? []
+        appUser.value.roles = auth.value?.roles
     }
 }
 

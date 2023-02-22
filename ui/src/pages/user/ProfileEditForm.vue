@@ -16,6 +16,11 @@
                 <kFormInput v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus"/>
             </template>
         </kField>
+        <kField :id="'firstName'" :name="'firstName'" :label="'First Name'" :component="'myTemplate'" :validator="nameValidator">
+        <template v-slot:myTemplate="{props}">
+            <kFormInput v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus"/>
+        </template>
+        </kField>
         <kField :id="'fullName'" :name="'fullName'" :label="'Full Name'" :component="'myTemplate'" :validator="nameValidator">
         <template v-slot:myTemplate="{props}">
             <kFormInput v-bind="props" @change="props.onChange" @blur="props.onBlur" @focus="props.onFocus"/>

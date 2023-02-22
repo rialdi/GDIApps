@@ -15,6 +15,9 @@ public class Project : AuditBase
     [References(typeof(Client))]
     public int ClientId { get; set;}
 
+    [References(typeof(CContract))]
+    public int? CContractId { get; set;}
+
     // [Reference]
     // public Client ProjectClient { get; set; }
 
@@ -47,4 +50,5 @@ public class ProjectView : Project
 {
     public string ClientCode { get; set; } = string.Empty;
     public string ClientName { get; set; } = string.Empty;
+    public string? CContractContractNo { get; set; }
 }

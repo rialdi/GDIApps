@@ -17,6 +17,10 @@ export default {
       subActivePaths: "/backend/admins",
       sub: [
         {
+          name: "User List",
+          to: "backend-admins-userlist",
+        },
+        {
           name: "Lookups",
           to: "backend-admins-lookup",
         },
@@ -27,6 +31,10 @@ export default {
         {
           name: "Projects",
           to: "backend-admins-project",
+        },
+        {
+          name: "CAddress",
+          to: "backend-admins-caddress",
         }
       ],
     },

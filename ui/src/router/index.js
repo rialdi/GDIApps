@@ -29,9 +29,11 @@ const AuthLock = () => import("@/views/auth/LockView.vue");
 const AuthReminder = () => import("@/views/auth/ReminderView.vue");
 
 // Admin: Pages
+const UserListPages = () => import("@/pages/user/UserList.vue");
 const LookupPages = () => import("@/pages/backend/admins/Lookups.vue");
 const ClientPages = () => import("@/pages/backend/admins/Clients.vue");
 const ProjectPages = () => import("@/pages/backend/admins/Projects/Index.vue");
+const CAddressPages = () => import("@/pages/backend/admins/CAddress/Index.vue");
 
 // Backend: Pages
 const BackendPagesAuth = () => import("@/views/backend/pages/AuthView.vue");
@@ -140,6 +142,11 @@ const routes = [
         redirect: "/admins/lookup",
         children: [
           {
+            path: "userlist",
+            name: "backend-admins-userlist",
+            component: UserListPages,
+          },
+          {
             path: "lookup",
             name: "backend-admins-lookup",
             component: LookupPages,
@@ -153,6 +160,11 @@ const routes = [
             path: "project",
             name: "backend-admins-project",
             component: ProjectPages,
+          },
+          {
+            path: "caddress",
+            name: "backend-admins-caddress",
+            component: CAddressPages,
           }
         ],
       },
@@ -285,7 +297,7 @@ const ROUTE_GUARDS = [
   { path:'/bookings-crud', attr:'role:Employee' },
 ]
 const validateRoute = (to, next, attrs) => {
-  console.log(to);
+  // console.log(to);
   for (let i=0; i<ROUTE_GUARDS.length; i++) {
       const { path, attr } = ROUTE_GUARDS[i];
       if (!to.path.startsWith(path)) continue;

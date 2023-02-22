@@ -1,8 +1,13 @@
 using Funq;
 using ServiceStack;
+// using ServiceStack.Admin;
+using ServiceStack.Configuration;
+using ServiceStack.Script;
+using ServiceStack.Text;
 using GDIApps.ServiceInterface;
 using GDIApps.ServiceModel.Types;
 using ServiceStack.IO;
+using ServiceStack.Web;
 
 [assembly: HostingStartup(typeof(GDIApps.AppHost))]
 
@@ -10,6 +15,8 @@ namespace GDIApps;
 
 public class AppHost : AppHostBase, IHostingStartup
 {
+    
+
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context, services) => {
             services.ConfigureNonBreakingSameSiteCookies(context.HostingEnvironment);
@@ -21,7 +28,9 @@ public class AppHost : AppHostBase, IHostingStartup
     {
         SetConfig(new HostConfig {
         });
-
+        
+        
+        
         Plugins.Add(new AdminDatabaseFeature());
 
         Plugins.Add(new SpaFeature {
@@ -72,5 +81,7 @@ public class AppHost : AppHostBase, IHostingStartup
             new UploadLocation("tempUploadFiles", appFs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/tempUploadFiles/{ctx.FileName}")
         ));
+
+        // container.Register<AdminUsersService>(c => new AdminUsersService());
     }
 }

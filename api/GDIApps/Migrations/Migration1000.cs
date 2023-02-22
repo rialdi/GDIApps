@@ -7,45 +7,16 @@ namespace GDIApps.Migrations;
 
 public class Migration1000 : MigrationBase
 {
-    public class Booking : AuditBase
-    {
-        [AutoIncrement]
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public RoomType RoomType { get; set; }
-        public int RoomNumber { get; set; }
-        public DateTime BookingStartDate { get; set; }
-        public DateTime? BookingEndDate { get; set; }
-        public decimal Cost { get; set; }
-        public string? Notes { get; set; }
-        public bool? Cancelled { get; set; }
-    }
-
-    public enum RoomType
-    {
-        Queen,
-        Double,
-        Suite,
-    }
-
     public override void Up()
     {
-        Db.CreateTable<Booking>();
-
         Db.CreateTable<Lookup>();
-
         Db.CreateTable<ContactUs>();
         Db.CreateTable<Email>();
         Db.CreateTable<EmailTemplate>();
-
         Db.CreateTable<Client>();
         Db.CreateTable<Project>();
         
         #region Seed Data
-
-        CreateBooking("First Booking!", RoomType.Queen, 10, 100, "employee@email.com");
-        CreateBooking("Booking 2", RoomType.Double, 12, 120, "manager@email.com");
-        CreateBooking("Booking the 3rd", RoomType.Suite, 13, 130, "employee@email.com");
 
         CreateEmailTemplate(
             EMAIL_TEMPLATE_CODE.APPUSER_EMAIL_CONFIRM, 
@@ -66,17 +37,22 @@ public class Migration1000 : MigrationBase
 
         long clientId = 0;
         long projectId = 0;
-        clientId = CreateDataClient("POI", "PREMIER OIL INDONESIA", "", true);
-        projectId = CreateDataProject(clientId, "POIBSFQR", "POI - Balance Sheet Recon", "", true);
+        clientId = CreateDataClient("GDI", "GLOBAL DINAMIKA INFORMATIKA", "", true);
+        
         clientId = CreateDataClient("VALE", "PT VALE INDONESIA", "", true);
         projectId = CreateDataProject(clientId, "IMACSUI", "IMACS UI", "", true);
 
+        clientId = CreateDataClient("POI", "PREMIER OIL INDONESIA", "", true);
+        projectId = CreateDataProject(clientId, "POIBSFQR", "POI - Balance Sheet Recon", "", true);
+
+        clientId = CreateDataClient("PMSI", "PT. Philip Morris Sampoerna International Service Center", "", true);
+       
+       
         #endregion
     }
     
     public override void Down()
     {
-        Db.DropTable<Booking>();
         Db.DropTable<Lookup>();
         Db.DropTable<ContactUs>();
         Db.DropTable<Email>();
@@ -101,20 +77,6 @@ public class Migration1000 : MigrationBase
             CreatedDate= DateTime.Now,
             ModifiedBy="Admin@email.com",
             ModifiedDate = DateTime.Now
-        });
-
-    private void CreateBooking(string name, RoomType type, int roomNo, decimal cost, string by) =>
-        Db.Insert(new Booking {
-            Name = name,
-            RoomType = type,
-            RoomNumber = roomNo,
-            Cost = cost,
-            BookingStartDate = DateTime.UtcNow.AddDays(roomNo),
-            BookingEndDate = DateTime.UtcNow.AddDays(roomNo + 7),
-            CreatedBy = by,
-            CreatedDate = DateTime.UtcNow,
-            ModifiedBy = by,
-            ModifiedDate = DateTime.UtcNow,
         });
 
     private long CreateDataLookup(

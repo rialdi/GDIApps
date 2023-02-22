@@ -6,6 +6,11 @@ import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
 import { process, filterBy } from '@progress/kendo-data-query'
 import ProjectGrid from "./ProjectGrid.vue"
 
+import FormRegions from "@/components/kform/FormRegions.vue"
+
+// import provinces from "@/data/regions/provinces"
+// import cities from "@/data/regions/cities"
+
 const projectGridtRef = ref<InstanceType<typeof ProjectGrid>>()
 
 onMounted(async () => {
@@ -22,6 +27,7 @@ const getClientList = async() => {
     sourceClientList.value = api.response!.results ?? []
     clientList.value = process(sourceClientList.value, {}).data as any[]
   }
+  // console.log(clientList.value)
 }
 
 const cboClientOnChange = (e: any) => {
@@ -73,6 +79,9 @@ let selectedClientId = ref<number | undefined>()
               @change="cboClientOnChange"
               @filterchange="onCBOClientFilter"
           ></kComboBox>
+        </div>
+        <div>
+          <FormRegions></FormRegions>
         </div>
       </div>
     </BaseBlock>

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-16 08:10:06
+Date: 2023-02-21 11:44:49
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -100,10 +100,69 @@ export class QueryData<T> extends QueryBase
     public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class QueryDb_1<T> extends QueryBase
+export class Country
+{
+    public id?: number;
+    public parent?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+
+    public constructor(init?: Partial<Country>) { (Object as any).assign(this, init); }
+}
+
+export class Province
+{
+    public id?: number;
+    public countryId?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<Province>) { (Object as any).assign(this, init); }
+}
+
+export class City
+{
+    public id?: number;
+    public provinceId?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<City>) { (Object as any).assign(this, init); }
+}
+
+export class District
+{
+    public id?: number;
+    public cityId?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<District>) { (Object as any).assign(this, init); }
+}
+
+export class Village
+{
+    public id?: number;
+    public districtId?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<Village>) { (Object as any).assign(this, init); }
+}
+
+export class QueryDb_2<From, Into> extends QueryBase
 {
 
-    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
+    public constructor(init?: Partial<QueryDb_2<From, Into>>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -132,29 +191,92 @@ export class AuditBase
     public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
 }
 
-export enum RoomType
-{
-    Single = 'Single',
-    Double = 'Double',
-    Queen = 'Queen',
-    Twin = 'Twin',
-    Suite = 'Suite',
-}
-
-/** @description Booking Details */
-export class Booking extends AuditBase
+export class CAddress extends AuditBase
 {
     public id?: number;
-    public name?: string;
-    public roomType?: RoomType;
-    public roomNumber?: number;
-    public bookingStartDate?: string;
-    public bookingEndDate?: string;
-    public cost?: number;
-    public notes?: string;
-    public cancelled?: boolean;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
 
-    public constructor(init?: Partial<Booking>) { super(init); (Object as any).assign(this, init); }
+    // @Required()
+    // @StringLength(100)
+    public addressName?: string;
+
+    // @StringLength(100)
+    public country?: string;
+
+    // @StringLength(100)
+    public province?: string;
+
+    // @StringLength(100)
+    public city?: string;
+
+    // @StringLength(100)
+    public district?: string;
+
+    // @StringLength(100)
+    public village?: string;
+
+    // @StringLength(300)
+    public address1?: string;
+
+    // @StringLength(300)
+    public address2?: string;
+
+    // @StringLength(100)
+    public postalCode?: string;
+
+    // @StringLength(100)
+    public phoneNo?: string;
+
+    public isMain?: boolean;
+
+    public constructor(init?: Partial<CAddress>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CAddressView extends CAddress
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<CAddressView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryDb_1<T> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CBank extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public bankName?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public accountName?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public accountNo?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public currency?: string;
+
+    // @StringLength(100)
+    public swiftCode?: string;
+
+    public isMain?: boolean;
+
+    public constructor(init?: Partial<CBank>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class Project extends AuditBase
@@ -163,6 +285,9 @@ export class Project extends AuditBase
     // @Required()
     // @References("typeof(GDIApps.ServiceModel.Types.Client)")
     public clientId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CContract)")
+    public cContractId?: number;
 
     // @Required()
     // @StringLength(100)
@@ -192,6 +317,39 @@ export class Project extends AuditBase
     public constructor(init?: Partial<Project>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class CContract extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public contractNo?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    public startDate?: string;
+    public endDate?: string;
+    public totalAmount?: number;
+    // @Required()
+    // @StringLength(100)
+    public currency?: string;
+
+    public isActive?: boolean;
+    // @StringLength(100)
+    public pic?: string;
+
+    public remainingAmount?: number;
+    public paymentTermDays?: number;
+    public projectList?: Project[];
+
+    public constructor(init?: Partial<CContract>) { super(init); (Object as any).assign(this, init); }
+}
+
 export class Client extends AuditBase
 {
     public id?: number;
@@ -204,11 +362,20 @@ export class Client extends AuditBase
     public name?: string;
 
     // @Required()
+    // @StringLength(15)
+    public phoneNo?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public email?: string;
+
+    // @Required()
     // @StringLength(1000)
     public description?: string;
 
     public isActive?: boolean;
     public projectList?: Project[];
+    public contractList?: CContract[];
 
     public constructor(init?: Partial<Client>) { super(init); (Object as any).assign(this, init); }
 }
@@ -279,10 +446,76 @@ export class EmailTemplate extends AuditBase
     public constructor(init?: Partial<EmailTemplate>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class InvoiceDetail extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Invoice)")
+    public invoiceId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public no?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    // @Required()
+    public amount?: number;
+
+    public constructor(init?: Partial<InvoiceDetail>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class Invoice extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CContract)")
+    public cContractId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CBank)")
+    public cBankId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CAddress)")
+    public cAddressId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public invoiceNo?: string;
+
+    // @Required()
+    // @StringLength(100)
+    public paymentTerm?: string;
+
+    // @Required()
+    public invoiceDate?: string;
+
+    // @StringLength(1000)
+    public description?: string;
+
+    // @StringLength(100)
+    public poNumber?: string;
+
+    // @StringLength(100)
+    public vat?: string;
+
+    public wht?: string;
+    public totalAmount?: number;
+    public vatAmount?: number;
+    public invoiceStatus?: string;
+
+    public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
+}
+
 export enum LOOKUPTYPE
 {
     STATUS = 'STATUS',
     PRIORITY = 'PRIORITY',
+    BANK = 'BANK',
 }
 
 export class Lookup extends AuditBase
@@ -307,16 +540,11 @@ export class Lookup extends AuditBase
     public constructor(init?: Partial<Lookup>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class QueryDb_2<From, Into> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryDb_2<From, Into>>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class ProjectView extends Project
 {
     public clientCode?: string;
     public clientName?: string;
+    public cContractContractNo?: string;
 
     public constructor(init?: Partial<ProjectView>) { super(init); (Object as any).assign(this, init); }
 }
@@ -429,6 +657,7 @@ export class AppUser extends UserAuth
 }
 
 // @Route("/uploaduserprofile/{Id}")
+// @ValidateRequest(Validator="IsAuthenticated")
 export class UploadUserProfile implements IReturn<UploadUserProfile>, IPost
 {
     public email?: string;
@@ -600,18 +829,6 @@ export class UnAssignRolesResponse
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
-// @DataContract
-export class IdResponse
-{
-    // @DataMember(Order=1)
-    public id?: string;
-
-    // @DataMember(Order=2)
-    public responseStatus?: ResponseStatus;
-
-    public constructor(init?: Partial<IdResponse>) { (Object as any).assign(this, init); }
-}
-
 export class CRUDResponse
 {
     public id?: number;
@@ -636,10 +853,20 @@ export class UpdatePassword implements IReturn<ResponseStatus>
 export class UpdateAppUser
 {
     public email?: string;
+    public gender?: string;
+    public firstName?: string;
+    public lastName?: string;
     public fullName?: string;
+    public nickName?: string;
+    public displayName?: string;
     public phoneNumber?: string;
-    // @Input(Type="file")
-    public profileUrl?: string;
+    public birthDate?: string;
+    public address?: string;
+    public address2?: string;
+    public city?: string;
+    public state?: string;
+    public country?: string;
+    public postCode?: string;
 
     public constructor(init?: Partial<UpdateAppUser>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateAppUser'; }
@@ -656,6 +883,16 @@ export class GetUserInfoDetail implements IReturn<AppUser>
     public getTypeName() { return 'GetUserInfoDetail'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new AppUser(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class GetUserList implements IReturn<AppUser[]>
+{
+
+    public constructor(init?: Partial<GetUserList>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'GetUserList'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new Array<AppUser>(); }
 }
 
 // @Route("/contacts/email", "POST")
@@ -911,17 +1148,101 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public createResponse() { return new UnAssignRolesResponse(); }
 }
 
-/** @description Find Bookings */
-// @Route("/bookings", "GET")
-// @Route("/bookings/{Id}", "GET")
-export class QueryBookings extends QueryDb_1<Booking> implements IReturn<QueryResponse<Booking>>
+export class QueryCountries extends QueryData<Country> implements IReturn<QueryResponse<Country>>
 {
-    public id?: number;
 
-    public constructor(init?: Partial<QueryBookings>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryBookings'; }
+    public constructor(init?: Partial<QueryCountries>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCountries'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Booking>(); }
+    public createResponse() { return new QueryResponse<Country>(); }
+}
+
+export class QueryProvinces extends QueryData<Province> implements IReturn<QueryResponse<Province>>
+{
+    public countryId?: number;
+
+    public constructor(init?: Partial<QueryProvinces>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProvinces'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Province>(); }
+}
+
+export class QueryCities extends QueryData<City> implements IReturn<QueryResponse<City>>
+{
+    public provinceId?: number;
+
+    public constructor(init?: Partial<QueryCities>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCities'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<City>(); }
+}
+
+export class QueryDistricts extends QueryData<District> implements IReturn<QueryResponse<District>>
+{
+    public cityId?: number;
+
+    public constructor(init?: Partial<QueryDistricts>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryDistricts'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<District>(); }
+}
+
+export class QueryVillages extends QueryData<Village> implements IReturn<QueryResponse<Village>>
+{
+    public districtId?: number;
+
+    public constructor(init?: Partial<QueryVillages>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryVillages'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Village>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryCAddresss extends QueryDb_2<CAddress, CAddressView> implements IReturn<QueryResponse<CAddressView>>
+{
+    public code?: string;
+    public clientId?: number;
+    // @Validate(Validator="Null")
+    public clientCodes?: string[];
+
+    public clientCodeContains?: string;
+    public clientNameContains?: string;
+    public addressNameContains?: string;
+
+    public constructor(init?: Partial<QueryCAddresss>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCAddresss'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<CAddressView>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryCBanks extends QueryDb_1<CBank> implements IReturn<QueryResponse<CBank>>
+{
+    public ids?: number[];
+    public codes?: string[];
+    public codeEndsWith?: string;
+    public name?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<QueryCBanks>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCBanks'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<CBank>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryCContracts extends QueryDb_1<CContract> implements IReturn<QueryResponse<CContract>>
+{
+    public ids?: number[];
+    public codes?: string[];
+    public codeEndsWith?: string;
+    public name?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<QueryCContracts>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCContracts'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<CContract>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -973,6 +1294,36 @@ export class QueryEmailTemplates extends QueryDb_1<EmailTemplate> implements IRe
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class QueryInvoiceDetails extends QueryDb_1<InvoiceDetail> implements IReturn<QueryResponse<InvoiceDetail>>
+{
+    public ids?: number[];
+    public codes?: string[];
+    public codeEndsWith?: string;
+    public name?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<QueryInvoiceDetails>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryInvoiceDetails'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<InvoiceDetail>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryInvoices extends QueryDb_1<Invoice> implements IReturn<QueryResponse<Invoice>>
+{
+    public ids?: number[];
+    public codes?: string[];
+    public codeEndsWith?: string;
+    public name?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<QueryInvoices>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryInvoices'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Invoice>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class QueryLookups extends QueryDb_1<Lookup> implements IReturn<QueryResponse<Lookup>>
 {
     public lookupType?: LOOKUPTYPE;
@@ -989,6 +1340,8 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
 {
     public code?: string;
     public clientId?: number;
+    public cContractId?: number;
+    public cContractContractNoContains?: string;
     // @Validate(Validator="Null")
     public clientCodes?: string[];
 
@@ -1003,67 +1356,152 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
     public createResponse() { return new QueryResponse<ProjectView>(); }
 }
 
-/** @description Create a new Booking */
-// @Route("/bookings", "POST")
-// @ValidateRequest(Validator="HasRole(`Employee`)")
-export class CreateBooking implements IReturn<IdResponse>, ICreateDb<Booking>
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateCAddress implements IReturn<CRUDResponse>, ICreateDb<CAddress>
 {
-    /** @description Name this Booking is for */
-    // @Validate(Validator="NotEmpty")
-    public name?: string;
+    public clientId?: number;
+    public addressName?: string;
+    public country?: string;
+    public province?: string;
+    public city?: string;
+    public district?: string;
+    public village?: string;
+    public address1?: string;
+    public address2?: string;
+    public postalCode?: string;
+    public phoneNo?: string;
+    public isMain?: boolean;
 
-    public roomType?: RoomType;
-    // @Validate(Validator="GreaterThan(0)")
-    public roomNumber?: number;
-
-    // @Validate(Validator="GreaterThan(0)")
-    public cost?: number;
-
-    public bookingStartDate?: string;
-    public bookingEndDate?: string;
-    // @Input(Type="textarea")
-    public notes?: string;
-
-    public constructor(init?: Partial<CreateBooking>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'CreateBooking'; }
+    public constructor(init?: Partial<CreateCAddress>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateCAddress'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new IdResponse(); }
+    public createResponse() { return new CRUDResponse(); }
 }
 
-/** @description Update an existing Booking */
-// @Route("/booking/{Id}", "PATCH")
-// @ValidateRequest(Validator="HasRole(`Employee`)")
-export class UpdateBooking implements IReturn<IdResponse>, IPatchDb<Booking>
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateCAddress implements IReturn<CRUDResponse>, IPatchDb<CAddress>
 {
     public id?: number;
-    public name?: string;
-    public roomType?: RoomType;
-    // @Validate(Validator="GreaterThan(0)")
-    public roomNumber?: number;
+    public clientId?: number;
+    public addressName?: string;
+    public country?: string;
+    public province?: string;
+    public city?: string;
+    public district?: string;
+    public village?: string;
+    public address1?: string;
+    public address2?: string;
+    public postalCode?: string;
+    public phoneNo?: string;
+    public isMain?: boolean;
 
-    // @Validate(Validator="GreaterThan(0)")
-    public cost?: number;
-
-    public bookingStartDate?: string;
-    public bookingEndDate?: string;
-    public notes?: string;
-    public cancelled?: boolean;
-
-    public constructor(init?: Partial<UpdateBooking>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'UpdateBooking'; }
+    public constructor(init?: Partial<UpdateCAddress>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateCAddress'; }
     public getMethod() { return 'PATCH'; }
-    public createResponse() { return new IdResponse(); }
+    public createResponse() { return new CRUDResponse(); }
 }
 
-/** @description Delete a Booking */
-// @Route("/booking/{Id}", "DELETE")
-// @ValidateRequest(Validator="HasRole(`Manager`)")
-export class DeleteBooking implements IReturnVoid, IDeleteDb<Booking>
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteCAddress implements IReturnVoid, IDeleteDb<CAddress>
 {
     public id?: number;
 
-    public constructor(init?: Partial<DeleteBooking>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'DeleteBooking'; }
+    public constructor(init?: Partial<DeleteCAddress>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteCAddress'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateCBank implements IReturn<CRUDResponse>, ICreateDb<CBank>
+{
+    public clientId?: number;
+    public bankName?: string;
+    public accountName?: string;
+    public accountNo?: string;
+    public currency?: string;
+    public swiftCode?: string;
+    public isMain?: boolean;
+
+    public constructor(init?: Partial<CreateCBank>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateCBank'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateCBank implements IReturn<CRUDResponse>, IPatchDb<CBank>
+{
+    public id?: number;
+    public clientId?: number;
+    public bankName?: string;
+    public accountName?: string;
+    public accountNo?: string;
+    public currency?: string;
+    public swiftCode?: string;
+    public isMain?: boolean;
+
+    public constructor(init?: Partial<UpdateCBank>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateCBank'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteCBank implements IReturnVoid, IDeleteDb<CBank>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteCBank>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteCBank'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateCContract implements IReturn<CRUDResponse>, ICreateDb<CContract>
+{
+    public clientId?: number;
+    public contractNo?: string;
+    public description?: string;
+    public startDate?: string;
+    public endDate?: string;
+    public currency?: string;
+    public totalAmount?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateCContract>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateCContract'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateCContract implements IReturn<CRUDResponse>, IPatchDb<CContract>
+{
+    public id?: number;
+    public clientId?: number;
+    public contractNo?: string;
+    public description?: string;
+    public startDate?: string;
+    public endDate?: string;
+    public currency?: string;
+    public totalAmount?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateCContract>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateCContract'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteCContract implements IReturnVoid, IDeleteDb<CContract>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteCContract>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteCContract'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }
@@ -1073,6 +1511,8 @@ export class CreateClient implements IReturn<CRUDResponse>, ICreateDb<Client>
 {
     public code?: string;
     public name?: string;
+    public phoneNo?: string;
+    public email?: string;
     public description?: string;
     public isActive?: boolean;
 
@@ -1088,6 +1528,8 @@ export class UpdateClient implements IReturn<CRUDResponse>, IPatchDb<Client>
     public id?: number;
     public code?: string;
     public name?: string;
+    public phoneNo?: string;
+    public email?: string;
     public description?: string;
     public isActive?: boolean;
 
@@ -1150,6 +1592,106 @@ export class DeleteEmailTemplate implements IReturnVoid, IDeleteDb<EmailTemplate
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class CreateInvoiceDetail implements IReturn<CRUDResponse>, ICreateDb<InvoiceDetail>
+{
+    public invoiceId?: number;
+    public no?: string;
+    public description?: string;
+    public amount?: number;
+
+    public constructor(init?: Partial<CreateInvoiceDetail>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateInvoiceDetail'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateInvoiceDetail implements IReturn<CRUDResponse>, IPatchDb<InvoiceDetail>
+{
+    public id?: number;
+    public invoiceId?: number;
+    public no?: string;
+    public description?: string;
+    public amount?: number;
+
+    public constructor(init?: Partial<UpdateInvoiceDetail>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateInvoiceDetail'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteInvoiceDetail implements IReturnVoid, IDeleteDb<InvoiceDetail>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteInvoiceDetail>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteInvoiceDetail'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateInvoice implements IReturn<CRUDResponse>, ICreateDb<Invoice>
+{
+    public clientId?: number;
+    public cContractId?: number;
+    public cBankId?: number;
+    public cAddressId?: number;
+    public invoiceNo?: string;
+    public paymentTerm?: string;
+    public invoiceDate?: string;
+    public description?: string;
+    public poNumber?: string;
+    public vat?: string;
+    public wht?: string;
+    public totalAmount?: number;
+    public vatAmount?: number;
+    public invoiceStatus?: string;
+
+    public constructor(init?: Partial<CreateInvoice>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateInvoice'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateInvoice implements IReturn<CRUDResponse>, IPatchDb<Invoice>
+{
+    public id?: number;
+    public clientId?: number;
+    public cContractId?: number;
+    public cBankId?: number;
+    public cAddressId?: number;
+    public invoiceNo?: string;
+    public paymentTerm?: string;
+    public invoiceDate?: string;
+    public description?: string;
+    public poNumber?: string;
+    public vat?: string;
+    public wht?: string;
+    public totalAmount?: number;
+    public vatAmount?: number;
+    public invoiceStatus?: string;
+
+    public constructor(init?: Partial<UpdateInvoice>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateInvoice'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteInvoice implements IReturnVoid, IDeleteDb<Invoice>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteInvoice>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteInvoice'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class CreateLookup implements IReturn<CRUDResponse>, ICreateDb<Lookup>
 {
     public lookupType?: LOOKUPTYPE;
@@ -1193,6 +1735,7 @@ export class DeleteLookup implements IReturnVoid, IDeleteDb<Lookup>
 export class CreateProject implements IReturn<CRUDResponse>, ICreateDb<Project>
 {
     public clientId?: number;
+    public cContractId?: number;
     public code?: string;
     public name?: string;
     public description?: string;
@@ -1209,6 +1752,7 @@ export class UpdateProject implements IReturn<CRUDResponse>, IPatchDb<Project>
 {
     public id?: number;
     public clientId?: number;
+    public cContractId?: number;
     public code?: string;
     public name?: string;
     public description?: string;

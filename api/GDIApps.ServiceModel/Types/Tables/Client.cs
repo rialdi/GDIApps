@@ -20,6 +20,14 @@ public class Client : AuditBase
     public string Name { get; set; } = string.Empty;
 
     [Required]
+    [StringLength(15)]    
+    public string PhoneNo { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100)]    
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
     [StringLength(1000)]    
     public string Description { get; set; } = string.Empty;
 
@@ -28,4 +36,6 @@ public class Client : AuditBase
 
     [Reference]
     public List<Project>? ProjectList { get; set; }
+    [Reference]
+    public List<CContract>? ContractList { get; set; }
 }

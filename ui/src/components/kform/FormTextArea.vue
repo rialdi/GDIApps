@@ -14,7 +14,7 @@
             @blur="handleBlur"
             @focus="handleFocus"
             :icon-name="iconName"
-            :rows="rows"
+            :rows="rows" 
           ></ktextarea>
         </span>
         <error v-if="showValidationMessage">

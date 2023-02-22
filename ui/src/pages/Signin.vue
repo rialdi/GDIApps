@@ -155,8 +155,8 @@ const store = useTemplateStore();
 const client = useClient() 
 // const username = ref('')
 // const password = ref('')
-const username = ref('admin@email.com')
-const password = ref('p@55wOrd')
+const username = ref('rialdi@ptgdi.com')
+const password = ref('Formula01')
 const router = useRouter()
 
 let stop = watchEffect(() => {

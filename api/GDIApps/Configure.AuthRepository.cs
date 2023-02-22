@@ -10,28 +10,6 @@ using GDIApps.ServiceModel.Types;
 
 namespace GDIApps;
 
-// public enum Department
-// {
-//     None,
-//     Marketing,
-//     Accounts,
-//     Legal,
-//     HumanResources,
-// }
-
-// // Custom User Table with extended Metadata properties
-// public class AppUser : UserAuth
-// {
-//     public Department Department { get; set; }
-//     public string? ProfileUrl { get; set; }
-//     public string? LastLoginIp { get; set; }
-
-//     public bool IsArchived { get; set; }
-//     public DateTime? ArchivedDate { get; set; }
-
-//     public DateTime? LastLoginDate { get; set; }
-// }
-
 public class AppUserAuthEvents : AuthEvents
 {
     public override async Task OnAuthenticatedAsync(IRequest httpReq, IAuthSession session, IServiceBase authService,
@@ -44,6 +22,12 @@ public class AppUserAuthEvents : AuthEvents
             userAuth.ProfileUrl = session.GetProfileUrl();
             userAuth.LastLoginIp = httpReq.UserHostAddress;
             userAuth.LastLoginDate = DateTime.UtcNow;
+
+            var existingRoles = await authRepo.GetRolesAsync(userAuth);
+            if(existingRoles.Count == 0)
+            {
+                await authRepo.AssignRolesAsync(userAuth,new[] { "Guest" });
+            }
             await authRepo.SaveUserAuthAsync(userAuth, token);
         }
     }
@@ -59,17 +43,21 @@ public class ConfigureAuthRepository : IHostingStartup
         .ConfigureAppHost(appHost => {
             var authRepo = appHost.Resolve<IAuthRepository>();
             authRepo.InitSchema();
-            CreateUser(authRepo, "admin@email.com", "Admin User", "p@55wOrd", roles: new[] { RoleNames.Admin });
-            CreateUser(authRepo, "manager@email.com", "The Manager", "p@55wOrd", roles: new[] { "Employee", "Manager" });
-            CreateUser(authRepo, "employee@email.com", "A Employee", "p@55wOrd", roles: new[] { "Employee" });
+            CreateUser(authRepo, "rialdi@ptgdi.com", "Rialdi", "Formula01", roles: new[] { RoleNames.Admin, "Manager" });
+            CreateUser(authRepo, "manager@email.com", "The Manager", "Formula01", roles: new[] { "Manager" });
+            CreateUser(authRepo, "employee@email.com", "A Employee", "Formula01", roles: new[] { "Guest" });
 
             // Removing unused UserName in Admin Users UI 
             appHost.Plugins.Add(new ServiceStack.Admin.AdminUsersFeature {
-                
                 // Show custom fields in Search Results
                 QueryUserAuthProperties = new() {
                     nameof(AppUser.Id),
                     nameof(AppUser.Email),
+                    nameof(AppUser.FirstName),
+                    nameof(AppUser.LastName),
+                    nameof(AppUser.Gender),
+                    nameof(AppUser.Country),
+                    nameof(AppUser.PhoneNumber),
                     nameof(AppUser.DisplayName),
                     nameof(AppUser.Department),
                     nameof(AppUser.CreatedDate),
@@ -85,6 +73,15 @@ public class ConfigureAuthRepository : IHostingStartup
                 // Add Custom Fields to Create/Edit User Forms
                 FormLayout = new() {
                     Input.For<AppUser>(x => x.Email),
+                    Input.For<AppUser>(x => x.FirstName, c => c.FieldsPerRow(2)),
+                    Input.For<AppUser>(x => x.LastName, c => c.FieldsPerRow(2)),
+                    Input.For<AppUser>(x => x.UserName, c => c.FieldsPerRow(2)),
+                    Input.For<AppUser>(x => x.Gender, c => { 
+                        c.Type = Input.Types.Select;
+                        c.AllowableValues = new string[]{"MALE", "FEMALE"};
+                        // c.AllowableValues(GENDER as string);
+                        c.FieldsPerRow(2);
+                    }),
                     Input.For<AppUser>(x => x.DisplayName),
                     Input.For<AppUser>(x => x.Company),
                     Input.For<AppUser>(x => x.Department, c => c.FieldsPerRow(2)),
@@ -98,7 +95,8 @@ public class ConfigureAuthRepository : IHostingStartup
                         //c.Required = true;
                     }),
                     Input.For<AppUser>(x => x.ProfileUrl, c => c.Type = Input.Types.Url),
-                    Input.For<AppUser>(x => x.IsArchived), Input.For<AppUser>(x => x.ArchivedDate),
+                    Input.For<AppUser>(x => x.IsArchived), 
+                    Input.For<AppUser>(x => x.ArchivedDate),
                 }
             });
 
