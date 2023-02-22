@@ -6,8 +6,6 @@ import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
 import { process, filterBy } from '@progress/kendo-data-query'
 import CAddressGrid from "./CAddressGrid.vue"
 
-
-
 const mainGridtRef = ref<InstanceType<typeof CAddressGrid>>()
 
 onMounted(async () => {
@@ -67,7 +65,7 @@ let selectedClientId = ref<number | undefined>()
         </div>
         <div class="col-sm-4">
           <kComboBox
-              :style="{ width: '230px' }"
+              :id="'clientParan'"
               :data-items="clientList"
               :value-field="'id'"
               :text-field="'name'"

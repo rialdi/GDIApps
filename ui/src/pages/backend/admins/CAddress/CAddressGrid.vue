@@ -1,21 +1,20 @@
 <template>
     <!-- Kendo Dialog for Editing Data -->
-    <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="500" :title-render="'myTemplate'" >
+    <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="60%" :title-render="'myTemplate'" >
         <template v-slot:myTemplate="{}">
             <div class="w-100">
-            {{ kDialogTitle }} 
-            <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetForm" ></kButton>
-            <!-- <span class="k-icon k-i-reset float-end" v-on:click="onResetForm"/> -->
+              {{ kDialogTitle }} 
+              <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetForm" title="Reset Data"></kButton>
             </div>
         </template>
-        <EditForms ref="editFormsRef" :data-item="dataItemInEdit" @save="onSave" />
+        <EditForms ref="editFormsRef" :data-item="dataItemInEdit" @save="onSave" :client-list="clientList" />
         <!-- <kForm :initialValues="dataItemInEdit" @submit="onSave">
             <EditForm :client-list="props.clientList" ref="editFormRef"/>
         </kForm> -->
         <kDialogActionsBar>
         <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
         <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton> -->
-        <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" > Save </kButton>
+        <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" title="Save"> Save </kButton>
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
@@ -33,8 +32,9 @@
         :columns="gridColumProperties"
     >
     <kGridToolbar>
-        <kButton icon="add" title="Add New" :theme-color="'primary'" @click='onInsert'>Add New</kButton>
-        <kButton v-if="props.showExportButton" icon="excel" title="Export to Excel" :theme-color="'primary'" @click='onExportToExcel'>Export to Excel</kButton>
+        <kButton icon="add" title="Add New" :theme-color="'primary'" @click='onInsert'></kButton>
+        <kButton v-if="props.showExportButton" icon="excel" title="Export to Excel" :theme-color="'primary'" 
+          @click='onExportToExcel'></kButton>
     </kGridToolbar>
     <template v-slot:actionTemplate="{props}">
         <CommandCell :data-item="props.dataItem" 
@@ -119,7 +119,7 @@ const { width, currWindowType } = useBreakpoints()
 const editFormsRef = ref<InstanceType<typeof EditForms>>()
 
 // const editFormRef = ref<InstanceType<typeof EditForm>>()
-let kDialogTitle = ref<string>("Add CAddress")
+let kDialogTitle = ref<string>("Add Client Address")
 
 const onShowHideColumns = () => {
   if(currWindowType.value != lastWindowType.value && width.value > 100) {
@@ -177,7 +177,7 @@ const refreshDatas = async (selectedClientId?: any ) => {
 }
 
 const onInsert = () => {
-  kDialogTitle.value = "Add CAddress"
+  kDialogTitle.value = "Add Client Address"
   // Set Default Value
   dataItemInEdit.value = {
   }
@@ -196,7 +196,7 @@ const onRemove = async(e: any) => {
   }
 }
 const onEdit = (e: any) => {
-  kDialogTitle.value = "Edit CAddress"
+  kDialogTitle.value = "Edit Client Address"
   dataItemInEdit.value = e.dataItem
   // editFormRef.value?.focus
 }

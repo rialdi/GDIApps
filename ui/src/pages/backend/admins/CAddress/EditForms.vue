@@ -1,11 +1,16 @@
 <template>
 <form @submit.prevent="onSubmit" id="mainForm" class="k-form">
     <fieldset>
-
     <div class="row">
-        <div class="col-12 p-1">
+        <div class="col-6 p-1">
+            <KComboBox 
+                :id="'client'" :label="'Client'" :valueField="'id'" :textField="'name'"
+                :dataItems="clientList" v-model="dataItemInEdit.clientId" :value="dataItemInEdit.clientId" :valid="true" :showLabel="true"
+            />
+        </div>
+        <div class="col-6 p-1">
             <KTextInput id="Address Name" v-model="dataItemInEdit.addressName" :validator="nameValidator"
-                :showLabel="true" :label="'Address Name'" :type="'string'" :required="true" :hint="'Hint : Address Name'"/>
+                :showLabel="true" :label="'Address Name'" :type="'string'" :required="true"/>
         </div>
     </div>
     <!-- <div class="row mb-1">
@@ -39,7 +44,7 @@
     </div> -->
     <div class="row">
         <div class="col-6 p-2">
-            <KDropDownList 
+            <KComboBox 
                 :id="'Country'" :label="'Country'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.countryList" v-model="dataItemInEdit.country" :value="dataItemInEdit.country" :valid="true" :showLabel="true"
                 @change="indonesiRegionStore.onChangeCountry" @filterchange="indonesiRegionStore.onFilterCountry"
@@ -47,7 +52,7 @@
             />
         </div>
         <div class="col-6 p-2">
-            <KDropDownList 
+            <KComboBox 
                 :id="'Province'" :label="'Province'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.provinceList" v-model="dataItemInEdit.province" :value="dataItemInEdit.province" :valid="true" :showLabel="true"
                 @change="indonesiRegionStore.onChangeProvince" @filterchange="indonesiRegionStore.onFilterProvince" :disable="!indonesiRegionStore.selectedCountry"
@@ -56,7 +61,7 @@
     </div>
     <div class="row">
         <div class="col-6 p-2">
-            <KDropDownList 
+            <KComboBox 
                 :id="'City'" :label="'City'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.cityList" v-model="dataItemInEdit.city" :value="dataItemInEdit.city" :valid="true" :showLabel="true"
                 :disable="!indonesiRegionStore.selectedProvince"
@@ -64,7 +69,7 @@
             />
         </div>
         <div class="col-6 p-2">
-            <KDropDownList 
+            <KComboBox 
                 :id="'District'" :label="'District'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.districtList" v-model="dataItemInEdit.district" :value="dataItemInEdit.district" :valid="true" :showLabel="true"
                 :disable="!indonesiRegionStore.selectedCity"
@@ -74,7 +79,7 @@
     </div>
     <div class="row">
         <div class="col-6 p-1">
-            <KDropDownList 
+            <KComboBox 
                 :id="'Village'" :label="'Village'" :valueField="'name'" :textField="'name'"
                 :dataItems="indonesiRegionStore.villageList" v-model="dataItemInEdit.village" :value="dataItemInEdit.village" :valid="true" :showLabel="true"
                 :disable="!indonesiRegionStore.selectedDistrict"
@@ -88,7 +93,7 @@
     </div>
     <div class="row">
         <div class="col-12 p-1">
-            <KTextArea id="address1" :showLabel="true" :label="'Address 1'" v-model="dataItemInEdit.address1" :rows="3" :max="'150'" :hint="'Hint : Address 1'"/>
+            <KTextArea id="address1" :showLabel="true" :label="'Address 1'" v-model="dataItemInEdit.address1" :rows="3" :max="'150'"/>
         </div>
     </div>
     <div class="row">
@@ -104,7 +109,6 @@
                 :showLabel="true" :label="'Phone No Mask'" :mask="'+6200000000000'"/> -->
         </div>
         <div class="col-6 p-1">
-            
             <KCheckbox id="isMain" v-model="dataItemInEdit.isMain" 
                 :showLabel="true" :label="'Is Active'" />
         </div>
@@ -145,10 +149,8 @@
 </template>
 
 <script setup lang="ts">
-// import { onMounted, ref } from "vue"
-import {CAddress} from "@/dtos"
-// import TextInput from "@/components/form/TextInput.vue"
-import KDropDownList from "@/components/kendo/KDropDownList.vue"
+import { CAddress } from "@/dtos"
+import KComboBox from "@/components/kendo/KComboBox.vue"
 import KCheckbox from "@/components/kendo/KCheckbox.vue"
 import KTextArea from "@/components/kendo/KTextArea.vue"
 import KTextInput from "@/components/kendo/KTextInput.vue"
@@ -165,7 +167,8 @@ const indonesiRegionStore = useIndonesiaRegionStore()
 // indonesiRegionStore.refreshIndonesiaRegions()
 
 let props = defineProps<{
-    dataItem: any
+    dataItem: any,
+    clientList: any[]
 }>()
 
 const emit = defineEmits<{

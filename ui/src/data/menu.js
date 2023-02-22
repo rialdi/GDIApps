@@ -33,7 +33,7 @@ export default {
           to: "backend-admins-project",
         },
         {
-          name: "CAddress",
+          name: "Client Address",
           to: "backend-admins-caddress",
         }
       ],

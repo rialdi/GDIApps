@@ -12,30 +12,30 @@ interface SelectedRegion {
 }
 export const useIndonesiaRegionStore = defineStore('indonesiaregions', () => {
 
-    let currSelectedRegion = ref<SelectedRegion | undefined>(undefined)
+    let currSelectedRegion = ref<SelectedRegion | undefined>()
 
     let availablePostalCodes = ref<string | undefined>()
 
     // State
     const sourceCountryList = ref<Country[]>([])
     let countryList = ref<Country[]>([])
-    let selectedCountry = ref<Country | undefined>(undefined)
+    let selectedCountry = ref<Country | undefined>()
 
     const sourceProvinceList = ref<Province[]>([])
     let provinceList = ref<Province[]>([])
-    let selectedProvince = ref<Province | undefined| null>(null)
+    let selectedProvince = ref<Province | undefined>()
 
     let sourceCityList = ref<City[]>([])
     let cityList = ref<City[]>([])
-    let selectedCity = ref<City | undefined | null>(null)
+    let selectedCity = ref<City | undefined>()
 
     let sourceDistrictList = ref<District[]>([])
     let districtList = ref<District[]>([])
-    let selectedDistrict = ref<District | undefined>(undefined)
+    let selectedDistrict = ref<District | undefined>()
 
     let sourceVillageList = ref<Village[]>([])
     let villageList = ref<Village[]>([])
-    let selectedVillage = ref<Village | undefined>(undefined)
+    let selectedVillage = ref<Village | undefined>()
 
     // const emit = defineEmits<{
     //     (e:'updatePostalCode', value: any): () => void
@@ -116,17 +116,13 @@ export const useIndonesiaRegionStore = defineStore('indonesiaregions', () => {
     }
 
     const onChangeCountry = (e: any) => {
-        console.log("Change Country")
-        selectedProvince.value = null
-        selectedCity.value = null
+        // console.log("Change Country")
+        selectedProvince.value = undefined
+        selectedCity.value = undefined
         selectedDistrict.value = undefined
         selectedVillage.value = undefined
-        // console.log(e)
-        // console.log(e.component.prevCurrentValue)
-        // console.log(e.component.valueOnDidUpdate)
         selectedCountry.value = e.component.dataItems[e.component.index]
         getProvinceList()
-        
     }
   
     const onChangeProvince = (e: any) => {

@@ -40,6 +40,7 @@ declare module '@vue/runtime-core' {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     InputDescription: typeof import('./components/form/InputDescription.vue')['default']
     KCheckbox: typeof import('./components/kendo/KCheckbox.vue')['default']
+    KComboBox: typeof import('./components/kendo/KComboBox.vue')['default']
     KDropDownList: typeof import('./components/kendo/KDropDownList.vue')['default']
     KMaskedTextBox: typeof import('./components/kendo/KMaskedTextBox.vue')['default']
     KTextArea: typeof import('./components/kendo/KTextArea.vue')['default']
