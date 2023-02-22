@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-21 11:44:49
+Date: 2023-02-22 18:18:16
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -159,6 +159,15 @@ export class Village
     public constructor(init?: Partial<Village>) { (Object as any).assign(this, init); }
 }
 
+export class Bank
+{
+    public id?: number;
+    public bankName?: string;
+    public swiftCode?: string;
+
+    public constructor(init?: Partial<Bank>) { (Object as any).assign(this, init); }
+}
+
 export class QueryDb_2<From, Into> extends QueryBase
 {
 
@@ -242,12 +251,6 @@ export class CAddressView extends CAddress
     public constructor(init?: Partial<CAddressView>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class QueryDb_1<T> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class CBank extends AuditBase
 {
     public id?: number;
@@ -277,6 +280,20 @@ export class CBank extends AuditBase
     public isMain?: boolean;
 
     public constructor(init?: Partial<CBank>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CBankView extends CBank
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<CBankView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryDb_1<T> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class Project extends AuditBase
@@ -1197,6 +1214,15 @@ export class QueryVillages extends QueryData<Village> implements IReturn<QueryRe
     public createResponse() { return new QueryResponse<Village>(); }
 }
 
+export class QueryBanks extends QueryData<Bank> implements IReturn<QueryResponse<Bank>>
+{
+
+    public constructor(init?: Partial<QueryBanks>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryBanks'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Bank>(); }
+}
+
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryCAddresss extends QueryDb_2<CAddress, CAddressView> implements IReturn<QueryResponse<CAddressView>>
 {
@@ -1216,18 +1242,20 @@ export class QueryCAddresss extends QueryDb_2<CAddress, CAddressView> implements
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryCBanks extends QueryDb_1<CBank> implements IReturn<QueryResponse<CBank>>
+export class QueryCBanks extends QueryDb_2<CBank, CBankView> implements IReturn<QueryResponse<CBankView>>
 {
-    public ids?: number[];
-    public codes?: string[];
-    public codeEndsWith?: string;
-    public name?: string;
-    public isActive?: boolean;
+    public clientId?: number;
+    // @Validate(Validator="Null")
+    public clientCodes?: string[];
+
+    public clientCodeContains?: string;
+    public clientNameContains?: string;
+    public bankNameContains?: string;
 
     public constructor(init?: Partial<QueryCBanks>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryCBanks'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<CBank>(); }
+    public createResponse() { return new QueryResponse<CBankView>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")

@@ -35,6 +35,10 @@ export default {
         {
           name: "Client Address",
           to: "backend-admins-caddress",
+        },
+        {
+          name: "Client Bank",
+          to: "backend-admins-cbank",
         }
       ],
     },

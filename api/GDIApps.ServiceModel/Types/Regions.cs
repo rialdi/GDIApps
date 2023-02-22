@@ -12,7 +12,6 @@ public class Country
     public string? Name { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
-
 }
 
 public class Province
@@ -23,7 +22,6 @@ public class Province
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
     public string? Postal { get; set; }
-
 }
 
 public class City
@@ -34,7 +32,6 @@ public class City
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
     public string? Postal { get; set; }
-
 }
 
 public class District
@@ -73,4 +70,18 @@ public class QueryDistricts : QueryData<District> {
 
 public class QueryVillages : QueryData<Village> {
     public int? DistrictId { get; set;}
+}
+
+public class Bank
+{
+    public int Id { get; set; }
+    public string? BankName { get; set; }
+    public string? SwiftCode { get; set; }
+}
+
+public class QueryBanks : QueryData<Bank> {
+    // [AutoDefault(Eval = null)]
+    // public string? BankNameContains { get; set;} = null;
+    // [AutoDefault(Eval = null)]
+    // public string? SwiftCodeContains { get; set;} = null;
 }

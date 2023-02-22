@@ -11,13 +11,13 @@ namespace GDIApps.ServiceModel;
 [ValidateIsAuthenticated]
 [Tag("Clients")]
 [AutoApply(Behavior.AuditQuery)]
-public class QueryCBanks : QueryDb<CBank> {
-    public int[]? Ids {get; set;} = null;
-    public string[]? Codes {get; set;}
-    public string? CodeEndsWith {get; set;}
-    public string? Name {get; set;}
-    [Default(typeof(bool), "true")]
-    public bool? IsActive { get; set; }
+public class QueryCBanks : QueryDb<CBank, CBankView>, IJoin<CBank, Client>  {
+    public int? ClientId { get; set; }
+    [ValidateNull]
+    public string[]? ClientCodes {get; set;}
+    public string? ClientCodeContains { get; set; }
+    public string? ClientNameContains { get; set; }
+    public string? BankNameContains { get; set;}
 }
 
 [ValidateIsAuthenticated]
@@ -30,7 +30,9 @@ public class CreateCBank : ICreateDb<CBank>, IReturn<CRUDResponse>
     public string AccountName { get; set; } = string.Empty;
     public string AccountNo { get; set; } = string.Empty;
     public string Currency { get; set; } = "IDR";
+    [AutoDefault(Eval = null)]
     public string? SwiftCode { get; set; }
+    [AutoDefault(Eval = null)]
     public bool? IsMain { get; set; }
 }
 
@@ -45,7 +47,9 @@ public class UpdateCBank : IPatchDb<CBank>, IReturn<CRUDResponse>
     public string? AccountName { get; set; }
     public string? AccountNo { get; set; }
     public string? Currency { get; set; }
+    [AutoDefault(Eval = null)]
     public string? SwiftCode { get; set; }
+    [AutoDefault(Eval = null)]
     public bool? IsMain { get; set; }
 }
 

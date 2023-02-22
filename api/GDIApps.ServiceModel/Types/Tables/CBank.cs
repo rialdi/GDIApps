@@ -36,7 +36,7 @@ public class CBank : AuditBase
     public bool? IsMain { get; set; }
 }
 
-public class CBanktView : CBank
+public class CBankView : CBank
 {
     public string ClientCode { get; set; } = string.Empty;
     public string ClientName { get; set; } = string.Empty;

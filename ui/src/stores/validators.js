@@ -4,6 +4,7 @@ const emailRegex = new RegExp(/\S+@\S+\.\S+/);
 const phoneRegex = new RegExp(/^[0-9 ()+-]+$/);
 const ccardRegex = new RegExp(/^[0-9-]+$/);
 const cvcRegex = new RegExp(/^[0-9]+$/);
+const bankAccountNoRegex = new RegExp(/^[0-9]+$/);
 
 export const termsValidator = value =>
   value ? '' : 'Its required to agree with Terms and Conditions.';
@@ -49,6 +50,12 @@ export const guestsValidator = value =>
     : value <= 5
     ? ''
     : 'Maximum 5 guests';
+  export const bankAccountNoValidator = value =>
+    !value
+      ? 'This field is required,'
+      : bankAccountNoRegex.test(value) && value.length >= 5
+      ? ''
+      : 'Bank Account No should be at least 5 characters long.';
 export const nightsValidator = value =>
   value ? '' : 'Number of Nights is required.';
 export const arrivalDateValidator = value =>

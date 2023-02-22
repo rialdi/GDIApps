@@ -20,6 +20,7 @@ public class QueryCAddresss : QueryDb<CAddress, CAddressView>, IJoin<CAddress, C
     public string? ClientCodeContains { get; set; }
     public string? ClientNameContains { get; set; }
     public string? AddressNameContains { get; set; }
+    
 }
 
 [ValidateIsAuthenticated]

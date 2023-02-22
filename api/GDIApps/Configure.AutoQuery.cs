@@ -24,6 +24,7 @@ public class ConfigureAutoQuery : IHostingStartup
             var cities = File.ReadAllText("App_Data/csv/62/cities.csv").FromCsv<List<City>>();
             var districts = File.ReadAllText("App_Data/csv/62/subDistricts.csv").FromCsv<List<District>>();
             var villages = File.ReadAllText("App_Data/csv/62/villages.csv").FromCsv<List<Village>>();
+            var banks = File.ReadAllText("App_Data/csv/banks.csv").FromCsv<List<Bank>>();
             
 
             var autoQueryDateFeature = new AutoQueryDataFeature { IncludeTotal = true };
@@ -35,6 +36,7 @@ public class ConfigureAutoQuery : IHostingStartup
                 .AddDataSource(ctx => ctx.MemorySource(cities))
                 .AddDataSource(ctx => ctx.MemorySource(districts))
                 .AddDataSource(ctx => ctx.MemorySource(villages))
+                .AddDataSource(ctx => ctx.MemorySource(banks))
             );
 
             // appHost.Plugins.Add(new CsvFormat()); //added by default
