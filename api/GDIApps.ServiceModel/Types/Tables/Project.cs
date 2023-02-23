@@ -18,9 +18,6 @@ public class Project : AuditBase
     [References(typeof(CContract))]
     public int? CContractId { get; set;}
 
-    // [Reference]
-    // public Client ProjectClient { get; set; }
-
     [Required]
     [StringLength(100)]    
     public string Code { get; set; } = string.Empty;

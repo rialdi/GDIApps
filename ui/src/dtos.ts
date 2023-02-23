@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-22 18:18:16
+Date: 2023-02-23 18:12:17
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -290,12 +290,6 @@ export class CBankView extends CBank
     public constructor(init?: Partial<CBankView>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class QueryDb_1<T> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class Project extends AuditBase
 {
     public id?: number;
@@ -365,6 +359,20 @@ export class CContract extends AuditBase
     public projectList?: Project[];
 
     public constructor(init?: Partial<CContract>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CContractView extends CContract
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<CContractView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryDb_1<T> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class Client extends AuditBase
@@ -1259,18 +1267,20 @@ export class QueryCBanks extends QueryDb_2<CBank, CBankView> implements IReturn<
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryCContracts extends QueryDb_1<CContract> implements IReturn<QueryResponse<CContract>>
+export class QueryCContracts extends QueryDb_2<CContract, CContractView> implements IReturn<QueryResponse<CContractView>>
 {
-    public ids?: number[];
-    public codes?: string[];
-    public codeEndsWith?: string;
-    public name?: string;
-    public isActive?: boolean;
+    public clientId?: number;
+    // @Validate(Validator="Null")
+    public clientCodes?: string[];
+
+    public clientCodeContains?: string;
+    public clientNameContains?: string;
+    public contractNoContains?: string;
 
     public constructor(init?: Partial<QueryCContracts>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryCContracts'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<CContract>(); }
+    public createResponse() { return new QueryResponse<CContractView>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -1368,8 +1378,6 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
 {
     public code?: string;
     public clientId?: number;
-    public cContractId?: number;
-    public cContractContractNoContains?: string;
     // @Validate(Validator="Null")
     public clientCodes?: string[];
 

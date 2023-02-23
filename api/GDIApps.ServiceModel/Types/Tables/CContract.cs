@@ -38,8 +38,8 @@ public class CContract : AuditBase
     public Decimal? RemainingAmount { get; set; }
     public int? PaymentTermDays { get; set; }
 
-    [Reference]
-    public List<Project>? ProjectList { get; set; }
+    // [Reference]
+    // public List<Project>? ProjectList { get; set; }
 }
 
 public class CContractView : CContract

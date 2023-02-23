@@ -12,13 +12,14 @@ namespace GDIApps.ServiceModel;
 [ValidateIsAuthenticated]
 [Tag("Clients")]
 [AutoApply(Behavior.AuditQuery)]
-public class QueryCContracts : QueryDb<CContract> {
-    public int[]? Ids {get; set;} = null;
-    public string[]? Codes {get; set;}
-    public string? CodeEndsWith {get; set;}
-    public string? Name {get; set;}
-    [AutoDefault(Eval = null)]
-    public bool? IsActive { get; set; }
+public class QueryCContracts : QueryDb<CContract, CContractView>, IJoin<CContract, Client> {
+    public int? ClientId { get; set; }
+    [ValidateNull]
+    public string[]? ClientCodes {get; set;}
+    public string? ClientCodeContains { get; set; }
+    public string? ClientNameContains { get; set; }
+
+    public string? ContractNoContains { get; set;}
 }
 
 [ValidateIsAuthenticated]

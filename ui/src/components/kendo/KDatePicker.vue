@@ -3,16 +3,15 @@
         {{label}}
     </KLabel>
     <div class="k-form-field-wrap">
-        <KInput 
+        <kDatePicker 
             :id="id"
-            :type="type"
-            :valid="isValid"
             :value="modelValue"
+            :format="format"
             :disabled="disabled"
             :placeholder="placeholder"
             :required="required"
             :validation-message="valMessage"
-            @input="handleChange"
+            @change="handleChange"
             @blur="handleBlur"
             @focus="handleFocus"
             />
@@ -24,28 +23,31 @@
 </template>
 <script setup lang="ts">
 import { Error as KError, Hint as KHint, Label as KLabel } from '@progress/kendo-vue-labels';
-import { Input as KInput } from '@progress/kendo-vue-inputs';
+import { DatePicker as kDatePicker } from '@progress/kendo-vue-dateinputs';
 
-const props = 
-defineProps<{
+export interface Props {
     id: string,
-    type: string | undefined,
     optional?: boolean|true,
-    modelValue?: string | number | undefined,
+    value?: Date |undefined,
+    modelValue?: Date| undefined,
+    format?: string | undefined,
     showLabel?: boolean|true,
     label?: string,
     valid?: boolean | true,
     validationMessage?: string,
     touched?: boolean | false,
-    hint?: string ,
+    hint?: string,
     disabled?: boolean | false,
     placeholder? : string | undefined,
     required?: boolean | false,
     validator?: Function
-    // status?: ResponseStatus|null
- }>()
+}
 
- const emit = defineEmits<{
+const props = withDefaults(defineProps<Props>(), {
+    format: 'dd-MMM-yyyy'
+})
+
+const emit = defineEmits<{
     (e:'update:modelValue', value:any): () => void
     (e:'change', value:any): () => void
     (e:'filterchange', value:any): () => void

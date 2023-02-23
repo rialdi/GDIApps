@@ -35,6 +35,7 @@ const ClientPages = () => import("@/pages/backend/admins/Clients.vue");
 const ProjectPages = () => import("@/pages/backend/admins/Projects/Index.vue");
 const CAddressPages = () => import("@/pages/backend/admins/CAddress/Index.vue");
 const CBankPages = () => import("@/pages/backend/admins/CBank/Index.vue");
+const CContractPages = () => import("@/pages/backend/admins/CContract/Index.vue");
 
 // Backend: Pages
 const BackendPagesAuth = () => import("@/views/backend/pages/AuthView.vue");
@@ -171,6 +172,11 @@ const routes = [
             path: "cbank",
             name: "backend-admins-cbank",
             component: CBankPages,
+          },
+          {
+            path: "ccontract",
+            name: "backend-admins-ccontract",
+            component: CContractPages,
           }
         ],
       },
