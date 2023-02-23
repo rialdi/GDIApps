@@ -48,6 +48,7 @@ const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 const props = defineProps<{
+    responsiveColumnTitle?: string,
     gridData: any[],
     gridDataTotal: number,
     gridColumProperties: GridColumnProps[],
@@ -93,9 +94,8 @@ const { width, currWindowType } = useBreakpoints()
 const onShowHideColumns = () => {
   if(currWindowType.value != lastWindowType.value && width.value > 100) {
     props.gridColumProperties.map( col => {
-        console.log(col.title)
       if(col.title != "Action") {
-        if(col.title == "CBanks"){
+        if(col.title == props.responsiveColumnTitle){
           col.hidden = !col.hidden
         } else {
           col.hidden = !col.hidden
@@ -108,7 +108,9 @@ const onShowHideColumns = () => {
 }
 
 onMounted(async () => {
-  window.addEventListener('resize', onShowHideColumns)
+  if(props.responsiveColumnTitle) {
+    window.addEventListener('resize', onShowHideColumns)
+  }
 });
 
 const refreshData = async () => {

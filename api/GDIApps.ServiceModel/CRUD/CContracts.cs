@@ -17,7 +17,7 @@ public class QueryCContracts : QueryDb<CContract> {
     public string[]? Codes {get; set;}
     public string? CodeEndsWith {get; set;}
     public string? Name {get; set;}
-    [Default(typeof(bool), "true")]
+    [AutoDefault(Eval = null)]
     public bool? IsActive { get; set; }
 }
 

@@ -19,6 +19,7 @@
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
     <KStandardGrid 
+        :responsive-column-title="'Banks'"
         :grid-data="gridData.data" 
         :grid-colum-properties="gridColumProperties" 
         :grid-data-total="gridData.total" 
@@ -73,10 +74,7 @@ let dataItemInEdit = ref<CBankView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-let currSelectedClientId = ref<number | undefined>()
-const updateSelectedClientId = (val: any) => {
-  currSelectedClientId.value = val
-}
+
 
 const responsiveCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
   const elParentInfoTitle = h('strong',{}, ['Client'])
@@ -98,23 +96,33 @@ const clientCellTemplate = (h : any, tdElement : any , props : any, listeners : 
             }, [props.dataItem.clientCode + ' - ' + props.dataItem.clientName])
 }
 
+let currSelectedClientId = ref<number | undefined>()
+const updateSelectedClientId = (val: any) => {
+  currSelectedClientId.value = val
+
+  // Show Hide Client Columns
+  gridColumProperties.map( col => {
+    if(col.title == "Client") {
+      col.hidden = !(!currSelectedClientId.value)
+    }
+  })
+
+  refreshDatas() 
+}
+
 let gridColumProperties = [
-  // { cell: 'responsiveTemplate', filterable: false, title: 'CBanks', hidden: true },
-  // { cell: 'clientTemplate', filterable: false, title: 'Client'},
-  { cell: responsiveCellTemplate, filterable: false, title: 'CBanks', hidden: true },
+  { cell: responsiveCellTemplate, filterable: false, title: 'Banks', hidden: true },
   { cell: clientCellTemplate, filterable: false, title: 'Client'},
   { field: 'bankName', title: 'Bank Name', width:150 },
   { field: 'accountName', title: 'Account Name'},
   { field: 'accountNo', title: 'Account No'},
   { field: 'currency', title: 'Currency'},
-  // { field: 'description', title: 'Description'},
   { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 },
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
 const refreshDatas = async () => {
   const currClientId = currSelectedClientId.value
-  console.log("currClientId : " + currClientId)
   const queryCBanks = (currClientId) ? 
     new QueryCBanks({ clientId: currClientId }) : 
     new QueryCBanks() 

@@ -84,7 +84,7 @@ const getClientList = async() => {
 const cboClientOnChange = (e: any) => {
   selectedClientId.value = e.value ? e.value.id : undefined
   mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
-  mainGridtRef.value?.refreshDatas()
+  // mainGridtRef.value?.refreshDatas()
 }
 
 const onCBOClientFilter = (e : any) => {

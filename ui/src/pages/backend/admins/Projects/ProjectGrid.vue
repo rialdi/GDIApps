@@ -17,9 +17,6 @@
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
-    <strong> {{ lastWindowType }}</strong>
-    <br/>
-    <strong> {{ currWindowType }}</strong>
     <!-- Main Data Grid -->
     <kGrid ref="grid"
         :data-items="gridData"
