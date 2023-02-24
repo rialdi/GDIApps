@@ -38,8 +38,8 @@ public class Migration1001 : MigrationBase
         CreateDataCAddress(3, "Sampoerna", "Indonesia", "Jawa Timur", "Surabaya", "Gunung Anyar", null, "Jl. Rungkut Industri Raya No. 18", null, "60293", "+62318431699", true);
         CreateDataCAddress(4, "Premier Oil", "Indonesia", "DKI Jakarta", "Jakarta Selatan", "Pasar Minggu", null, "Gedung CIBIS NINE Lantai 19", "Jl. TB Simatupang No. 2", "12560", "+622150863000", true);
     
-        CreateDataInvoice(1, 1, 1, 1, "INV-0001", "60", contractStartDate, "Test INV", "098213123", "vAT", "WHT", 100000000, 0, "SUBMITTED");
-        CreateDataInvoice(1, 1, 1, 1, "INV-0002", "60", contractStartDate.AddMonths(1), "Test INV", "098213123", "vAT", "WHT", 200000000, 0, "SUBMITTED");
+        CreateDataInvoice(1, 1, 1, 1, "INV-0001", 60, contractStartDate, "Test INV", "098213123", "vAT", "WHT", 100000000, 0, "SUBMITTED");
+        CreateDataInvoice(1, 1, 1, 1, "INV-0002", 60, contractStartDate.AddMonths(1), "Test INV", "098213123", "vAT", "WHT", 200000000, 0, "SUBMITTED");
     }
     
     public override void Down()
@@ -123,17 +123,17 @@ public class Migration1001 : MigrationBase
     );
 
     private long CreateDataInvoice(
-        long clientId, long contractId, long bankId, long addressId, string invoiceNo, 
-        string paymentTerm, DateTime invoiceDate, string description, string poNumber,
-        string vat, string wht, decimal totalAmount, decimal vatAmount, string invoiceStatus
+        int clientId, int? contractId, int? bankId, int? addressId, string invoiceNo, 
+        int? paymentTermDays, DateTime invoiceDate, string? description, string? poNumber,
+        string? vat, string? wht, decimal totalAmount, decimal vatAmount, string invoiceStatus
     ) => 
         Db.Insert(new Invoice {
-            ClientId = (int)clientId,
-            CContractId = (int)contractId,
-            CBankId = (int) bankId,
-            CAddressId = (int) addressId,
+            ClientId = clientId,
+            CContractId = contractId,
+            CBankId = bankId,
+            CAddressId = addressId,
             InvoiceNo = invoiceNo,
-            PaymentTerm = paymentTerm,
+            PaymentTermDays = paymentTermDays,
             InvoiceDate = invoiceDate,
             Description = description,
             PONumber = poNumber,

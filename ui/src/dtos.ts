@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-23 18:12:17
+Date: 2023-02-24 13:24:57
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -290,6 +290,52 @@ export class CBankView extends CBank
     public constructor(init?: Partial<CBankView>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class CContract extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public contractNo?: string;
+
+    // @Required()
+    // @StringLength(1000)
+    public description?: string;
+
+    public startDate?: string;
+    public endDate?: string;
+    public totalAmount?: number;
+    // @Required()
+    // @StringLength(100)
+    public currency?: string;
+
+    public isActive?: boolean;
+    // @StringLength(100)
+    public pic?: string;
+
+    public remainingAmount?: number;
+    public paymentTermDays?: number;
+
+    public constructor(init?: Partial<CContract>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CContractView extends CContract
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<CContractView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryDb_1<T> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
+}
+
 export class Project extends AuditBase
 {
     public id?: number;
@@ -326,53 +372,6 @@ export class Project extends AuditBase
     public isActive?: boolean;
 
     public constructor(init?: Partial<Project>) { super(init); (Object as any).assign(this, init); }
-}
-
-export class CContract extends AuditBase
-{
-    public id?: number;
-    // @Required()
-    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
-    public clientId?: number;
-
-    // @Required()
-    // @StringLength(100)
-    public contractNo?: string;
-
-    // @Required()
-    // @StringLength(1000)
-    public description?: string;
-
-    public startDate?: string;
-    public endDate?: string;
-    public totalAmount?: number;
-    // @Required()
-    // @StringLength(100)
-    public currency?: string;
-
-    public isActive?: boolean;
-    // @StringLength(100)
-    public pic?: string;
-
-    public remainingAmount?: number;
-    public paymentTermDays?: number;
-    public projectList?: Project[];
-
-    public constructor(init?: Partial<CContract>) { super(init); (Object as any).assign(this, init); }
-}
-
-export class CContractView extends CContract
-{
-    public clientCode?: string;
-    public clientName?: string;
-
-    public constructor(init?: Partial<CContractView>) { super(init); (Object as any).assign(this, init); }
-}
-
-export class QueryDb_1<T> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryDb_1<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class Client extends AuditBase
@@ -512,9 +511,8 @@ export class Invoice extends AuditBase
     // @StringLength(100)
     public invoiceNo?: string;
 
-    // @Required()
     // @StringLength(100)
-    public paymentTerm?: string;
+    public paymentTermDays?: number;
 
     // @Required()
     public invoiceDate?: string;
@@ -528,12 +526,52 @@ export class Invoice extends AuditBase
     // @StringLength(100)
     public vat?: string;
 
+    // @StringLength(100)
     public wht?: string;
+
     public totalAmount?: number;
     public vatAmount?: number;
     public invoiceStatus?: string;
 
     public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class InvoiceView
+{
+    public id?: number;
+    public invoiceNo?: string;
+    public paymentTermDays?: number;
+    public invoiceDate?: string;
+    public description?: string;
+    public poNumber?: string;
+    public vat?: string;
+    public wht?: string;
+    public totalAmount?: number;
+    public vatAmount?: number;
+    public invoiceStatus?: string;
+    public clientId?: number;
+    public clientCode?: string;
+    public clientName?: string;
+    public cContractId?: number;
+    public contractNo?: string;
+    public cContractDescription?: string;
+    public cBankId?: number;
+    public cBankBankName?: string;
+    public cBankAccountName?: string;
+    public cBankAccountNo?: string;
+    public cAddressId?: number;
+    public cAddressAddressName?: string;
+    public cAddressCountry?: string;
+    public cAddressProvince?: string;
+    public cAddressCity?: string;
+    public cAddressDistrict?: string;
+    public cAddressVillage?: string;
+    public cAddressAddress1?: string;
+    public cAddressAddress2?: string;
+    public cAddressPostalCode?: string;
+    public cAddressPhoneNo?: string;
+
+    public constructor(init?: Partial<InvoiceView>) { (Object as any).assign(this, init); }
 }
 
 export enum LOOKUPTYPE
@@ -1347,18 +1385,14 @@ export class QueryInvoiceDetails extends QueryDb_1<InvoiceDetail> implements IRe
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryInvoices extends QueryDb_1<Invoice> implements IReturn<QueryResponse<Invoice>>
+export class QueryInvoices extends QueryDb_2<Invoice, InvoiceView> implements IReturn<QueryResponse<InvoiceView>>
 {
-    public ids?: number[];
-    public codes?: string[];
-    public codeEndsWith?: string;
-    public name?: string;
-    public isActive?: boolean;
+    public clientId?: number;
 
     public constructor(init?: Partial<QueryInvoices>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryInvoices'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Invoice>(); }
+    public createResponse() { return new QueryResponse<InvoiceView>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -1675,7 +1709,7 @@ export class CreateInvoice implements IReturn<CRUDResponse>, ICreateDb<Invoice>
     public cBankId?: number;
     public cAddressId?: number;
     public invoiceNo?: string;
-    public paymentTerm?: string;
+    public paymentTermDays?: number;
     public invoiceDate?: string;
     public description?: string;
     public poNumber?: string;
@@ -1700,7 +1734,7 @@ export class UpdateInvoice implements IReturn<CRUDResponse>, IPatchDb<Invoice>
     public cBankId?: number;
     public cAddressId?: number;
     public invoiceNo?: string;
-    public paymentTerm?: string;
+    public paymentTermDays?: number;
     public invoiceDate?: string;
     public description?: string;
     public poNumber?: string;

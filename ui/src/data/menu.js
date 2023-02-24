@@ -39,11 +39,14 @@ export default {
         {
           name: "Client Bank",
           to: "backend-admins-cbank",
-        }
-        ,
+        },
         {
           name: "Client Contract",
           to: "backend-admins-ccontract",
+        },
+        {
+          name: "Invoices",
+          to: "backend-admins-invoices",
         }
       ],
     },

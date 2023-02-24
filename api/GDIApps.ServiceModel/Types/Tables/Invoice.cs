@@ -16,21 +16,20 @@ public class Invoice : AuditBase
     public int ClientId { get; set;}
 
     [References(typeof(CContract))]
-    public int CContractId { get; set;}
+    public int? CContractId { get; set;}
 
     [References(typeof(CBank))]
-    public int CBankId { get; set;}
+    public int? CBankId { get; set;}
 
     [References(typeof(CAddress))]
-    public int CAddressId { get; set;}
+    public int? CAddressId { get; set;}
 
     [Required]
     [StringLength(100)]    
     public string InvoiceNo { get; set; } = string.Empty;
 
-    [Required]
     [StringLength(100)]    
-    public string PaymentTerm { get; set; } = string.Empty;
+    public int? PaymentTermDays { get; set; }
 
     [Required]
     public DateTime InvoiceDate { get; set; }
@@ -43,16 +42,53 @@ public class Invoice : AuditBase
 
     [StringLength(100)]
     public string? VAT { get; set; }
+    [StringLength(100)]
     public string? WHT { get; set; }
     public decimal TotalAmount { get; set; }
-    public decimal VATAmount { get; set; }
-    
+    public decimal? VATAmount { get; set; }
     public string? InvoiceStatus { get; set; }
 }
 
-public class InvoiceView : Invoice
+public class InvoiceView
 {
+    public int Id { get; set; }
+    public string InvoiceNo { get; set; } = string.Empty;
+    public int? PaymentTermDays { get; set; }
+    public DateTime InvoiceDate { get; set; }
+    public string? Description { get; set; }
+    public string? PONumber { get; set; }
+    public string? VAT { get; set; }
+    public string? WHT { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal? VATAmount { get; set; }
+    public string? InvoiceStatus { get; set; }
+
+    // Get Client Info
+    public int ClientId { get; set;}
     public string ClientCode { get; set; } = string.Empty;
     public string ClientName { get; set; } = string.Empty;
-    public string? CContractContractNo { get; set; }
+    
+    // Get CContract Info
+    public int? CContractId { get; set;}
+    public string? ContractNo { get; set; }
+    public string CContractDescription { get; set; } = string.Empty;
+    
+    // Get CBank Info
+    public int? CBankId { get; set;}
+    public string? CBankBankName { get; set; }
+    public string CBankAccountName { get; set; } = string.Empty;
+    public string CBankAccountNo { get; set; } = string.Empty;
+
+    // Get CAddress Info
+    public int? CAddressId { get; set;}
+    public string CAddressAddressName { get; set; } = string.Empty;
+    public string? CAddressCountry { get; set; }
+    public string? CAddressProvince { get; set; }
+    public string? CAddressCity { get; set; }
+    public string? CAddressDistrict { get; set; }
+    public string? CAddressVillage { get; set; }
+    public string? CAddressAddress1 { get; set; }
+    public string? CAddressAddress2 { get; set; }
+    public string? CAddressPostalCode { get; set; }
+    public string? CAddressPhoneNo { get; set; }
 }
