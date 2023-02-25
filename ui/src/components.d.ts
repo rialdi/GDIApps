@@ -54,6 +54,7 @@ declare module '@vue/runtime-core' {
     NavItem: typeof import('./components/NavItem.vue')['default']
     NavLink: typeof import('./components/NavLink.vue')['default']
     OutlineButton: typeof import('./components/form/OutlineButton.vue')['default']
+    PopupSearchGrid: typeof import('./components/grids/PopupSearchGrid.vue')['default']
     PrimaryButton: typeof import('./components/form/PrimaryButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

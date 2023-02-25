@@ -74,8 +74,6 @@ let dataItemInEdit = ref<CContractView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-
-
 const responsiveCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
   const elParentInfoTitle = h('strong',{}, ['Client'])
   const elParentInfo = h('p',{},[props.dataItem.clientCode + ' - ' + props.dataItem.clientName])

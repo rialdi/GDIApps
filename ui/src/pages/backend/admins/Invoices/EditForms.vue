@@ -35,6 +35,15 @@
                     @change="cboCAddressOnChange" @filterchange="cboCAddressOnFilter"
                     :valid="true" 
                 />
+                <KInput 
+                    :placeholder="'Type some text...'"
+                    :icon-name="'search'" @focus="onSearchCAddress"/>
+                <!-- <div v-if="dataItemInEdit"> -->
+                <PopupSearchGrid ref="addressSearchRef"
+                    :curr-value-id="dataItemInEdit.cAddressId" 
+                    :grid-source-data="cAddressList" 
+                    :grid-colum-properties="gridColumPropCAddress" />
+                <!-- </div> -->
             </div>
         </div>
         <div class="row">
@@ -103,8 +112,14 @@ import KTextInput from "@/components/kendo/KTextInput.vue"
 import KDatePicker from "@/components/kendo/KDatePicker.vue"
 import KNumericTextBox from "@/components/kendo/KNumericTextBox.vue"
 
-import { nameValidator } from "@/stores/validators"
+import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
 
+import { nameValidator } from "@/stores/validators"
+import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
+
+import { Input as KInput } from '@progress/kendo-vue-inputs';
+
+const addressSearchRef = ref<InstanceType<typeof PopupSearchGrid>>()
 let dataItemInEdit = ref<Invoice>(new Invoice())
 
 let invoiceDateInEdit = ref<Date | undefined>()
@@ -121,16 +136,28 @@ const emit = defineEmits<{
     (e:'save', dataItem: object): () => void
 }>()
 
+const gridColumPropCAddress = [
+  { field: 'addressName', title: 'AddressName', width:150 },
+  { field: 'phoneNo', title: 'Phone No'},
+  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+] as GridColumnProps[];
+
 onMounted(async () => {
     resetForm()
     getCContractList()
     getCBankList()
     getCAddressList()
+    // addressSearchRef.value?.onCancel
 });
 
 const resetForm = async () => {
     dataItemInEdit.value = Object.assign({}, props.dataItem as Invoice)
     invoiceDateInEdit.value = toDate(dataItemInEdit.value.invoiceDate)
+}
+
+const onSearchCAddress = (e: any) => {
+    console.log('onSearchCAddress')
+    addressSearchRef.value?.showPopupSearchDialog()
 }
 
 const onSubmit = async (e: Event) => {
