@@ -94,29 +94,22 @@
 <script setup lang="ts">
 import { toDate, toLocalISOString } from '@servicestack/client'
 import { client } from "@/api"
-import { process } from '@progress/kendo-data-query'
-
-import { Invoice, CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
 
 import KComboBox from "@/components/kendo/KComboBox.vue"
 import KTextInput from "@/components/kendo/KTextInput.vue"
 import KDatePicker from "@/components/kendo/KDatePicker.vue"
 import KNumericTextBox from "@/components/kendo/KNumericTextBox.vue"
-
 import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
 
+import { Invoice, CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
 import { nameValidator } from "@/stores/validators"
+
 import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
+import { process } from '@progress/kendo-data-query'
 
-// import { Input as KInput } from '@progress/kendo-vue-inputs';
-
-// const addressSearchRef = ref<InstanceType<typeof PopupSearchGrid>>()
 let dataItemInEdit = ref<Invoice>(new Invoice())
 
 let invoiceDateInEdit = ref<Date | undefined>()
-// let endDateInEdit = ref<Date | undefined>()
-
-// const startDate = computed (() => toDate(dataItemInEdit.value.startDate))
 
 let props = defineProps<{
     dataItem: any,
@@ -126,28 +119,6 @@ let props = defineProps<{
 const emit = defineEmits<{
     (e:'save', dataItem: object): () => void
 }>()
-
-const gridColumPropCContract = [
-  { field: 'contractNo', title: 'Contract No', width:150 },
-  { field: 'description', title: 'description'},
-  { field: 'currency', title: 'Currency'},
-  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
-  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 }
-] as GridColumnProps[];
-
-const gridColumPropCAddress = [
-  { field: 'addressName', title: 'AddressName', width:150 },
-  { field: 'phoneNo', title: 'Phone No'},
-  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
-] as GridColumnProps[];
-
-const gridColumPropCBank = [
-  { field: 'bankName', title: 'Bank Name', width:150 },
-  { field: 'accountName', title: 'Account Name'},
-  { field: 'accountNo', title: 'Account No'},
-  { field: 'currency', title: 'Currency'},
-  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
-] as GridColumnProps[];
 
 onMounted(async () => {
     resetForm()
@@ -162,26 +133,30 @@ const resetForm = async () => {
     invoiceDateInEdit.value = toDate(dataItemInEdit.value.invoiceDate)
 }
 
-
 const onSubmit = async (e: Event) => {
     dataItemInEdit.value.invoiceDate = toLocalISOString(invoiceDateInEdit.value)
     emit('save', { dataItem : dataItemInEdit.value })
 }
 
 /* Combobox Client */
-
 const cboClientOnChange = (e: any) => {
     getCContractList()
     getCAddressList()
 }
-
 /* End Comboboc Client */
 
-/* Combobox CContract */
+/* Popup Search */
+/* CContract */
+const gridColumPropCContract = [
+  { field: 'contractNo', title: 'Contract No', width:150 },
+  { field: 'description', title: 'description'},
+  { field: 'currency', title: 'Currency'},
+  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 }
+] as GridColumnProps[];
+
 const sourceCContractList = ref<CContract[]>([])
 let cContractList = ref<any[]>([])
-// let selectedCContractId = ref<number | undefined>()
-
 const getCContractList = async() => {
   const api = await client.api(new QueryCContracts({ clientId: dataItemInEdit.value.clientId }))
   if (api.succeeded) {
@@ -189,22 +164,19 @@ const getCContractList = async() => {
     cContractList.value = process(sourceCContractList.value, {}).data as any[]
   }
 }
+/* END CContract */
 
-// const cboCContractOnChange = (e: any) => {
-//     // selectedCContractId.value = e.value ? e.value.id : undefined
-// }
+/* CBank */
+const gridColumPropCBank = [
+  { field: 'bankName', title: 'Bank Name', width:150 },
+  { field: 'accountName', title: 'Account Name'},
+  { field: 'accountNo', title: 'Account No'},
+  { field: 'currency', title: 'Currency'},
+  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+] as GridColumnProps[];
 
-// const cboCContractOnFilter = (e : any) => {
-//   const data = process(sourceCContractList.value, {}).data as any[]
-//   cContractList.value = filterBy(data, e.filter)
-// }
-/* END of Combobox CContract */
-
-/* Combobox CBank */
 const sourceCBankList = ref<CBank[]>([])
 let cBankList = ref<any[]>([])
-// let selectedCBankId = ref<number | undefined>()
-
 const getCBankList = async() => {
   const api = await client.api(new QueryCBanks({ }))
   if (api.succeeded) {
@@ -212,22 +184,17 @@ const getCBankList = async() => {
     cBankList.value = process(sourceCBankList.value, {}).data as any[]
   }
 }
+/* END CBank */
 
-// const cboCBankOnChange = (e: any) => {
-//     // selectedCBankId.value = e.value ? e.value.id : undefined
-// }
+/* CAddress */
+const gridColumPropCAddress = [
+  { field: 'addressName', title: 'AddressName', width:150 },
+  { field: 'phoneNo', title: 'Phone No'},
+  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+] as GridColumnProps[];
 
-// const cboCBankOnFilter = (e : any) => {
-//   const data = process(sourceCBankList.value, {}).data as any[]
-//   cBankList.value = filterBy(data, e.filter)
-// }
-/* END of Combobox CContract */
-
-/* Combobox CAddress */
 const sourceCAddressList = ref<CAddress[]>([])
 let cAddressList = ref<CAddress[]>([])
-// let selectedCAddressId = ref<number | undefined>()
-
 const getCAddressList = async() => {
   const api = await client.api(new QueryCAddresss({ clientId: dataItemInEdit.value.clientId }))
   if (api.succeeded) {
@@ -235,17 +202,8 @@ const getCAddressList = async() => {
     cAddressList.value = process(sourceCAddressList.value, {}).data as any[]
   }
 }
-
-// const cboCAddressOnChange = (e: any) => {
-//     // selectedCAddressId.value = e.value ? e.value.id : undefined
-// //   mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
-// }
-
-// const cboCAddressOnFilter = (e : any) => {
-//   const data = process(sourceCAddressList.value, {}).data as any[]
-//   cAddressList.value = filterBy(data, e.filter)
-// }
-/* END of Combobox CContract */
+/* END CAddress */
+/* END Popup Search */
 
 defineExpose({
     resetForm
