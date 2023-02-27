@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-24 13:24:57
+Date: 2023-02-27 11:42:42
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -286,6 +286,8 @@ export class CBankView extends CBank
 {
     public clientCode?: string;
     public clientName?: string;
+    // @Ignore()
+    public bankDisplay?: string;
 
     public constructor(init?: Partial<CBankView>) { super(init); (Object as any).assign(this, init); }
 }

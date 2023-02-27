@@ -11,39 +11,30 @@
                 />
             </div>
             <div class="col-6 p-1">
-                <KComboBox 
-                    :id="'cboCContract'" :showLabel="true" :label="'Contract'" :valueField="'id'" :textField="'contractNo'"
-                    :dataItems="cContractList" v-model="dataItemInEdit.cContractId" :value="dataItemInEdit.cContractId" 
-                    @change="cboCContractOnChange" @filterchange="cboCContractOnFilter"
-                    :valid="true" 
-                />
+                <PopupSearchGrid :id="'cContractId'" v-model="dataItemInEdit.cContractId"
+                    :grid-source-data="cContractList" 
+                    :grid-colum-properties="gridColumPropCContract" 
+                    :model-value-text-field="'contractNo'"
+                    :show-label="true" :label="'Contract No'"
+                    :filterable="true" :pageable="false" />
             </div>
         </div>
         <div class="row">
             <div class="col-6 p-1">
-                <KComboBox 
-                    :id="'cboCBank'" :showLabel="true" :label="'Bank'" :valueField="'id'" :textField="'bankName'" :required="true"
-                    :dataItems="cBankList" v-model="dataItemInEdit.cBankId" :value="dataItemInEdit.cBankId" 
-                    @change="cboCBankOnChange" @filterchange="cboCBankOnFilter"
-                    :valid="true"
-                />
+                <PopupSearchGrid :id="'cBankId'" v-model="dataItemInEdit.cBankId"
+                    :grid-source-data="cBankList" 
+                    :grid-colum-properties="gridColumPropCBank" 
+                    :model-value-text-field="'bankDisplay'"
+                    :show-label="true" :label="'Bank'"
+                    :filterable="false" :pageable="false" />
             </div>
             <div class="col-6 p-1">
-                <KComboBox 
-                    :id="'cboCAddress'" :showLabel="true" :label="'Address'" :valueField="'id'" :textField="'addressName'"
-                    :dataItems="cAddressList" v-model="dataItemInEdit.cAddressId" :value="dataItemInEdit.cAddressId" 
-                    @change="cboCAddressOnChange" @filterchange="cboCAddressOnFilter"
-                    :valid="true" 
-                />
-                <KInput 
-                    :placeholder="'Type some text...'"
-                    :icon-name="'search'" @focus="onSearchCAddress"/>
-                <!-- <div v-if="dataItemInEdit"> -->
-                <PopupSearchGrid ref="addressSearchRef"
-                    :curr-value-id="dataItemInEdit.cAddressId" 
+                <PopupSearchGrid :id="'cAddressId'" v-model="dataItemInEdit.cAddressId"
                     :grid-source-data="cAddressList" 
-                    :grid-colum-properties="gridColumPropCAddress" />
-                <!-- </div> -->
+                    :grid-colum-properties="gridColumPropCAddress" 
+                    :model-value-text-field="'addressName'"
+                    :show-label="true" :label="'Contract Address'"
+                    :filterable="false" :pageable="false" />
             </div>
         </div>
         <div class="row">
@@ -103,7 +94,7 @@
 <script setup lang="ts">
 import { toDate, toLocalISOString } from '@servicestack/client'
 import { client } from "@/api"
-import { process, filterBy } from '@progress/kendo-data-query'
+import { process } from '@progress/kendo-data-query'
 
 import { Invoice, CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
 
@@ -117,9 +108,9 @@ import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
 import { nameValidator } from "@/stores/validators"
 import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
 
-import { Input as KInput } from '@progress/kendo-vue-inputs';
+// import { Input as KInput } from '@progress/kendo-vue-inputs';
 
-const addressSearchRef = ref<InstanceType<typeof PopupSearchGrid>>()
+// const addressSearchRef = ref<InstanceType<typeof PopupSearchGrid>>()
 let dataItemInEdit = ref<Invoice>(new Invoice())
 
 let invoiceDateInEdit = ref<Date | undefined>()
@@ -136,9 +127,25 @@ const emit = defineEmits<{
     (e:'save', dataItem: object): () => void
 }>()
 
+const gridColumPropCContract = [
+  { field: 'contractNo', title: 'Contract No', width:150 },
+  { field: 'description', title: 'description'},
+  { field: 'currency', title: 'Currency'},
+  { field: 'totalAmount', title: 'Total Amount'},
+  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+] as GridColumnProps[];
+
 const gridColumPropCAddress = [
   { field: 'addressName', title: 'AddressName', width:150 },
   { field: 'phoneNo', title: 'Phone No'},
+  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+] as GridColumnProps[];
+
+const gridColumPropCBank = [
+  { field: 'bankName', title: 'Bank Name', width:150 },
+  { field: 'accountName', title: 'Account Name'},
+  { field: 'accountNo', title: 'Account No'},
+  { field: 'currency', title: 'Currency'},
   { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
 ] as GridColumnProps[];
 
@@ -155,10 +162,6 @@ const resetForm = async () => {
     invoiceDateInEdit.value = toDate(dataItemInEdit.value.invoiceDate)
 }
 
-const onSearchCAddress = (e: any) => {
-    console.log('onSearchCAddress')
-    addressSearchRef.value?.showPopupSearchDialog()
-}
 
 const onSubmit = async (e: Event) => {
     dataItemInEdit.value.invoiceDate = toLocalISOString(invoiceDateInEdit.value)
@@ -187,14 +190,14 @@ const getCContractList = async() => {
   }
 }
 
-const cboCContractOnChange = (e: any) => {
-    // selectedCContractId.value = e.value ? e.value.id : undefined
-}
+// const cboCContractOnChange = (e: any) => {
+//     // selectedCContractId.value = e.value ? e.value.id : undefined
+// }
 
-const cboCContractOnFilter = (e : any) => {
-  const data = process(sourceCContractList.value, {}).data as any[]
-  cContractList.value = filterBy(data, e.filter)
-}
+// const cboCContractOnFilter = (e : any) => {
+//   const data = process(sourceCContractList.value, {}).data as any[]
+//   cContractList.value = filterBy(data, e.filter)
+// }
 /* END of Combobox CContract */
 
 /* Combobox CBank */
@@ -210,14 +213,14 @@ const getCBankList = async() => {
   }
 }
 
-const cboCBankOnChange = (e: any) => {
-    // selectedCBankId.value = e.value ? e.value.id : undefined
-}
+// const cboCBankOnChange = (e: any) => {
+//     // selectedCBankId.value = e.value ? e.value.id : undefined
+// }
 
-const cboCBankOnFilter = (e : any) => {
-  const data = process(sourceCBankList.value, {}).data as any[]
-  cBankList.value = filterBy(data, e.filter)
-}
+// const cboCBankOnFilter = (e : any) => {
+//   const data = process(sourceCBankList.value, {}).data as any[]
+//   cBankList.value = filterBy(data, e.filter)
+// }
 /* END of Combobox CContract */
 
 /* Combobox CAddress */
@@ -233,15 +236,15 @@ const getCAddressList = async() => {
   }
 }
 
-const cboCAddressOnChange = (e: any) => {
-    // selectedCAddressId.value = e.value ? e.value.id : undefined
-//   mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
-}
+// const cboCAddressOnChange = (e: any) => {
+//     // selectedCAddressId.value = e.value ? e.value.id : undefined
+// //   mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
+// }
 
-const cboCAddressOnFilter = (e : any) => {
-  const data = process(sourceCAddressList.value, {}).data as any[]
-  cAddressList.value = filterBy(data, e.filter)
-}
+// const cboCAddressOnFilter = (e : any) => {
+//   const data = process(sourceCAddressList.value, {}).data as any[]
+//   cAddressList.value = filterBy(data, e.filter)
+// }
 /* END of Combobox CContract */
 
 defineExpose({

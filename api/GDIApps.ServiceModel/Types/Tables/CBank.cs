@@ -40,4 +40,11 @@ public class CBankView : CBank
 {
     public string ClientCode { get; set; } = string.Empty;
     public string ClientName { get; set; } = string.Empty;
+
+    [Compute, Ignore]
+    public string BankDisplay {
+        get {
+            return "[" + BankName + "] " + AccountNo;
+        }
+    }
 }
