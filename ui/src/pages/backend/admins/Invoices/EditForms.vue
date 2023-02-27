@@ -131,8 +131,8 @@ const gridColumPropCContract = [
   { field: 'contractNo', title: 'Contract No', width:150 },
   { field: 'description', title: 'description'},
   { field: 'currency', title: 'Currency'},
-  { field: 'totalAmount', title: 'Total Amount'},
-  { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 }
+  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
+  { field: 'isActive', title: 'Is Active', cell: 'isActiveTemplate', width:85 }
 ] as GridColumnProps[];
 
 const gridColumPropCAddress = [

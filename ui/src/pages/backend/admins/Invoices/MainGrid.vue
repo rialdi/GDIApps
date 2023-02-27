@@ -40,6 +40,8 @@
     <!-- End Main Data Grid -->
 </template>
 <script setup lang="ts">
+import { formatDate } from "@/utils"
+// import { toDateFmt } from '@servicestack/client'
 import { client } from "@/api"
 import { InvoiceView, QueryInvoices, CreateInvoice, UpdateInvoice, DeleteInvoice } from "@/dtos"
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
@@ -98,6 +100,10 @@ const clientCellTemplate = (h : any, tdElement : any , props : any, listeners : 
             }, [props.dataItem.clientCode + ' - ' + props.dataItem.clientName])
 }
 
+const invoiceDateCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
+  return h(tdElement, {}, [ formatDate(props.dataItem.invoiceDate, "DD MMM YYYY") ])
+}
+
 let currSelectedClientId = ref<number | undefined>()
 const updateSelectedClientId = (val: any) => {
   currSelectedClientId.value = val
@@ -116,9 +122,9 @@ let gridColumProperties = [
   { cell: responsiveCellTemplate, filterable: false, title: 'Banks', hidden: true },
   { cell: clientCellTemplate, filterable: false, title: 'Client'},
   { field: 'invoiceNo', title: 'Invoice No', width:150 },
-  { field: 'invoiceDate', title: 'Invoice Date'},
+  { cell: invoiceDateCellTemplate, title: 'Invoice Date'},
   { field: 'description', title: 'Description'},
-  { field: 'totalAmount', title: 'Total Amount'},
+  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
   // { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 },
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
