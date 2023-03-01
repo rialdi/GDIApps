@@ -6,6 +6,7 @@ using ServiceStack.Script;
 using ServiceStack.Text;
 using GDIApps.ServiceInterface;
 using GDIApps.ServiceModel.Types;
+using GDIApps.ServiceModel;
 using ServiceStack.IO;
 using ServiceStack.Web;
 
@@ -15,8 +16,6 @@ namespace GDIApps;
 
 public class AppHost : AppHostBase, IHostingStartup
 {
-    
-
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context, services) => {
             services.ConfigureNonBreakingSameSiteCookies(context.HostingEnvironment);
@@ -72,16 +71,19 @@ public class AppHost : AppHostBase, IHostingStartup
 
         Plugins.Add(new FilesUploadFeature(
             // User profiles
-            
+            new UploadLocation("invoiceAttachments", appFs,
+                resolvePath: ctx => ctx.GetLocationPath(( ctx.Dto is CreateInvoiceAttachment create
+                    ? $"[{create.InvoiceId}]-" 
+                    : $"app/{ctx.Dto.GetId()}/") + $"{ctx.FileName}")),
+
             new UploadLocation("userprofile", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/profile/{ctx.FileName}"),
             // User Cover Photo    
             new UploadLocation("usercover", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/cover/{ctx.FileName}"),
+            
             new UploadLocation("tempUploadFiles", appFs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/tempUploadFiles/{ctx.FileName}")
         ));
-
-        // container.Register<AdminUsersService>(c => new AdminUsersService());
     }
 }

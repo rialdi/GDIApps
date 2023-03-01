@@ -1,94 +1,135 @@
 <template>
-    <form @submit.prevent="onSubmit" id="mainForm" class="k-form">
-        <fieldset>
-        <div class="row">
-            <div class="col-6 p-1">
-                <KComboBox 
-                    :id="'cboClient'" :showLabel="true" :label="'Client'" :valueField="'id'" :textField="'name'" :required="true"
-                    :dataItems="clientList" v-model="dataItemInEdit.clientId" :value="dataItemInEdit.clientId" 
-                    @change="cboClientOnChange"
-                    :valid="true"
-                />
-            </div>
-            <div class="col-6 p-1">
-                <PopupSearchGrid :id="'cContractId'" v-model="dataItemInEdit.cContractId"
-                    :grid-source-data="cContractList" 
-                    :grid-colum-properties="gridColumPropCContract" 
-                    :model-value-text-field="'contractNo'"
-                    :show-label="true" :label="'Contract No'"
-                    :filterable="true" :pageable="false" />
-            </div>
+    <!-- Kendo Dialog for Editing Data -->
+    <kDialog v-if="showUploadNewInvoiceAttachment" width="60%" :title="'Add New Invoice Attachment'" >
+        <div class="w-100 mb-2">
+            <kInput :style="{ width: '100%' }"  v-model="newInvoiceAttachmentFileName" :label="'File Name'"></kInput>
         </div>
-        <div class="row">
-            <div class="col-6 p-1">
-                <PopupSearchGrid :id="'cBankId'" v-model="dataItemInEdit.cBankId"
-                    :grid-source-data="cBankList" 
-                    :grid-colum-properties="gridColumPropCBank" 
-                    :model-value-text-field="'bankDisplay'"
-                    :show-label="true" :label="'Bank'"
-                    :filterable="false" :pageable="false" />
-            </div>
-            <div class="col-6 p-1">
-                <PopupSearchGrid :id="'cAddressId'" v-model="dataItemInEdit.cAddressId"
-                    :grid-source-data="cAddressList" 
-                    :grid-colum-properties="gridColumPropCAddress" 
-                    :model-value-text-field="'addressName'"
-                    :show-label="true" :label="'Contract Address'"
-                    :filterable="false" :pageable="false" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 p-1">
-                <KTextInput id="invoiceNo" v-model="dataItemInEdit.invoiceNo" :validator="nameValidator"
-                    :showLabel="true" :label="'Invoice No'" :type="'string'" />
-            </div>
-            <div class="col-6 p-1">
-                <KDatePicker :id="'invoiceDate'"  v-model="invoiceDateInEdit" 
-                    :showLabel="true" :label="'Invoice Date'"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 p-2">
-                <KNumericTextBox id="paymentTermDays" v-model="dataItemInEdit.paymentTermDays" 
-                    :showLabel="true" :label="'Payment Term Days'" :format="'n0'"/>
-            </div>
-            <div class="col-6 p-2">
-                <KTextInput id="invoiceStatus" v-model="dataItemInEdit.invoiceStatus" 
-                    :showLabel="true" :label="'Invoice Status '" :type="'string'" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 p-2">
-                <KTextInput id="description" v-model="dataItemInEdit.description" 
-                    :showLabel="true" :label="'Description'" :type="'string'" />
-            </div>
-            <div class="col-6 p-2">
-                <KTextInput id="poNumber" v-model="dataItemInEdit.poNumber" 
-                    :showLabel="true" :label="'PO Number'" :type="'string'" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 p-2">
-                <KTextInput id="vat" v-model="dataItemInEdit.vat" 
-                    :showLabel="true" :label="'VAT'" :type="'string'" />
-            </div>
-            <div class="col-6 p-2">
-                <KTextInput id="wht" v-model="dataItemInEdit.wht" 
-                    :showLabel="true" :label="'WHT '" :type="'string'" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 p-2">
-                <KNumericTextBox id="totalAmount" v-model="dataItemInEdit.totalAmount" 
-                    :showLabel="true" :label="'Total Amount'" />
-            </div>
-            <div class="col-6 p-2">
-                <KNumericTextBox id="vatAmount" v-model="dataItemInEdit.vatAmount" 
-                    :showLabel="true" :label="'VAT Amount'" />
-            </div>
-        </div>
-        </fieldset>
-    </form>
+<!-- :restrictions="{
+                    allowedExtensions: [ '.xlsx', '.xls' ]
+                }" -->
+        <kUpload class="w-100 k-form"
+            :auto-upload="false"
+            :default-files="[]"
+            :actions-layout="'end'"
+            :batch="false"
+            :multiple="false"
+            :with-credentials="false"
+            @add="onAddInvoiceAttachment"
+            @beforeupload="onBeforeUploadInvoiceAttachment"
+            @statuschange="onStatusChangeInvoiceAttachment" 
+            :save-url="'/api/CreateInvoiceAttachment'"
+        />
+    </kDialog>
+    <!-- END Kendo Dialog for Editing Data -->
+    <kTabStrip :tabs="tabList" :selected="selectedtab" @select="onSelectTab">
+        <template v-slot:tabInvoice>
+            <form @submit.prevent="onSubmit" id="mainForm" class="k-form">
+                <fieldset>
+                <div class="row">
+                    <div class="col-6 p-1">
+                        <KComboBox 
+                            :id="'cboClient'" :showLabel="true" :label="'Client'" :valueField="'id'" :textField="'name'" :required="true"
+                            :dataItems="clientList" v-model="dataItemInEdit.clientId" :value="dataItemInEdit.clientId" 
+                            @change="cboClientOnChange"
+                            :valid="true"
+                        />
+                    </div>
+                    <div class="col-6 p-1">
+                        <PopupSearchGrid :id="'cContractId'" v-model="dataItemInEdit.cContractId"
+                            :grid-source-data="cContractList" 
+                            :grid-colum-properties="gridColumPropCContract" 
+                            :model-value-text-field="'contractNo'"
+                            :show-label="true" :label="'Contract No'"
+                            :filterable="true" :pageable="false" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-1">
+                        <PopupSearchGrid :id="'cBankId'" v-model="dataItemInEdit.cBankId"
+                            :grid-source-data="cBankList" 
+                            :grid-colum-properties="gridColumPropCBank" 
+                            :model-value-text-field="'bankDisplay'"
+                            :show-label="true" :label="'Bank'"
+                            :filterable="false" :pageable="false" />
+                    </div>
+                    <div class="col-6 p-1">
+                        <PopupSearchGrid :id="'cAddressId'" v-model="dataItemInEdit.cAddressId"
+                            :grid-source-data="cAddressList" 
+                            :grid-colum-properties="gridColumPropCAddress" 
+                            :model-value-text-field="'addressName'"
+                            :show-label="true" :label="'Contract Address'"
+                            :filterable="false" :pageable="false" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-1">
+                        <KTextInput id="invoiceNo" v-model="dataItemInEdit.invoiceNo" :validator="nameValidator"
+                            :showLabel="true" :label="'Invoice No'" :type="'string'" />
+                    </div>
+                    <div class="col-6 p-1">
+                        <KDatePicker :id="'invoiceDate'"  v-model="invoiceDateInEdit" 
+                            :showLabel="true" :label="'Invoice Date'"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-2">
+                        <KNumericTextBox id="paymentTermDays" v-model="dataItemInEdit.paymentTermDays" 
+                            :showLabel="true" :label="'Payment Term Days'" :format="'n0'"/>
+                    </div>
+                    <div class="col-6 p-2">
+                        <KTextInput id="invoiceStatus" v-model="dataItemInEdit.invoiceStatus" 
+                            :showLabel="true" :label="'Invoice Status '" :type="'string'" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-2">
+                        <KTextInput id="description" v-model="dataItemInEdit.description" 
+                            :showLabel="true" :label="'Description'" :type="'string'" />
+                    </div>
+                    <div class="col-6 p-2">
+                        <KTextInput id="poNumber" v-model="dataItemInEdit.poNumber" 
+                            :showLabel="true" :label="'PO Number'" :type="'string'" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-2">
+                        <KTextInput id="vat" v-model="dataItemInEdit.vat" 
+                            :showLabel="true" :label="'VAT'" :type="'string'" />
+                    </div>
+                    <div class="col-6 p-2">
+                        <KTextInput id="wht" v-model="dataItemInEdit.wht" 
+                            :showLabel="true" :label="'WHT '" :type="'string'" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-2">
+                        <KNumericTextBox id="totalAmount" v-model="dataItemInEdit.totalAmount" 
+                            :showLabel="true" :label="'Total Amount'" />
+                    </div>
+                    <div class="col-6 p-2">
+                        <KNumericTextBox id="vatAmount" v-model="dataItemInEdit.vatAmount" 
+                            :showLabel="true" :label="'VAT Amount'" />
+                    </div>
+                </div>
+                </fieldset>
+            </form>
+        </template>
+        <template v-slot:tabAttachment>
+            <kGrid
+                :data-items="invoiceAttachmentList"
+                :columns="gridColumInvoiceAttachment"
+            >
+            <kGridToolbar class="k-form w-100">
+                <kButton icon="add" title="Add New" :theme-color="'primary'" @click='addInvoiceAttachment'>Add New</kButton>
+            </kGridToolbar>
+            <template v-slot:attFileTemplate="{ props }">
+                <td :colspan="1">
+                    <a :href="props.dataItem.attachmentUrl">{{ props.dataItem.fileName }}</a>
+                </td>
+            </template>
+            </kGrid>
+        </template>
+    </kTabStrip>
 </template>
     
 <script setup lang="ts">
@@ -101,10 +142,19 @@ import KDatePicker from "@/components/kendo/KDatePicker.vue"
 import KNumericTextBox from "@/components/kendo/KNumericTextBox.vue"
 import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
 
-import { Invoice, CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
+// import UploadFile from '@/components/form/UploadFile.vue'
+
+import { Invoice, InvoiceAttachment, QueryInvoiceAttachments, 
+    CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
 import { nameValidator } from "@/stores/validators"
 
-import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
+import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid'
+import { TabStrip as kTabStrip} from '@progress/kendo-vue-layout'
+import { Button as kButton} from '@progress/kendo-vue-buttons'
+import { Upload as kUpload } from '@progress/kendo-vue-upload'
+import { Dialog as kDialog} from '@progress/kendo-vue-dialogs'
+import { Input as kInput } from '@progress/kendo-vue-inputs'
+// import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
 import { process } from '@progress/kendo-data-query'
 
 let dataItemInEdit = ref<Invoice>(new Invoice())
@@ -131,7 +181,8 @@ onMounted(async () => {
 const resetForm = async () => {
     dataItemInEdit.value = Object.assign({}, props.dataItem as Invoice)
     invoiceDateInEdit.value = toDate(dataItemInEdit.value.invoiceDate)
-}
+    refreshInvoiceAttachment()
+}   
 
 const onSubmit = async (e: Event) => {
     dataItemInEdit.value.invoiceDate = toLocalISOString(invoiceDateInEdit.value)
@@ -204,6 +255,77 @@ const getCAddressList = async() => {
 }
 /* END CAddress */
 /* END Popup Search */
+
+const selectedtab = ref<number>(0)
+const tabList = [
+    { title: "Invoice", content: "tabInvoice"},
+    { title: "Attachment", content: "tabAttachment" }
+]
+
+const onSelectTab = (e: any) => {
+    selectedtab.value = e.selected
+}
+
+// const sourceCAddressList = ref<CAddress[]>([])
+let invoiceAttachmentList = ref<InvoiceAttachment[]>([])
+
+const refreshInvoiceAttachment = async() => {
+    const api = await client.api(new QueryInvoiceAttachments({ invoiceId: dataItemInEdit.value.id }))
+    if (api.succeeded) {
+        const data  = api.response!.results ?? []
+        invoiceAttachmentList.value = process(data, {}).data as any[]
+    }
+    showUploadNewInvoiceAttachment.value = false
+}
+
+const gridColumInvoiceAttachment = [
+  { field: 'fileName', title: 'File Name', cell: 'attFileTemplate'},
+//   { field: 'attachmentUrl', title: 'Url' }
+] as GridColumnProps[];
+
+let showUploadNewInvoiceAttachment = ref<boolean>()
+let newInvoiceAttachmentFileName = ref<string>()
+
+const addInvoiceAttachment = (e : any) => {
+    showUploadNewInvoiceAttachment.value = true
+}
+
+const onBeforeUploadInvoiceAttachment = (event: any) => {
+  const attachmentUrl = "/uploads/invoiceAttachments/[" + dataItemInEdit.value.id + "]-" + event.files[0].name
+  console.log(attachmentUrl)
+  event.additionalData.invoiceId = dataItemInEdit.value.id 
+  event.additionalData.fileName = newInvoiceAttachmentFileName.value
+  event.additionalData.attachmentUrl = attachmentUrl
+}
+
+const onAddInvoiceAttachment = (event: any) => {
+//   console.log('onAddInvoiceAttachment')
+//   console.log(event.affectedFiles[0].name)
+  newInvoiceAttachmentFileName.value = event.affectedFiles[0].name
+}
+
+const onStatusChangeInvoiceAttachment = (event: any) => {
+  if (event.response) {
+    refreshInvoiceAttachment()
+  }
+}
+
+
+// const formAtt = ref<InvoiceAttachment | undefined> ()
+
+// const onUploadFile = async( e : any ) => {
+
+//     // const dat = new FormData()
+//     // const api = await client.api(new CreateInvoiceAttachment({ 
+//     //     invoiceId: dataItemInEdit.value.id 
+//     // }))
+//     // if (api.succeeded) {
+//     //     sourceCAddressList.value = api.response!.results ?? []
+//     //     cAddressList.value = process(sourceCAddressList.value, {}).data as any[]
+//     // }
+//     console.log(e)
+//     console.log(fileAtt.value?.name)
+// }
 
 defineExpose({
     resetForm

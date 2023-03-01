@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using GDIApps.ServiceModel.Types;
 using ServiceStack.DataAnnotations;
 using System;
+using System.Runtime.Serialization;
 
 namespace GDIApps.ServiceModel;
 
@@ -86,4 +87,27 @@ public class UpdateInvoice : IPatchDb<Invoice>, IReturn<CRUDResponse>
 public class DeleteInvoice : IDeleteDb<Invoice>, IReturnVoid
 {
     public int Id { get; set; }        
+}
+
+[Tag("Invoices")]
+[ValidateIsAuthenticated]
+public class CreateInvoiceAttachment : ICreateDb<InvoiceAttachment>, IReturn<CRUDResponse>
+{
+    public int InvoiceId { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    [Input(Type = "file"), UploadTo("invoiceAttachments")]
+    public string? AttachmentUrl { get; set; }
+}
+
+[ValidateIsAuthenticated]
+[Tag("Invoices")]
+public class DeleteInvoiceAttachment
+{
+    public int Id { get; set; }        
+}
+
+[ValidateIsAuthenticated]
+[Tag("Invoices")]
+public class QueryInvoiceAttachments : QueryDb<InvoiceAttachment>{
+    public int InvoiceId {get; set;}
 }

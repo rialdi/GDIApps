@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-27 11:42:42
+Date: 2023-03-01 18:42:07
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -493,6 +493,21 @@ export class InvoiceDetail extends AuditBase
     public constructor(init?: Partial<InvoiceDetail>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class InvoiceAttachment
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.Invoice)")
+    public invoiceId?: number;
+
+    // @Required()
+    public fileName?: string;
+
+    // @Input(Type="file")
+    public attachmentUrl?: string;
+
+    public constructor(init?: Partial<InvoiceAttachment>) { (Object as any).assign(this, init); }
+}
+
 export class Invoice extends AuditBase
 {
     public id?: number;
@@ -534,6 +549,7 @@ export class Invoice extends AuditBase
     public totalAmount?: number;
     public vatAmount?: number;
     public invoiceStatus?: string;
+    public attachments?: InvoiceAttachment[];
 
     public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
 }
@@ -997,6 +1013,17 @@ export class Hello implements IReturn<HelloResponse>
     public createResponse() { return new HelloResponse(); }
 }
 
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteInvoiceAttachment
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteInvoiceAttachment>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteInvoiceAttachment'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() {}
+}
+
 // @Route("/todos", "GET")
 export class QueryTodos extends QueryData<Todo> implements IReturn<QueryResponse<Todo>>
 {
@@ -1398,6 +1425,17 @@ export class QueryInvoices extends QueryDb_2<Invoice, InvoiceView> implements IR
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class QueryInvoiceAttachments extends QueryDb_1<InvoiceAttachment> implements IReturn<QueryResponse<InvoiceAttachment>>
+{
+    public invoiceId?: number;
+
+    public constructor(init?: Partial<QueryInvoiceAttachments>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryInvoiceAttachments'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<InvoiceAttachment>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class QueryLookups extends QueryDb_1<Lookup> implements IReturn<QueryResponse<Lookup>>
 {
     public lookupType?: LOOKUPTYPE;
@@ -1761,6 +1799,20 @@ export class DeleteInvoice implements IReturnVoid, IDeleteDb<Invoice>
     public getTypeName() { return 'DeleteInvoice'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateInvoiceAttachment implements IReturn<CRUDResponse>, ICreateDb<InvoiceAttachment>
+{
+    public invoiceId?: number;
+    public fileName?: string;
+    // @Input(Type="file")
+    public attachmentUrl?: string;
+
+    public constructor(init?: Partial<CreateInvoiceAttachment>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateInvoiceAttachment'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")

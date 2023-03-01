@@ -46,3 +46,4 @@ yarn-error.log*
 .vs
 obj/
 bin/
+api/GDIApps/App_Data/invoiceAttachments/

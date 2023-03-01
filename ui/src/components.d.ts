@@ -64,5 +64,6 @@ declare module '@vue/runtime-core' {
     SrcLink: typeof import('./components/SrcLink.vue')['default']
     TextAreaInput: typeof import('./components/form/TextAreaInput.vue')['default']
     TextInput: typeof import('./components/form/TextInput.vue')['default']
+    UploadFile: typeof import('./components/form/UploadFile.vue')['default']
   }
 }

@@ -47,8 +47,32 @@ public class Invoice : AuditBase
     public decimal TotalAmount { get; set; }
     public decimal? VATAmount { get; set; }
     public string? InvoiceStatus { get; set; }
+
+    [Reference]
+    public List<InvoiceAttachment> Attachments { get; set; } = new List<InvoiceAttachment>();
 }
 
+public class InvoiceAttachment
+{
+    [AutoIncrement]
+    public int Id { get; set; }  
+
+    [References(typeof(Invoice))]
+    public int InvoiceId { get; set; }
+
+    [Required]
+    public string FileName { get; set; } = string.Empty;
+
+    [Input(Type = "file"), UploadTo("invoiceAttachments")]
+    public string? AttachmentUrl { get; set; }
+
+    
+    // [Format(FormatMethods.Attachment)]
+    // public string FilePath { get; set; } = string.Empty;
+    // public string ContentType { get; set; } = string.Empty;
+    // [Format(FormatMethods.Bytes)]
+    // public long ContentLength { get; set; }
+}
 public class InvoiceView
 {
     public int Id { get; set; }
