@@ -22,7 +22,7 @@ public class Migration1000 : MigrationBase
         Db.CreateTable<InvoiceDetail>();
         Db.CreateTable<InvoiceAttachment>();
         
-        SeedData();
+        // SeedData();
     }
     
     public override void Down()
