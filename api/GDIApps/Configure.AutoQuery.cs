@@ -19,25 +19,25 @@ public class ConfigureAutoQuery : IHostingStartup
         })
         .ConfigureAppHost(appHost => {
 
-            var country = File.ReadAllText("App_Data/csv/62/countries.csv").FromCsv<List<Country>>();
-            var provinces = File.ReadAllText("App_Data/csv/62/provinces.csv").FromCsv<List<Province>>();
-            var cities = File.ReadAllText("App_Data/csv/62/cities.csv").FromCsv<List<City>>();
-            var districts = File.ReadAllText("App_Data/csv/62/subDistricts.csv").FromCsv<List<District>>();
-            var villages = File.ReadAllText("App_Data/csv/62/villages.csv").FromCsv<List<Village>>();
-            var banks = File.ReadAllText("App_Data/csv/banks.csv").FromCsv<List<Bank>>();
+            // var country = File.ReadAllText("App_Data/csv/62/countries.csv").FromCsv<List<Country>>();
+            // var provinces = File.ReadAllText("App_Data/csv/62/provinces.csv").FromCsv<List<Province>>();
+            // var cities = File.ReadAllText("App_Data/csv/62/cities.csv").FromCsv<List<City>>();
+            // var districts = File.ReadAllText("App_Data/csv/62/subDistricts.csv").FromCsv<List<District>>();
+            // var villages = File.ReadAllText("App_Data/csv/62/villages.csv").FromCsv<List<Village>>();
+            // var banks = File.ReadAllText("App_Data/csv/banks.csv").FromCsv<List<Bank>>();
             
 
             var autoQueryDateFeature = new AutoQueryDataFeature { IncludeTotal = true };
 
             // For TodosService
-            appHost.Plugins.Add(autoQueryDateFeature
-                .AddDataSource(ctx => ctx.MemorySource(country))
-                .AddDataSource(ctx => ctx.MemorySource(provinces))
-                .AddDataSource(ctx => ctx.MemorySource(cities))
-                .AddDataSource(ctx => ctx.MemorySource(districts))
-                .AddDataSource(ctx => ctx.MemorySource(villages))
-                .AddDataSource(ctx => ctx.MemorySource(banks))
-            );
+            // appHost.Plugins.Add(autoQueryDateFeature
+            //     .AddDataSource(ctx => ctx.MemorySource(country))
+            //     .AddDataSource(ctx => ctx.MemorySource(provinces))
+            //     .AddDataSource(ctx => ctx.MemorySource(cities))
+            //     .AddDataSource(ctx => ctx.MemorySource(districts))
+            //     .AddDataSource(ctx => ctx.MemorySource(villages))
+            //     .AddDataSource(ctx => ctx.MemorySource(banks))
+            // );
 
             // appHost.Plugins.Add(new CsvFormat()); //added by default
 
