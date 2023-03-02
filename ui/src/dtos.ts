@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-01 18:42:07
+Date: 2023-03-02 10:43:44
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -40,6 +40,10 @@ export interface IHasBearerToken
     bearerToken?: string;
 }
 
+export interface IDeleteDb<Table>
+{
+}
+
 export interface IPut
 {
 }
@@ -56,15 +60,98 @@ export interface IPatchDb<Table>
 {
 }
 
-export interface IDeleteDb<Table>
-{
-}
-
 export enum EMAIL_TEMPLATE_CODE
 {
     APPUSER_EMAIL_CONFIRM = 'APPUSER_EMAIL_CONFIRM',
     APPUSER_RESET_PASSWORD = 'APPUSER_RESET_PASSWORD',
     APPUSER_REGISTRATION = 'APPUSER_REGISTRATION',
+}
+
+// @DataContract
+export class AuditBase
+{
+    // @DataMember(Order=1)
+    public createdDate?: string;
+
+    // @DataMember(Order=2)
+    // @Required()
+    public createdBy?: string;
+
+    // @DataMember(Order=3)
+    public modifiedDate?: string;
+
+    // @DataMember(Order=4)
+    // @Required()
+    public modifiedBy?: string;
+
+    // @DataMember(Order=5)
+    public deletedDate?: string;
+
+    // @DataMember(Order=6)
+    public deletedBy?: string;
+
+    public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
+}
+
+export class InvoiceAttachment
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.Invoice)")
+    public invoiceId?: number;
+
+    // @Required()
+    public fileName?: string;
+
+    // @Input(Type="file")
+    public attachmentUrl?: string;
+
+    public constructor(init?: Partial<InvoiceAttachment>) { (Object as any).assign(this, init); }
+}
+
+export class Invoice extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CContract)")
+    public cContractId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CBank)")
+    public cBankId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.CAddress)")
+    public cAddressId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public invoiceNo?: string;
+
+    // @StringLength(100)
+    public paymentTermDays?: number;
+
+    // @Required()
+    public invoiceDate?: string;
+
+    // @StringLength(1000)
+    public description?: string;
+
+    // @StringLength(100)
+    public poNumber?: string;
+
+    // @StringLength(100)
+    public vat?: string;
+
+    // @StringLength(100)
+    public wht?: string;
+
+    public totalAmount?: number;
+    public vatAmount?: number;
+    public invoiceStatus?: string;
+    public attachments?: InvoiceAttachment[];
+
+    public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -172,32 +259,6 @@ export class QueryDb_2<From, Into> extends QueryBase
 {
 
     public constructor(init?: Partial<QueryDb_2<From, Into>>) { super(init); (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class AuditBase
-{
-    // @DataMember(Order=1)
-    public createdDate?: string;
-
-    // @DataMember(Order=2)
-    // @Required()
-    public createdBy?: string;
-
-    // @DataMember(Order=3)
-    public modifiedDate?: string;
-
-    // @DataMember(Order=4)
-    // @Required()
-    public modifiedBy?: string;
-
-    // @DataMember(Order=5)
-    public deletedDate?: string;
-
-    // @DataMember(Order=6)
-    public deletedBy?: string;
-
-    public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
 }
 
 export class CAddress extends AuditBase
@@ -491,67 +552,6 @@ export class InvoiceDetail extends AuditBase
     public amount?: number;
 
     public constructor(init?: Partial<InvoiceDetail>) { super(init); (Object as any).assign(this, init); }
-}
-
-export class InvoiceAttachment
-{
-    public id?: number;
-    // @References("typeof(GDIApps.ServiceModel.Types.Invoice)")
-    public invoiceId?: number;
-
-    // @Required()
-    public fileName?: string;
-
-    // @Input(Type="file")
-    public attachmentUrl?: string;
-
-    public constructor(init?: Partial<InvoiceAttachment>) { (Object as any).assign(this, init); }
-}
-
-export class Invoice extends AuditBase
-{
-    public id?: number;
-    // @Required()
-    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
-    public clientId?: number;
-
-    // @References("typeof(GDIApps.ServiceModel.Types.CContract)")
-    public cContractId?: number;
-
-    // @References("typeof(GDIApps.ServiceModel.Types.CBank)")
-    public cBankId?: number;
-
-    // @References("typeof(GDIApps.ServiceModel.Types.CAddress)")
-    public cAddressId?: number;
-
-    // @Required()
-    // @StringLength(100)
-    public invoiceNo?: string;
-
-    // @StringLength(100)
-    public paymentTermDays?: number;
-
-    // @Required()
-    public invoiceDate?: string;
-
-    // @StringLength(1000)
-    public description?: string;
-
-    // @StringLength(100)
-    public poNumber?: string;
-
-    // @StringLength(100)
-    public vat?: string;
-
-    // @StringLength(100)
-    public wht?: string;
-
-    public totalAmount?: number;
-    public vatAmount?: number;
-    public invoiceStatus?: string;
-    public attachments?: InvoiceAttachment[];
-
-    public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class InvoiceView
@@ -1014,13 +1014,13 @@ export class Hello implements IReturn<HelloResponse>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class DeleteInvoiceAttachment
+export class DeleteInvoiceAttachment implements IReturnVoid, IDeleteDb<Invoice>
 {
     public id?: number;
 
     public constructor(init?: Partial<DeleteInvoiceAttachment>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DeleteInvoiceAttachment'; }
-    public getMethod() { return 'POST'; }
+    public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }
 
@@ -1812,6 +1812,18 @@ export class CreateInvoiceAttachment implements IReturn<CRUDResponse>, ICreateDb
     public constructor(init?: Partial<CreateInvoiceAttachment>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateInvoiceAttachment'; }
     public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateInvoiceAttachment implements IReturn<CRUDResponse>, IPatchDb<InvoiceAttachment>
+{
+    public id?: number;
+    public fileName?: string;
+
+    public constructor(init?: Partial<UpdateInvoiceAttachment>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateInvoiceAttachment'; }
+    public getMethod() { return 'PATCH'; }
     public createResponse() { return new CRUDResponse(); }
 }
 

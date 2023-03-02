@@ -101,7 +101,15 @@ public class CreateInvoiceAttachment : ICreateDb<InvoiceAttachment>, IReturn<CRU
 
 [ValidateIsAuthenticated]
 [Tag("Invoices")]
-public class DeleteInvoiceAttachment
+public class UpdateInvoiceAttachment : IPatchDb<InvoiceAttachment>, IReturn<CRUDResponse>
+{
+    public int Id { get; set; } 
+    public string FileName { get; set; } = string.Empty;
+}
+
+[ValidateIsAuthenticated]
+[Tag("Invoices")]
+public class DeleteInvoiceAttachment : IDeleteDb<Invoice>, IReturnVoid
 {
     public int Id { get; set; }        
 }

@@ -40,6 +40,7 @@
     <!-- Result Data Grid -->
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content> 
       <!-- Main Data Grid --> 
+      <div class="w-100">
       <MainGrid ref="mainGridtRef"
               :selected-client-id="selectedClientId" 
               :client-list="clientList" 
@@ -47,7 +48,9 @@
               :sortable="true" 
               :pageable="true" 
               :show-export-button="true"/>
+            </div>
       <!-- End Main Data Grid -->
+
     </BaseBlock>
     <!-- END Result Data Grid -->
   </div>

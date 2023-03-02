@@ -1,6 +1,6 @@
 <template>
     <!-- Kendo Dialog for Editing Data -->
-    <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="60%" :title-render="'myTemplate'" >
+    <kDialog v-if="dataItemInEdit" @close="onCancelChanges" width="60%" height="80%" :title-render="'myTemplate'" >
         <template v-slot:myTemplate="{}">
             <div class="w-100">
               {{ kDialogTitle }} 
@@ -8,9 +8,6 @@
             </div>
         </template>
         <EditForms ref="editFormsRef" :data-item="dataItemInEdit" @save="onSave" :client-list="clientList" />
-        <!-- <kForm :initialValues="dataItemInEdit" @submit="onSave">
-            <EditForm :client-list="props.clientList" ref="editFormRef"/>
-        </kForm> -->
         <kDialogActionsBar>
         <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
         <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton> -->

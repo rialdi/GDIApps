@@ -1,29 +1,8 @@
 <template>
-    <!-- Kendo Dialog for Editing Data -->
-    <kDialog v-if="showUploadNewInvoiceAttachment" width="60%" :title="'Add New Invoice Attachment'" >
-        <div class="w-100 mb-2">
-            <kInput :style="{ width: '100%' }"  v-model="newInvoiceAttachmentFileName" :label="'File Name'"></kInput>
-        </div>
-<!-- :restrictions="{
-                    allowedExtensions: [ '.xlsx', '.xls' ]
-                }" -->
-        <kUpload class="w-100 k-form"
-            :auto-upload="false"
-            :default-files="[]"
-            :actions-layout="'end'"
-            :batch="false"
-            :multiple="false"
-            :with-credentials="false"
-            @add="onAddInvoiceAttachment"
-            @beforeupload="onBeforeUploadInvoiceAttachment"
-            @statuschange="onStatusChangeInvoiceAttachment" 
-            :save-url="'/api/CreateInvoiceAttachment'"
-        />
-    </kDialog>
-    <!-- END Kendo Dialog for Editing Data -->
-    <kTabStrip :tabs="tabList" :selected="selectedtab" @select="onSelectTab">
-        <template v-slot:tabInvoice>
-            <form @submit.prevent="onSubmit" id="mainForm" class="k-form">
+   
+    <kTabStrip :tabs="tabList" :selected="selectedtab" @select="onSelectTab" class="w-100">
+        <template v-slot:tabInvoice class="w-100">
+            <form @submit.prevent="onSubmit" id="mainForm" class="k-form w-100">
                 <fieldset>
                 <div class="row">
                     <div class="col-6 p-1">
@@ -116,20 +95,52 @@
         </template>
         <template v-slot:tabAttachment>
             <kGrid
-                :data-items="invoiceAttachmentList"
-                :columns="gridColumInvoiceAttachment"
+            :edit-field="'inEdit'"
+                :data-items="invAttList"
+                :columns="gridColInvAtt"
+                @itemchange="itemChangeInvAtt"
             >
             <kGridToolbar class="k-form w-100">
-                <kButton icon="add" title="Add New" :theme-color="'primary'" @click='addInvoiceAttachment'>Add New</kButton>
+                <kButton icon="add" title="Add New" :theme-color="'primary'" @click='addInvAtt'>Add New</kButton>
             </kGridToolbar>
             <template v-slot:attFileTemplate="{ props }">
-                <td :colspan="1">
-                    <a :href="props.dataItem.attachmentUrl">{{ props.dataItem.fileName }}</a>
+                <td :colspan="1" style="text-align:center">
+                    <a :href="props.dataItem.attachmentUrl">
+                        <span class="k-icon k-i-attachment-45"/>
+                    </a>
                 </td>
+            </template>
+            <template v-slot:actionTemplate="{props}">
+                <CommandCell :data-item="props.dataItem" 
+                        @edit="onEditInvAtt"
+                        @save="onSaveInvAtt" 
+                        @remove="onRemoveInvAtt"
+                        @cancel="onCancelChangesInvAtt"/>
             </template>
             </kGrid>
         </template>
     </kTabStrip>
+
+     <!-- Kendo Dialog for Editing Data -->
+     <kDialog v-if="showUploadNewInvAtt" width="60%" :title="'Add New Invoice Attachment'" @close="closeUploadNewInvAtt">
+        <div class="w-100 mb-2">
+            <kInput :style="{ width: '100%' }"  v-model="newInvAttFileName" :label="'File Name'"></kInput>
+        </div>
+<!-- :restrictions="{ allowedExtensions: [ '.xlsx', '.xls' ] }" -->
+        <kUpload class="w-100 k-form"
+            :auto-upload="false"
+            :default-files="[]"
+            :actions-layout="'end'"
+            :batch="false"
+            :multiple="false"
+            :with-credentials="false"
+            @add="onAddInvoiceAttachment"
+            @beforeupload="onBeforeUploadInvAtt"
+            @statuschange="onStatusChangeInvAtt" 
+            :save-url="'/api/CreateInvoiceAttachment'"
+        />
+    </kDialog>
+    <!-- END Kendo Dialog for Editing Data -->
 </template>
     
 <script setup lang="ts">
@@ -144,8 +155,12 @@ import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
 
 // import UploadFile from '@/components/form/UploadFile.vue'
 
-import { Invoice, InvoiceAttachment, QueryInvoiceAttachments, 
-    CContract, QueryCContracts, CBank, QueryCBanks, CAddress, QueryCAddresss } from "@/dtos"
+import { Invoice, 
+    InvoiceAttachment, QueryInvoiceAttachments, UpdateInvoiceAttachment, DeleteInvoiceAttachment,
+    CContract, QueryCContracts, 
+    CBank, QueryCBanks, 
+    CAddress, QueryCAddresss 
+} from "@/dtos"
 import { nameValidator } from "@/stores/validators"
 
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid'
@@ -154,11 +169,11 @@ import { Button as kButton} from '@progress/kendo-vue-buttons'
 import { Upload as kUpload } from '@progress/kendo-vue-upload'
 import { Dialog as kDialog} from '@progress/kendo-vue-dialogs'
 import { Input as kInput } from '@progress/kendo-vue-inputs'
-// import { GridColumnProps } from '@progress/kendo-vue-grid/dist/npm/interfaces/GridColumnProps'
 import { process } from '@progress/kendo-data-query'
 
-let dataItemInEdit = ref<Invoice>(new Invoice())
+import CommandCell from '@/layouts/partials/KGridCommandCell.vue'
 
+let dataItemInEdit = ref<Invoice>(new Invoice())
 let invoiceDateInEdit = ref<Date | undefined>()
 
 let props = defineProps<{
@@ -181,7 +196,7 @@ onMounted(async () => {
 const resetForm = async () => {
     dataItemInEdit.value = Object.assign({}, props.dataItem as Invoice)
     invoiceDateInEdit.value = toDate(dataItemInEdit.value.invoiceDate)
-    refreshInvoiceAttachment()
+    refreshInvAtt()
 }   
 
 const onSubmit = async (e: Event) => {
@@ -266,68 +281,104 @@ const onSelectTab = (e: any) => {
     selectedtab.value = e.selected
 }
 
+const closeUploadNewInvAtt = () => {
+    showUploadNewInvAtt.value = false
+}
 // const sourceCAddressList = ref<CAddress[]>([])
-let invoiceAttachmentList = ref<InvoiceAttachment[]>([])
+let invAttList = ref<InvoiceAttachment[]>([])
 
-const refreshInvoiceAttachment = async() => {
+const refreshInvAtt = async() => {
     const api = await client.api(new QueryInvoiceAttachments({ invoiceId: dataItemInEdit.value.id }))
     if (api.succeeded) {
         const data  = api.response!.results ?? []
-        invoiceAttachmentList.value = process(data, {}).data as any[]
+        invAttList.value = process(data, {}).data as InvoiceAttachment[]
     }
-    showUploadNewInvoiceAttachment.value = false
+    showUploadNewInvAtt.value = false
 }
 
-const gridColumInvoiceAttachment = [
-  { field: 'fileName', title: 'File Name', cell: 'attFileTemplate'},
-//   { field: 'attachmentUrl', title: 'Url' }
+const gridColInvAtt = [
+  { field: 'fileName', title: 'File Name'},
+  { cell: 'attFileTemplate', title: 'File', width:50},
+  { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
-let showUploadNewInvoiceAttachment = ref<boolean>()
-let newInvoiceAttachmentFileName = ref<string>()
+let showUploadNewInvAtt = ref<boolean>()
+let newInvAttFileName = ref<string>()
 
-const addInvoiceAttachment = (e : any) => {
-    showUploadNewInvoiceAttachment.value = true
+
+const addInvAtt = (e : any) => {
+    showUploadNewInvAtt.value = true
 }
 
-const onBeforeUploadInvoiceAttachment = (event: any) => {
+const onBeforeUploadInvAtt = (event: any) => {
   const attachmentUrl = "/uploads/invoiceAttachments/[" + dataItemInEdit.value.id + "]-" + event.files[0].name
-  console.log(attachmentUrl)
   event.additionalData.invoiceId = dataItemInEdit.value.id 
-  event.additionalData.fileName = newInvoiceAttachmentFileName.value
+  event.additionalData.fileName = newInvAttFileName.value
   event.additionalData.attachmentUrl = attachmentUrl
 }
 
 const onAddInvoiceAttachment = (event: any) => {
-//   console.log('onAddInvoiceAttachment')
-//   console.log(event.affectedFiles[0].name)
-  newInvoiceAttachmentFileName.value = event.affectedFiles[0].name
+    newInvAttFileName.value = event.affectedFiles[0].name
 }
 
-const onStatusChangeInvoiceAttachment = (event: any) => {
+const onStatusChangeInvAtt = (event: any) => {
   if (event.response) {
-    refreshInvoiceAttachment()
+    refreshInvAtt()
   }
 }
 
+const onRemoveInvAtt = async(e: any) => {
+    const request = new DeleteInvoiceAttachment({
+        id: e.dataItem.id
+    });
+    const api = await client.api(request)
+    if (api.succeeded) {
+        refreshInvAtt()
+    }
+}
 
-// const formAtt = ref<InvoiceAttachment | undefined> ()
+const itemChangeInvAtt = (e : any) => {
+    if (e.dataItem.id) {
+        let index = invAttList.value.findIndex(p => p.id === e.dataItem.id);
+        let updated = Object.assign({},invAttList.value[index], {[e.field]:e.value});
+        invAttList.value.splice(index, 1, updated);
+    } else {
+        e.dataItem[e.field] = e.value;
+    }
+}
 
-// const onUploadFile = async( e : any ) => {
+const onEditInvAtt = (e: any) => {
+    let index = invAttList.value.findIndex(p => p.id === e.dataItem.id);
+    let updated = Object.assign({},invAttList.value[index], {inEdit:true});
+    invAttList.value.splice(index, 1, updated);
+}
 
-//     // const dat = new FormData()
-//     // const api = await client.api(new CreateInvoiceAttachment({ 
-//     //     invoiceId: dataItemInEdit.value.id 
-//     // }))
-//     // if (api.succeeded) {
-//     //     sourceCAddressList.value = api.response!.results ?? []
-//     //     cAddressList.value = process(sourceCAddressList.value, {}).data as any[]
-//     // }
-//     console.log(e)
-//     console.log(fileAtt.value?.name)
-// }
+const onCancelChangesInvAtt = () => {
+    refreshInvAtt()
+}
+
+const onSaveInvAtt = async (e: any) => {
+    const currData = e.dataItem;
+    const request = new UpdateInvoiceAttachment({
+        id : currData.id,
+        fileName: currData.fileName
+    })
+    const api = await client.api(request)
+    if (api.succeeded) {
+        refreshInvAtt()
+    } 
+}
 
 defineExpose({
     resetForm
 })
 </script>
+
+<style>
+    .swal2-container {
+        z-index: 10005;
+    }
+    .k-animation-container {
+        width: 100%;
+    }
+</style>
