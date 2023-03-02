@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-02 13:13:31
+Date: 2023-03-02 15:30:20
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -185,74 +185,6 @@ export class QueryData<T> extends QueryBase
 {
 
     public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
-}
-
-export class Country
-{
-    public id?: number;
-    public parent?: number;
-    public name?: string;
-    public latitude?: number;
-    public longitude?: number;
-
-    public constructor(init?: Partial<Country>) { (Object as any).assign(this, init); }
-}
-
-export class Province
-{
-    public id?: number;
-    public countryId?: number;
-    public name?: string;
-    public latitude?: number;
-    public longitude?: number;
-    public postal?: string;
-
-    public constructor(init?: Partial<Province>) { (Object as any).assign(this, init); }
-}
-
-export class City
-{
-    public id?: number;
-    public provinceId?: number;
-    public name?: string;
-    public latitude?: number;
-    public longitude?: number;
-    public postal?: string;
-
-    public constructor(init?: Partial<City>) { (Object as any).assign(this, init); }
-}
-
-export class District
-{
-    public id?: number;
-    public cityId?: number;
-    public name?: string;
-    public latitude?: number;
-    public longitude?: number;
-    public postal?: string;
-
-    public constructor(init?: Partial<District>) { (Object as any).assign(this, init); }
-}
-
-export class Village
-{
-    public id?: number;
-    public districtId?: number;
-    public name?: string;
-    public latitude?: number;
-    public longitude?: number;
-    public postal?: string;
-
-    public constructor(init?: Partial<Village>) { (Object as any).assign(this, init); }
-}
-
-export class Bank
-{
-    public id?: number;
-    public bankName?: string;
-    public swiftCode?: string;
-
-    public constructor(init?: Partial<Bank>) { (Object as any).assign(this, init); }
 }
 
 export class QueryDb_2<From, Into> extends QueryBase
@@ -628,6 +560,82 @@ export class ProjectView extends Project
     public cContractContractNo?: string;
 
     public constructor(init?: Partial<ProjectView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class Country
+{
+    public id?: number;
+    public parent?: number;
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+
+    public constructor(init?: Partial<Country>) { (Object as any).assign(this, init); }
+}
+
+export class Province
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.Country)")
+    public countryId?: number;
+
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<Province>) { (Object as any).assign(this, init); }
+}
+
+export class City
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.Province)")
+    public provinceId?: number;
+
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<City>) { (Object as any).assign(this, init); }
+}
+
+export class District
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.City)")
+    public cityId?: number;
+
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<District>) { (Object as any).assign(this, init); }
+}
+
+export class Village
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.District)")
+    public districtId?: number;
+
+    public name?: string;
+    public latitude?: number;
+    public longitude?: number;
+    public postal?: string;
+
+    public constructor(init?: Partial<Village>) { (Object as any).assign(this, init); }
+}
+
+export class MasterBank
+{
+    public id?: number;
+    public bankName?: string;
+    public swiftCode?: string;
+
+    public constructor(init?: Partial<MasterBank>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -1240,64 +1248,6 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public createResponse() { return new UnAssignRolesResponse(); }
 }
 
-export class QueryCountries extends QueryData<Country> implements IReturn<QueryResponse<Country>>
-{
-
-    public constructor(init?: Partial<QueryCountries>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryCountries'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Country>(); }
-}
-
-export class QueryProvinces extends QueryData<Province> implements IReturn<QueryResponse<Province>>
-{
-    public countryId?: number;
-
-    public constructor(init?: Partial<QueryProvinces>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryProvinces'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Province>(); }
-}
-
-export class QueryCities extends QueryData<City> implements IReturn<QueryResponse<City>>
-{
-    public provinceId?: number;
-
-    public constructor(init?: Partial<QueryCities>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryCities'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<City>(); }
-}
-
-export class QueryDistricts extends QueryData<District> implements IReturn<QueryResponse<District>>
-{
-    public cityId?: number;
-
-    public constructor(init?: Partial<QueryDistricts>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryDistricts'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<District>(); }
-}
-
-export class QueryVillages extends QueryData<Village> implements IReturn<QueryResponse<Village>>
-{
-    public districtId?: number;
-
-    public constructor(init?: Partial<QueryVillages>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryVillages'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Village>(); }
-}
-
-export class QueryBanks extends QueryData<Bank> implements IReturn<QueryResponse<Bank>>
-{
-
-    public constructor(init?: Partial<QueryBanks>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryBanks'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Bank>(); }
-}
-
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryCAddresss extends QueryDb_2<CAddress, CAddressView> implements IReturn<QueryResponse<CAddressView>>
 {
@@ -1464,6 +1414,64 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
     public getTypeName() { return 'QueryProjects'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<ProjectView>(); }
+}
+
+export class QueryCountries extends QueryDb_1<Country> implements IReturn<QueryResponse<Country>>
+{
+
+    public constructor(init?: Partial<QueryCountries>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCountries'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Country>(); }
+}
+
+export class QueryProvinces extends QueryDb_1<Province> implements IReturn<QueryResponse<Province>>
+{
+    public countryId?: number;
+
+    public constructor(init?: Partial<QueryProvinces>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProvinces'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Province>(); }
+}
+
+export class QueryCities extends QueryDb_1<City> implements IReturn<QueryResponse<City>>
+{
+    public provinceId?: number;
+
+    public constructor(init?: Partial<QueryCities>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCities'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<City>(); }
+}
+
+export class QueryDistricts extends QueryDb_1<District> implements IReturn<QueryResponse<District>>
+{
+    public cityId?: number;
+
+    public constructor(init?: Partial<QueryDistricts>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryDistricts'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<District>(); }
+}
+
+export class QueryVillages extends QueryDb_1<Village> implements IReturn<QueryResponse<Village>>
+{
+    public districtId?: number;
+
+    public constructor(init?: Partial<QueryVillages>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryVillages'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Village>(); }
+}
+
+export class QueryMasterBanks extends QueryDb_1<MasterBank> implements IReturn<QueryResponse<MasterBank>>
+{
+
+    public constructor(init?: Partial<QueryMasterBanks>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryMasterBanks'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<MasterBank>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")

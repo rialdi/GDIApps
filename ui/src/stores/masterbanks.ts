@@ -1,17 +1,17 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 import { client } from "@/api"
-import { Bank, QueryBanks } from "@/dtos"
+import { MasterBank, QueryMasterBanks } from "@/dtos"
 import { process, filterBy } from '@progress/kendo-data-query'
 
 export const useMasterBankStore = defineStore('masterbanks', () => {
 
     // State
-    const sourceMasterBankList = ref<Bank[]>([])
-    let masterBankList = ref<Bank[]>([])
-    let selectedMasterBank = ref<Bank | undefined>()
+    const sourceMasterBankList = ref<MasterBank[]>([])
+    let masterBankList = ref<MasterBank[]>([])
+    let selectedMasterBank = ref<MasterBank | undefined>()
 
     const getMasterBankList = async() => {
-        const api = await client.api(new QueryBanks())
+        const api = await client.api(new QueryMasterBanks())
         if (api.succeeded) {
             sourceMasterBankList.value = api.response!.results ?? []
             masterBankList.value = process(sourceMasterBankList.value, {}).data as any[]

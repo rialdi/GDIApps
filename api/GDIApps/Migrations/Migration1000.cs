@@ -9,6 +9,12 @@ public class Migration1000 : MigrationBase
 {
     public override void Up()
     {
+        Db.CreateTable<Country>();
+        Db.CreateTable<Province>();
+        Db.CreateTable<City>();
+        Db.CreateTable<District>();
+        Db.CreateTable<Village>();
+        Db.CreateTable<MasterBank>();
         Db.CreateTable<Lookup>();
         Db.CreateTable<ContactUs>();
         Db.CreateTable<Email>();
@@ -27,6 +33,12 @@ public class Migration1000 : MigrationBase
     
     public override void Down()
     {
+        Db.DropTable<MasterBank>();
+        Db.DropTable<Village>();
+        Db.DropTable<District>();
+        Db.DropTable<City>();
+        Db.DropTable<Province>();
+        Db.DropTable<Country>();
         Db.DropTable<Lookup>();
         Db.DropTable<ContactUs>();
         Db.DropTable<Email>();

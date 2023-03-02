@@ -17,6 +17,7 @@ public class Country
 public class Province
 {
     public long Id { get; set; }
+    [References(typeof(Country))]
     public long CountryId { get; set; }
     public string? Name { get; set; }
     public decimal? Latitude { get; set; }
@@ -27,6 +28,7 @@ public class Province
 public class City
 {
     public long Id { get; set; }
+    [References(typeof(Province))]
     public long ProvinceId { get; set; }
     public string? Name { get; set; }
     public decimal? Latitude { get; set; }
@@ -37,6 +39,7 @@ public class City
 public class District
 {
     public long Id { get; set; }
+    [References(typeof(City))]
     public long CityId { get; set; }
     public string? Name { get; set; }
     public decimal? Latitude { get; set; }
@@ -47,6 +50,7 @@ public class District
 public class Village
 {
     public long Id { get; set; }
+    [References(typeof(District))]
     public long DistrictId { get; set; }
     public string? Name { get; set; }
     public decimal? Latitude { get; set; }
@@ -54,32 +58,32 @@ public class Village
     public string? Postal { get; set; }
 }
 
-public class QueryCountries : QueryData<Country> {
+public class QueryCountries : QueryDb<Country> {
 }
 
-public class QueryProvinces : QueryData<Province> {
+public class QueryProvinces : QueryDb<Province> {
     public int? CountryId { get; set;}
 }
-public class QueryCities : QueryData<City> {
+public class QueryCities : QueryDb<City> {
     public int? ProvinceId { get; set;}
 }
 
-public class QueryDistricts : QueryData<District> {
+public class QueryDistricts : QueryDb<District> {
     public int? CityId { get; set;}
 }
 
-public class QueryVillages : QueryData<Village> {
+public class QueryVillages : QueryDb<Village> {
     public int? DistrictId { get; set;}
 }
 
-public class Bank
+public class MasterBank
 {
     public int Id { get; set; }
     public string? BankName { get; set; }
     public string? SwiftCode { get; set; }
 }
 
-public class QueryBanks : QueryData<Bank> {
+public class QueryMasterBanks : QueryDb<MasterBank> {
     // [AutoDefault(Eval = null)]
     // public string? BankNameContains { get; set;} = null;
     // [AutoDefault(Eval = null)]
