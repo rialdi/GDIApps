@@ -37,6 +37,7 @@
     />
 </template>
 <script setup lang="ts">
+import { formatDate } from "@/utils"
 import { client } from "@/api"
 import { CContractView, QueryCContracts, CreateCContract, UpdateCContract, DeleteCContract } from "@/dtos"
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
@@ -94,6 +95,14 @@ const clientCellTemplate = (h : any, tdElement : any , props : any, listeners : 
             }, [props.dataItem.clientCode + ' - ' + props.dataItem.clientName])
 }
 
+const startDateCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
+  return h(tdElement, {}, [ formatDate(props.dataItem.startDate, "DD MMM YYYY") ])
+}
+
+const endDateCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
+  return h(tdElement, {}, [ formatDate(props.dataItem.endDate, "DD MMM YYYY") ])
+}
+
 let currSelectedClientId = ref<number | undefined>()
 const updateSelectedClientId = (val: any) => {
   currSelectedClientId.value = val
@@ -113,10 +122,12 @@ let gridColumProperties = [
   { cell: clientCellTemplate, filterable: false, title: 'Client'},
   { field: 'contractNo', title: 'Contract No', width:150 },
   { field: 'description', title: 'Description'},
-  { field: 'startDate', title: 'Start Date'},
-  { field: 'endDate', title: 'End Date'},
+  { cell: startDateCellTemplate, title: 'Start Date'},
+  { cell: endDateCellTemplate, title: 'End Date'},
+  // { field: 'startDate', title: 'Start Date'},
+  // { field: 'endDate', title: 'End Date'},
   { field: 'currency', title: 'Currency'},
-  { field: 'totalAmoun', title: 'Total Amount'},
+  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
   { field: 'isActive', title: 'Is Main', cell: 'isActiveTemplate', width:85 },
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
