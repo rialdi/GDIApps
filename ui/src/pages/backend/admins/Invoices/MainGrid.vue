@@ -15,7 +15,7 @@
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
-    
+     
     <!-- Main Data Grid -->
     <KStandardGrid 
         :responsive-column-title="'Banks'"
