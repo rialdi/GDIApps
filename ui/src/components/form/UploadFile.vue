@@ -1,5 +1,5 @@
 <template>
-    <input type="file" @change="onChange($event)">
+    <input type="file" class="k-form form-control" @change="onChange($event)">
 </template>
 
 <script setup lang="ts">

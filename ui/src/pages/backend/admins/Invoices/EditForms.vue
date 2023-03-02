@@ -122,12 +122,20 @@
     </kTabStrip>
 
      <!-- Kendo Dialog for Editing Data -->
-     <kDialog v-if="showUploadNewInvAtt" width="60%" :title="'Add New Invoice Attachment'" @close="closeUploadNewInvAtt">
-        <div class="w-100 mb-2">
+     <kDialog v-if="showUploadNewInvAtt" width="60%" :title="'Add New Invoice Attachment'" @close="closeUploadNewInvAtt" :title-render="'titleTemplate'">
+        <template v-slot:titleTemplate="{}">
+            <div class="w-100">
+              Add New Invoice Attachment
+              <kButton class="float-end" :theme-color="'primary'" icon="upload"  @click="onUploadInvAtt" title="Upload">Upload</kButton>
+            </div>
+        </template>
+        <UploadFile v-model="invAttFile" @change="invAttFileChange"/>
+        <div class="w-100 mt-2">
             <kInput :style="{ width: '100%' }"  v-model="newInvAttFileName" :label="'File Name'"></kInput>
         </div>
+        
 <!-- :restrictions="{ allowedExtensions: [ '.xlsx', '.xls' ] }" -->
-        <kUpload class="w-100 k-form"
+        <!-- <kUpload class="w-100 k-form"
             :auto-upload="false"
             :default-files="[]"
             :actions-layout="'end'"
@@ -138,7 +146,7 @@
             @beforeupload="onBeforeUploadInvAtt"
             @statuschange="onStatusChangeInvAtt" 
             :save-url="'/api/CreateInvoiceAttachment'"
-        />
+        /> -->
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
 </template>
@@ -152,21 +160,21 @@ import KTextInput from "@/components/kendo/KTextInput.vue"
 import KDatePicker from "@/components/kendo/KDatePicker.vue"
 import KNumericTextBox from "@/components/kendo/KNumericTextBox.vue"
 import PopupSearchGrid from "@/components/grids/PopupSearchGrid.vue"
-
+import UploadFile from '@/components/form/UploadFile.vue'
 // import UploadFile from '@/components/form/UploadFile.vue'
 
 import { Invoice, 
     InvoiceAttachment, QueryInvoiceAttachments, UpdateInvoiceAttachment, DeleteInvoiceAttachment,
     CContract, QueryCContracts, 
     CBank, QueryCBanks, 
-    CAddress, QueryCAddresss 
+    CAddress, QueryCAddresss, CreateInvoiceAttachment 
 } from "@/dtos"
 import { nameValidator } from "@/stores/validators"
 
 import { Grid as kGrid, GridToolbar as kGridToolbar, GridColumnProps } from '@progress/kendo-vue-grid'
 import { TabStrip as kTabStrip} from '@progress/kendo-vue-layout'
 import { Button as kButton} from '@progress/kendo-vue-buttons'
-import { Upload as kUpload } from '@progress/kendo-vue-upload'
+// import { Upload as kUpload } from '@progress/kendo-vue-upload'
 import { Dialog as kDialog} from '@progress/kendo-vue-dialogs'
 import { Input as kInput } from '@progress/kendo-vue-inputs'
 import { process } from '@progress/kendo-data-query'
@@ -310,22 +318,43 @@ const addInvAtt = (e : any) => {
     showUploadNewInvAtt.value = true
 }
 
-const onBeforeUploadInvAtt = (event: any) => {
-  const attachmentUrl = "/uploads/invoiceAttachments/[" + dataItemInEdit.value.id + "]-" + event.files[0].name
-  event.additionalData.invoiceId = dataItemInEdit.value.id 
-  event.additionalData.fileName = newInvAttFileName.value
-  event.additionalData.attachmentUrl = attachmentUrl
-}
+// const onBeforeUploadInvAtt = (event: any) => {
+//   const attachmentUrl = "/uploads/invoiceAttachments/[" + dataItemInEdit.value.id + "]-" + event.files[0].name
+//   event.additionalData.invoiceId = dataItemInEdit.value.id 
+//   event.additionalData.fileName = newInvAttFileName.value
+//   event.additionalData.attachmentUrl = attachmentUrl
+// }
 
-const onAddInvoiceAttachment = (event: any) => {
-    newInvAttFileName.value = event.affectedFiles[0].name
-}
+// const onAddInvoiceAttachment = (event: any) => {
+//     newInvAttFileName.value = event.affectedFiles[0].name
+// }
 
-const onStatusChangeInvAtt = (event: any) => {
-  if (event.response) {
-    refreshInvAtt()
-  }
+// const onStatusChangeInvAtt = (event: any) => {
+//   if (event.response) {
+//     refreshInvAtt()
+//   }
+// }
+
+/* Upload Invoice Attachment File */
+let invAttFile = ref<File |undefined> ()
+const invAttFileChange = (e: any) => {
+    newInvAttFileName.value = invAttFile.value?.name
 }
+const onUploadInvAtt = async () => {
+    const formData = new FormData()
+    formData.set("invoiceId", dataItemInEdit.value.id?.toString() as string)
+    formData.set("fileName", newInvAttFileName.value as string)
+    formData.set("AttachmentUrl", invAttFile.value as Blob)
+
+    let api = await client.apiForm(new CreateInvoiceAttachment(), formData)
+    if(api.succeeded) {
+        refreshInvAtt()
+    }
+    else {
+        console.log(api)
+    }
+}
+/* END Upload Invoice Attachment File */
 
 const onRemoveInvAtt = async(e: any) => {
     const request = new DeleteInvoiceAttachment({

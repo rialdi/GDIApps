@@ -3,14 +3,20 @@
 import { auth, appUser, getAppUser } from "@/auth"
 
 import { client } from "@/api"
-import {UpdateAppUser} from "@/dtos"
+import {UpdateAppUser, UploadUserProfile} from "@/dtos"
 
 import { showNotifSuccess } from '@/stores/commons'
 
 import { Form as kForm } from "@progress/kendo-vue-form";
 import { Upload as kUpload } from '@progress/kendo-vue-upload';
 import ProfileEditForm from "./ProfileEditForm.vue";
- 
+
+import { Button as kButton} from '@progress/kendo-vue-buttons'
+
+import UploadFile from "@/components/form/UploadFile.vue";
+
+let profileImage = ref<File |undefined> ()
+
 onMounted(async () => await getAppUser(auth.value?.userName))
 
 const onBeforeUpload = (event: any) => {
@@ -26,31 +32,7 @@ const onStatusChange = (event: any) => {
 }
 
 const onUpdateUserProfile = async (dataItem: any) => {
-
-//     const content = new MultiPartForm
-//   // const filePath = ""
-//   // const fileInfo = new fileInfo()
-// //   const profileImg = await ProfileImageUrl.GetStreamFromUrlAsync();
-// // const createContact = new MultipartFormDataContent()
-// //     .AddParams(new CreateContact
-// //     {
-// //         FirstName = "Cody",
-// //         LastName = "Fisher",
-// //         Email = "cody.fisher@gmail.com",
-// //         JobType = "Security",
-// //         PreferredLocation = "Remote",
-// //         PreferredWorkType = EmploymentType.FullTime,
-// //         AvailabilityWeeks = 1,
-// //         SalaryExpectation = 100_000,
-// //         About = "Lead Security Associate",
-// //     })
-// //     .AddFile(nameof(CreateContact.ProfileUrl), "cody-fisher.png", profileImg);
-
-
-//   console.log(dataItem)
-  // const uploadedImage = (dataItem.profileUrl);
-  // console.log(uploadedImage);
-  const request = new UpdateAppUser({
+const request = new UpdateAppUser({
       email: dataItem.email,
       fullName: dataItem.fullName,
       phoneNumber: dataItem.phoneNumber,
@@ -60,24 +42,25 @@ const onUpdateUserProfile = async (dataItem: any) => {
       showNotifSuccess('Update Profile', 'Successfully updated Profile data 🎉')
       await getAppUser(auth.value?.userName)
     } 
+}
 
-//     using var content = new MultipartFormDataContent()
-//     .AddParam(nameof(MultipartRequest.Id), 1)
-//     .AddParam(nameof(MultipartRequest.String), "foo")
-//     .AddParam(nameof(MultipartRequest.Contact), 
-//         new Contact { Id = 1, FirstName = "First", LastName = "Last" })
-//     .AddJsonParam(nameof(MultipartRequest.PhoneScreen), 
-//         new PhoneScreen { Id = 3, JobApplicationId = 1, Notes = "The Notes"})
-//     .AddCsvParam(nameof(MultipartRequest.Contacts), new[] {
-//         new Contact { Id = 2, FirstName = "First2", LastName = "Last2" },
-//         new Contact { Id = 3, FirstName = "First3", LastName = "Last3" },
-//     })
-//     .AddFile(nameof(MultipartRequest.ProfileUrl), "profile.txt", file1Stream)
-//     .AddFile(nameof(MultipartRequest.UploadedFiles), "uploadedFiles1.txt", file2Stream)
-//     .AddFile(nameof(MultipartRequest.UploadedFiles), "uploadedFiles2.txt", file3Stream));
+const onUploadProfileImg = async () => {
+  const formData = new FormData()
+  formData.set("email", "rialdi@ptgdi.com")
+  formData.set("ProfileUrl", profileImage.value as Blob)
 
-// var api = await client.ApiFormAsync<MultipartRequest>(typeof(MultipartRequest).ToApiUrl(), content);
-// if (!api.Succeeded) api.Error.PrintDump();
+  let api = await client.apiForm(new UploadUserProfile(), formData)
+  if(api.succeeded)
+  {
+    console.log("Success")
+    getAppUser(auth.value?.userName)
+  }
+  else
+  {
+    console.log(api)
+  }
+  // formData.append("email", "rialdi@ptgdi.com")
+  // formData.append("ProfileUrl", profileImage.value)
 }
 </script>
 
@@ -113,7 +96,10 @@ const onUpdateUserProfile = async (dataItem: any) => {
       <ProfileEditForm />
     </kForm>
     <!-- END Update User Info -->
-    
+    <BaseBlock title="Update User Profile" btn-option-fullscreen btn-option-content>
+      <UploadFile v-model="profileImage" />
+      <kButton id="uploadProfileImg" @click="onUploadProfileImg" :theme-color="'secondary'" > Upload</kButton>
+    </BaseBlock>
     <!-- Update User Profile -->
     <BaseBlock title="Update User Profile" btn-option-fullscreen btn-option-content>
       <kUpload class="mb-3"

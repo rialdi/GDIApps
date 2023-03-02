@@ -75,15 +75,27 @@ public class AppHost : AppHostBase, IHostingStartup
                 resolvePath: ctx => ctx.GetLocationPath(( ctx.Dto is CreateInvoiceAttachment create
                     ? $"[{create.InvoiceId}]-" 
                     : $"app/{ctx.Dto.GetId()}/") + $"{ctx.FileName}")),
-
+            // new UploadLocation("invoiceAttachments", appFs,
+            //     resolvePath: ResolveUploadPath),
             new UploadLocation("userprofile", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/profile/{ctx.FileName}"),
             // User Cover Photo    
             new UploadLocation("usercover", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/cover/{ctx.FileName}"),
-            
             new UploadLocation("tempUploadFiles", appFs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/tempUploadFiles/{ctx.FileName}")
         ));
+
+        // static string ResolveUploadPath(FilesUploadContext ctx) {
+        //     var path = string.Empty;
+        //     if(ctx.Dto is CreateInvoiceAttachment create)
+        //     {
+        //         path = $"[{create.InvoiceId}]-" + $"{ctx.FileName}";
+        //     } else 
+        //     {
+        //         path = $"app/{ctx.Dto.GetId()}/" + $"{ctx.FileName}";
+        //     }
+        //     return path;
+        // };
     }
 }
