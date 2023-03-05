@@ -283,6 +283,9 @@
     <None Include="src\stores\app.ts" />
     <None Include="src\stores\commons.ts" />
     <None Include="src\stores\todos.ts" />
+    <Content Include="src\pages\overtime\CreateClaim.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\router\index.js" />
     <Content Include="src\router\starter.js" />
     <Content Include="src\router\templateindex.js" />
@@ -334,6 +337,7 @@
     <Folder Include="src\pages\backend\admins\Projects" />
     <Folder Include="src\pages\bookings-crud" />
     <Folder Include="src\pages\errors" />
+    <Folder Include="src\pages\overtime\" />
     <Folder Include="src\pages\posts" />
     <Folder Include="src\pages\user" />
     <Folder Include="src\router" />

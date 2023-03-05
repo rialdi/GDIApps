@@ -10,11 +10,16 @@ using System.Threading.Tasks;
 using GDIApps.ServiceModel;
 using System.Globalization;
 using GDIApps.ValeCommonRules;
+using ServiceStack.OrmLite;
+using GDIApps.ServiceModel.Types.Tables;
+using System.Reflection;
+using ServiceStack.Text;
 
 namespace GDIApps.ServiceInterface
 {
     public class OvertimeService:Service
     {
+        public IAutoQueryDb AutoQuery { get; set; }
         public CreateOvertimeResponse Post(CreateOvertimeDraft request)
         {
             CreateOvertimeResponse response = new CreateOvertimeResponse();
@@ -58,11 +63,20 @@ namespace GDIApps.ServiceInterface
             return response;
 
         }
-
-        public EmployeeSelectionsResponse Get(EmployeeSelections request)
+        public object Any(QueryOvertimeDraft query)
         {
-         var employees=  Rules.GetEmployeeSelections();
-            return new EmployeeSelectionsResponse()
+            using var db = AutoQuery.GetDb(query, base.Request);
+            var q = AutoQuery.CreateQuery(query, base.Request, db);
+            q.Where(x => x.STATUS == "DRAFT");
+
+            //  q.And<Overtime>(c => c.STATUS == "DRAFT",)
+            return AutoQuery.Execute(query, q, Request);
+
+        }
+        public HttpResult Get(EmployeeSelections request)
+        {
+            var employees = Rules.GetEmployeeSelections(request.ODataParam);
+            var res=new HttpResult(new EmployeeSelectionsResponse()
             {
                 Employees = employees.Select(d => new EmployeeOption()
                 {
@@ -70,7 +84,21 @@ namespace GDIApps.ServiceInterface
                     NAME = d.NAME,
                     POS_DEPT = d.POS_DEPT
                 }).ToList()
+            })
+            {
+                ResultScope = () => JsConfig.With(
+        emitLowercaseUnderscoreNames: true, excludeDefaultValues: true)
             };
+            return res;
+          //  return new EmployeeSelectionsResponse()
+            //{
+            //    Employees = employees.Select(d => new EmployeeOption()
+            //    {
+            //        EMPLOYEE_ID = d.EMPLOYEE_ID,
+            //        NAME = d.NAME,
+            //        POS_DEPT = d.POS_DEPT
+            //    }).ToList()
+            //};
         }
         LogicRules _rules = null;
     private LogicRules Rules

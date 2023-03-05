@@ -1,4 +1,5 @@
 using GDIApps.ServiceModel.Types;
+using GDIApps.ServiceModel.Types.Tables;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using System.Reflection.Metadata;
@@ -26,6 +27,7 @@ public class ConfigureDb : IHostingStartup
 
              // Create non-existing Table and add Seed Data Example
              using var db = appHost.Resolve<IDbConnectionFactory>().Open();
+             db.CreateTableIfNotExists<Overtime>();
              // var isExistTable = false;
 
              // db.DropAndCreateTable<AppUser>();                

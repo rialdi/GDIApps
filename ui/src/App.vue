@@ -22,6 +22,7 @@ app.load()
   <kTooltip :anchor-еlement="'target'"  :open-delay="100" :paren-title="true">
     <router-view />
   </kTooltip>
+
   <!-- <RouterView /> -->
 </template>
 

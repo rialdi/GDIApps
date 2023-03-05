@@ -44,7 +44,8 @@ const columns = [
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 
 const refreshDatas = async ( ) => {
-  const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE}))
+    const api = await client.api(new QueryLookups({ lookuptype: selectedLookupType.value as LOOKUPTYPE }));
+
   if (api.succeeded) {
     lookupData.value = api.response!.results ?? []
 

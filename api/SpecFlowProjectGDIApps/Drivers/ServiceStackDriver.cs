@@ -58,7 +58,7 @@ namespace SpecFlowProjectGDIApps.Drivers
                 empIds.Add(id);
             }
             var client = _context.Get<IServiceClient>("Client");
-
+           
             client.Send(new Authenticate()
             {
                 provider = CredentialsAuthProvider.Name,

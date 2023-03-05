@@ -70,9 +70,9 @@ namespace BusinessRules
 
         }
 
-        public List<Employee> GetEmployeeSelections()
+        public List<Employee> GetEmployeeSelections(string odatafilter)
         {
-           return _externalData.ExecutequeryByParam<List<Employee>>("QRY_EMP_APPROVAL", "");
+           return _externalData.ExecutequeryByParam<List<Employee>>("QRY_EMP_APPROVAL", odatafilter);
         }
 
         public void SubmitClaim(string otNumber, string reasonCode, decimal otHour)

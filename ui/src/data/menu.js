@@ -27,9 +27,20 @@ export default {
         {
           name: "Projects",
           to: "backend-admins-project",
-        }
+        },
+
       ],
-    },
+        },
+        {
+            name: "Overtime",
+            subActivePaths: "/overtime",
+            sub: [
+                {
+                    name: "Create Claim",
+                    to:"backend-admins-createovertime"
+                }
+                ]
+            }
     /*
     {
       name: "Page Packs",

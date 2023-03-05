@@ -1,4 +1,6 @@
-﻿using ServiceStack;
+﻿using GDIApps.ServiceModel.Types.Tables;
+using ServiceStack;
+using ServiceStack.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,5 +38,16 @@ namespace GDIApps.ServiceModel
         public bool Success { get; set; }
         public string OtNumber { get; set;}
         public string ErrorMessage { get; set;}
+    }
+
+    
+ 
+
+  
+ 
+    [Route("/OvertimeDraft", "GET")]
+    public class QueryOvertimeDraft : QueryDb<Overtime>
+    {
+        public string Id { get; set; }
     }
 }

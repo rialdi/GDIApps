@@ -14,14 +14,16 @@ public class AppHost : AppHostBase, IHostingStartup
     public void Configure(IWebHostBuilder builder) => builder
         .ConfigureServices((context, services) => {
             services.ConfigureNonBreakingSameSiteCookies(context.HostingEnvironment);
+            services.AddControllers().AddJsonOptions(j => { j.JsonSerializerOptions.PropertyNamingPolicy = null; });
         });
 
     public AppHost() : base("GDIApps", typeof(MyServices).Assembly) {}
 
     public override void Configure(Container container)
     {
-        SetConfig(new HostConfig {
-        });
+        SetConfig(new HostConfig
+        { 
+        }) ;
 
         Plugins.Add(new AdminDatabaseFeature());
 

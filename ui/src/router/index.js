@@ -41,6 +41,9 @@ const BackendPagesErrors = () => import("@/views/backend/pages/ErrorsView.vue");
 const UserProfile = () => import("@/pages/user/Profile.vue");
 const UserProfileEdit = () => import("@/pages/user/ProfileEdit.vue");
 
+//overtime
+const CreateClaimOT = () => import("@/pages/overtime/CreateClaim.vue");
+
 // Backend: Generic Pages
 const BackendPagesGenericBlank = () =>
   import("@/views/backend/pages/generic/BlankView.vue");
@@ -153,7 +156,12 @@ const routes = [
             path: "project",
             name: "backend-admins-project",
             component: ProjectPages,
-          }
+            },
+          {
+                path: "overtime",
+              name: "backend-admins-createovertime",
+              component: () => import("@/pages/overtime/CreateClaim.vue")
+          },
         ],
       },
       // {
@@ -192,7 +200,8 @@ const routes = [
             component: UserProfileEdit,
           },
         ]
-      },
+        },
+       
       {
         path: "pages/generic",
         redirect: "/pages/generic/blank",

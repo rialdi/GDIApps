@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-02-14 09:48:52
+Date: 2023-03-05 19:57:17
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -100,6 +100,29 @@ export class QueryData<T> extends QueryBase
     public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class EmployeePOCO
+{
+    public employeE_ID?: string;
+    public name?: string;
+    public positioN_ID?: string;
+    public position?: string;
+    public leveL_GROUP?: string;
+    public cosT_CENTRE?: string;
+    public superioR_NAME?: string;
+    public superioR_POS?: string;
+    public moR_NAME?: string;
+    public moR_POS?: string;
+    public poS_SUB_DEPT?: string;
+    public poS_DEPT?: string;
+    public suB_DEPT_OWNER?: string;
+    public superioR_MOR?: string;
+    public superioR_MOR_POS?: string;
+    public leveL_GROUP_SUPERIOR_MOR?: string;
+    public id?: string;
+
+    public constructor(init?: Partial<EmployeePOCO>) { (Object as any).assign(this, init); }
+}
+
 export class QueryDb_1<T> extends QueryBase
 {
 
@@ -130,6 +153,27 @@ export class AuditBase
     public deletedBy?: string;
 
     public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
+}
+
+export class Overtime extends AuditBase
+{
+    public id?: number;
+    public oT_NUMBER?: string;
+    public employeE_ID?: string;
+    public name?: string;
+    public oT_DATE?: string;
+    public oT_HOUR?: number;
+    public oT_REASON?: string;
+    public oT_REASON_CODE?: string;
+    public poS_DEPT?: string;
+    public positioN_ID?: string;
+    public firsT_APPROVER_ID?: string;
+    public firsT_APPROVER_NAME?: string;
+    public secondarY_APPROVER_ID?: string;
+    public secondarY_APPROVER_NAME?: string;
+    public status?: string;
+
+    public constructor(init?: Partial<Overtime>) { super(init); (Object as any).assign(this, init); }
 }
 
 export enum RoomType
@@ -185,7 +229,7 @@ export class Project extends AuditBase
     public durationDays?: number;
     public estimatedStartDate?: string;
     public estimatedEndDate?: string;
-    public actualtartDate?: string;
+    public actualStartDate?: string;
     public actualEndDate?: string;
     public isActive?: boolean;
 
@@ -283,6 +327,7 @@ export enum LOOKUPTYPE
 {
     STATUS = 'STATUS',
     PRIORITY = 'PRIORITY',
+    OT_REASON = 'OT_REASON',
 }
 
 export class Lookup extends AuditBase
@@ -391,6 +436,30 @@ export class UserAuth
     public constructor(init?: Partial<UserAuth>) { (Object as any).assign(this, init); }
 }
 
+export class CreateClaimItemResponse
+{
+    public success?: boolean;
+    public otNumber?: string;
+    public errorMessage?: string;
+
+    public constructor(init?: Partial<CreateClaimItemResponse>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
+export class EmployeeOption
+{
+    // @DataMember(Name="EMPLOYEE_ID")
+    public EMPLOYEE_ID?: string;
+
+    // @DataMember(Name="NAME")
+    public NAME?: string;
+
+    // @DataMember(Name="POS_DEPT")
+    public POS_DEPT?: string;
+
+    public constructor(init?: Partial<EmployeeOption>) { (Object as any).assign(this, init); }
+}
+
 // @DataContract
 export class ResponseStatus
 {
@@ -449,11 +518,55 @@ export class ContactUsEmailResponse
     public constructor(init?: Partial<ContactUsEmailResponse>) { (Object as any).assign(this, init); }
 }
 
+// @DataContract
+export class QueryResponse<EmployeePOCO>
+{
+    // @DataMember(Order=1)
+    public offset?: number;
+
+    // @DataMember(Order=2)
+    public total?: number;
+
+    // @DataMember(Order=3)
+    public results?: EmployeePOCO[];
+
+    // @DataMember(Order=4)
+    public meta?: { [index: string]: string; };
+
+    // @DataMember(Order=5)
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<QueryResponse<EmployeePOCO>>) { (Object as any).assign(this, init); }
+}
+
 export class HelloResponse
 {
     public result?: string;
 
     public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
+}
+
+export class CreateOvertimeResponse
+{
+    public items?: CreateClaimItemResponse[];
+
+    public constructor(init?: Partial<CreateOvertimeResponse>) { (Object as any).assign(this, init); }
+}
+
+export class SubmitClaimResponse
+{
+    public success?: boolean;
+    public otNumber?: string;
+    public errorMessage?: string;
+
+    public constructor(init?: Partial<SubmitClaimResponse>) { (Object as any).assign(this, init); }
+}
+
+export class EmployeeSelectionsResponse
+{
+    public employees?: EmployeeOption[];
+
+    public constructor(init?: Partial<EmployeeSelectionsResponse>) { (Object as any).assign(this, init); }
 }
 
 export class Todo
@@ -466,24 +579,39 @@ export class Todo
 }
 
 // @DataContract
-export class QueryResponse<Todo>
+export class RegisterResponse implements IHasSessionId, IHasBearerToken
 {
     // @DataMember(Order=1)
-    public offset?: number;
+    public userId?: string;
 
     // @DataMember(Order=2)
-    public total?: number;
+    public sessionId?: string;
 
     // @DataMember(Order=3)
-    public results?: Todo[];
+    public userName?: string;
 
     // @DataMember(Order=4)
-    public meta?: { [index: string]: string; };
+    public referrerUrl?: string;
 
     // @DataMember(Order=5)
+    public bearerToken?: string;
+
+    // @DataMember(Order=6)
+    public refreshToken?: string;
+
+    // @DataMember(Order=7)
+    public roles?: string[];
+
+    // @DataMember(Order=8)
+    public permissions?: string[];
+
+    // @DataMember(Order=9)
     public responseStatus?: ResponseStatus;
 
-    public constructor(init?: Partial<QueryResponse<Todo>>) { (Object as any).assign(this, init); }
+    // @DataMember(Order=10)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -562,42 +690,6 @@ export class UnAssignRolesResponse
     public responseStatus?: ResponseStatus;
 
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class RegisterResponse implements IHasSessionId, IHasBearerToken
-{
-    // @DataMember(Order=1)
-    public userId?: string;
-
-    // @DataMember(Order=2)
-    public sessionId?: string;
-
-    // @DataMember(Order=3)
-    public userName?: string;
-
-    // @DataMember(Order=4)
-    public referrerUrl?: string;
-
-    // @DataMember(Order=5)
-    public bearerToken?: string;
-
-    // @DataMember(Order=6)
-    public refreshToken?: string;
-
-    // @DataMember(Order=7)
-    public roles?: string[];
-
-    // @DataMember(Order=8)
-    public permissions?: string[];
-
-    // @DataMember(Order=9)
-    public responseStatus?: ResponseStatus;
-
-    // @DataMember(Order=10)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -683,6 +775,19 @@ export class AppUserConfirmEmail
     public createResponse() {}
 }
 
+// @Route("/EmployeeQuery")
+export class EmployeeQuery extends QueryData<EmployeePOCO> implements IReturn<QueryResponse<EmployeePOCO>>
+{
+    public id?: string;
+    public ids?: string[];
+    public oDataParams?: string[];
+
+    public constructor(init?: Partial<EmployeeQuery>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'EmployeeQuery'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmployeePOCO>(); }
+}
+
 // @Route("/hello")
 // @Route("/hello/{Name}")
 export class Hello implements IReturn<HelloResponse>
@@ -693,6 +798,53 @@ export class Hello implements IReturn<HelloResponse>
     public getTypeName() { return 'Hello'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new HelloResponse(); }
+}
+
+// @Route("/createclaim", "POST")
+export class CreateOvertimeDraft implements IReturn<CreateOvertimeResponse>, IPost
+{
+    public otDate?: string;
+    public employeeIds?: string[];
+
+    public constructor(init?: Partial<CreateOvertimeDraft>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateOvertimeDraft'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateOvertimeResponse(); }
+}
+
+// @Route("/submitclaim", "POST")
+export class SubmitClaimRequest implements IReturn<SubmitClaimResponse>
+{
+    public otNumber?: string;
+    public reasonCode?: string;
+    public otHour?: number;
+
+    public constructor(init?: Partial<SubmitClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'SubmitClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new SubmitClaimResponse(); }
+}
+
+// @Route("/OvertimeDraft", "GET")
+export class QueryOvertimeDraft extends QueryDb_1<Overtime> implements IReturn<QueryResponse<Overtime>>
+{
+    public id?: string;
+
+    public constructor(init?: Partial<QueryOvertimeDraft>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryOvertimeDraft'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Overtime>(); }
+}
+
+// @Route("/employeeoptions")
+export class EmployeeSelections implements IReturn<EmployeeSelectionsResponse>
+{
+    public oDataParam?: string;
+
+    public constructor(init?: Partial<EmployeeSelections>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'EmployeeSelections'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new EmployeeSelectionsResponse(); }
 }
 
 // @Route("/todos", "GET")
@@ -755,6 +907,48 @@ export class DeleteTodos implements IReturnVoid, IDelete
     public getTypeName() { return 'DeleteTodos'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
+}
+
+/** @description Sign Up */
+// @Route("/register", "PUT,POST")
+// @Api(Description="Sign Up")
+// @DataContract
+export class Register implements IReturn<RegisterResponse>, IPost
+{
+    // @DataMember(Order=1)
+    public userName?: string;
+
+    // @DataMember(Order=2)
+    public firstName?: string;
+
+    // @DataMember(Order=3)
+    public lastName?: string;
+
+    // @DataMember(Order=4)
+    public displayName?: string;
+
+    // @DataMember(Order=5)
+    public email?: string;
+
+    // @DataMember(Order=6)
+    public password?: string;
+
+    // @DataMember(Order=7)
+    public confirmPassword?: string;
+
+    // @DataMember(Order=8)
+    public autoLogin?: boolean;
+
+    // @DataMember(Order=10)
+    public errorView?: string;
+
+    // @DataMember(Order=11)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'Register'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new RegisterResponse(); }
 }
 
 /** @description Sign In */
@@ -867,48 +1061,6 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public getTypeName() { return 'UnAssignRoles'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new UnAssignRolesResponse(); }
-}
-
-/** @description Sign Up */
-// @Route("/register", "PUT,POST")
-// @Api(Description="Sign Up")
-// @DataContract
-export class Register implements IReturn<RegisterResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public userName?: string;
-
-    // @DataMember(Order=2)
-    public firstName?: string;
-
-    // @DataMember(Order=3)
-    public lastName?: string;
-
-    // @DataMember(Order=4)
-    public displayName?: string;
-
-    // @DataMember(Order=5)
-    public email?: string;
-
-    // @DataMember(Order=6)
-    public password?: string;
-
-    // @DataMember(Order=7)
-    public confirmPassword?: string;
-
-    // @DataMember(Order=8)
-    public autoLogin?: boolean;
-
-    // @DataMember(Order=10)
-    public errorView?: string;
-
-    // @DataMember(Order=11)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'Register'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new RegisterResponse(); }
 }
 
 /** @description Find Bookings */
