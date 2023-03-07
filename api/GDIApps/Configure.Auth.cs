@@ -1,7 +1,11 @@
-using Microsoft.AspNetCore.Hosting;
-using ServiceStack;
+// using Microsoft.AspNetCore.Hosting;
+// using ServiceStack;
+// using System.Collections;
+// using System.Linq;
 using ServiceStack.Auth;
 using ServiceStack.FluentValidation;
+using ServiceStack.OrmLite;
+using GDIApps.ServiceModel.Types;
 
 [assembly: HostingStartup(typeof(GDIApps.ConfigureAuth))]
 
@@ -46,11 +50,23 @@ public class ConfigureAuth : IHostingStartup
                 IncludeDefaultLogin = false
             });
 
-            appHost.RegisterService(typeof(RegisterService).AddAttributes(
-                new RequiredRoleAttribute(
-                    appSettings.GetList("ApplicationRoles").ToArray()
-                )
-            ));
+            using var db = appHost.GetDbConnection();
+            if(db.TableExists<AppRole>()) {
+                var appRole = db.Select<AppRole>().Select(s=> s.RoleName).ToArray();
+                appHost.RegisterService(typeof(RegisterService).AddAttributes(
+                    new RequiredRoleAttribute(
+                        appRole
+                    )
+                ));
+            }
+            else {
+                var appRoleFromSetting = appSettings.GetList("ApplicationRoles").ToArray();
+                appHost.RegisterService(typeof(RegisterService).AddAttributes(
+                    new RequiredRoleAttribute(
+                        appSettings.GetList("ApplicationRoles").ToArray()
+                    )
+                ));
+            }
 
             appHost.Plugins.Add(new RegistrationFeature()); //Enable /register Service
 

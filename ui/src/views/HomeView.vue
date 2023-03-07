@@ -58,6 +58,16 @@ const dsManagement= [
     profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
     profileName : "Aminullah",
     profileTitle : "CTO", 
+  },
+  { 
+    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+    profileName : "Hanky",
+    profileTitle : "CTO", 
+  },
+  { 
+    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+    profileName : "Rialdi",
+    profileTitle : "CTO", 
   }
 ]
 </script>
@@ -113,7 +123,7 @@ const dsManagement= [
                 <cardImage :src="card.profileImage" style="height: 185px; max-width: 100%;"/>
             </card>
         </div>
-      </div>
+    </div>
     </div>
       <div class="content content-full">
         <div class="row g-0 justify-content-center text-center">

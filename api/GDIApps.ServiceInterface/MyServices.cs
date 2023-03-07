@@ -1,6 +1,9 @@
 using System;
 using ServiceStack;
 using ServiceStack.OrmLite;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using ServiceStack.IO;
 using GDIApps.ServiceModel;
 using GDIApps.ServiceModel.Types;
@@ -23,6 +26,32 @@ namespace GDIApps.ServiceInterface
                 VirtualFiles.DeleteFile(attachmentUrl);
             }
             return db.Delete(currInvoiceAttachment);
+        }
+
+        public object Any(GetAppMenuByRole request) {
+            using var db = AutoQuery.GetDb<AppRole>(Request);
+            var currRole = db.Select<AppRole>( w => w.RoleName == request.RoleName).FirstNonDefault();
+            List<AppMenu> appMenuResult = new List<AppMenu>();
+            if(currRole != null)
+            {
+                var appMenuList = db.Select<AppMenu>( w => w.AppRoleId == currRole.Id && w.AppMenuId == 1).ToList();
+                appMenuResult = GetCurrAppMenu(db, currRole.Id, appMenuList);
+            }
+            return appMenuResult;
+        }
+
+        private List<AppMenu> GetCurrAppMenu(System.Data.IDbConnection db, int? roleId, List<AppMenu> subAppMenuList)
+        {
+            List<AppMenu> appMenuResult = new List<AppMenu>();
+            foreach(var subMenu in subAppMenuList)
+            {
+                var appMenuList = db.Select<AppMenu>( w => w.AppRoleId == subMenu.AppRoleId && w.AppMenuId == subMenu.Id).ToList();
+                if(appMenuList.Count > 0) {
+                    subMenu.Sub = GetCurrAppMenu(db, subMenu.AppRoleId, appMenuList);
+                }
+                appMenuResult.Add(subMenu);
+            }
+            return appMenuResult;
         }
     }
 }

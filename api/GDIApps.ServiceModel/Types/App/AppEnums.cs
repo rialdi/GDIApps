@@ -26,3 +26,9 @@ public enum INVOICE_STATUS
 }
 
 public enum GENDER { MALE, FEMALE }
+
+public enum APP_MENU_TYPE {
+    ROOT,
+    EMPLOYEE_DASHBOARD,
+    GUEST_DASHBOARD
+}

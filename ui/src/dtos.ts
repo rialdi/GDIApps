@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-02 15:30:20
+Date: 2023-03-07 11:48:00
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -562,6 +562,43 @@ export class ProjectView extends Project
     public constructor(init?: Partial<ProjectView>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class AppMenu
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.AppRole)")
+    public appRoleId?: number;
+
+    // @References("typeof(GDIApps.ServiceModel.Types.AppMenu)")
+    public appMenuId?: number;
+
+    // @Required()
+    public sequence?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public name?: string;
+
+    public to?: string;
+    public icon?: string;
+    public isActive?: boolean;
+    public sub?: AppMenu[];
+
+    public constructor(init?: Partial<AppMenu>) { (Object as any).assign(this, init); }
+}
+
+export class AppRole
+{
+    public id?: number;
+    // @Required()
+    // @StringLength(100)
+    public roleName?: string;
+
+    // @StringLength(400)
+    public description?: string;
+
+    public constructor(init?: Partial<AppRole>) { (Object as any).assign(this, init); }
+}
+
 export class Country
 {
     public id?: number;
@@ -636,6 +673,13 @@ export class MasterBank
     public swiftCode?: string;
 
     public constructor(init?: Partial<MasterBank>) { (Object as any).assign(this, init); }
+}
+
+export enum APP_MENU_TYPE
+{
+    ROOT = 'ROOT',
+    EMPLOYEE_DASHBOARD = 'EMPLOYEE_DASHBOARD',
+    GUEST_DASHBOARD = 'GUEST_DASHBOARD',
 }
 
 // @DataContract
@@ -772,6 +816,14 @@ export class HelloResponse
     public result?: string;
 
     public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
+}
+
+export class CRUDResponse
+{
+    public id?: number;
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<CRUDResponse>) { (Object as any).assign(this, init); }
 }
 
 export class Todo
@@ -918,14 +970,6 @@ export class UnAssignRolesResponse
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
-export class CRUDResponse
-{
-    public id?: number;
-    public responseStatus?: ResponseStatus;
-
-    public constructor(init?: Partial<CRUDResponse>) { (Object as any).assign(this, init); }
-}
-
 // @ValidateRequest(Validator="IsAuthenticated")
 export class UpdatePassword implements IReturn<ResponseStatus>
 {
@@ -984,6 +1028,17 @@ export class GetUserList implements IReturn<AppUser[]>
     public createResponse() { return new Array<AppUser>(); }
 }
 
+// @ValidateRequest(Validator="IsAuthenticated")
+export class GetUserListByRoles implements IReturn<AppUser[]>
+{
+    public roleName?: string;
+
+    public constructor(init?: Partial<GetUserListByRoles>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'GetUserListByRoles'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new Array<AppUser>(); }
+}
+
 // @Route("/contacts/email", "POST")
 // @ValidateRequest(Validator="IsAuthenticated")
 export class ContactUsEmail implements IReturn<ContactUsEmailResponse>
@@ -1030,6 +1085,16 @@ export class DeleteInvoiceAttachment implements IReturnVoid, IDeleteDb<Invoice>
     public getTypeName() { return 'DeleteInvoiceAttachment'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
+}
+
+export class GetAppMenuByRole implements IReturn<CRUDResponse>
+{
+    public roleName?: string;
+
+    public constructor(init?: Partial<GetAppMenuByRole>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'GetAppMenuByRole'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
 }
 
 // @Route("/todos", "GET")
@@ -1414,6 +1479,27 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
     public getTypeName() { return 'QueryProjects'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<ProjectView>(); }
+}
+
+export class QueryAppMenus extends QueryDb_1<AppMenu> implements IReturn<QueryResponse<AppMenu>>
+{
+    public ids?: number[];
+    public names?: string[];
+    public sequence?: number;
+
+    public constructor(init?: Partial<QueryAppMenus>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryAppMenus'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<AppMenu>(); }
+}
+
+export class QueryAppRoles extends QueryDb_1<AppRole> implements IReturn<QueryResponse<AppRole>>
+{
+
+    public constructor(init?: Partial<QueryAppRoles>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryAppRoles'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<AppRole>(); }
 }
 
 export class QueryCountries extends QueryDb_1<Country> implements IReturn<QueryResponse<Country>>
@@ -1915,6 +2001,82 @@ export class DeleteProject implements IReturnVoid, IDeleteDb<Project>
 
     public constructor(init?: Partial<DeleteProject>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DeleteProject'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+export class CreateAppMenu implements IReturn<CRUDResponse>, ICreateDb<AppMenu>
+{
+    public menuType?: APP_MENU_TYPE;
+    public appMenuId?: number;
+    public sequence?: number;
+    public name?: string;
+    public to?: string;
+    public icon?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateAppMenu>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateAppMenu'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+export class UpdateAppMenu implements IReturn<CRUDResponse>, IPatchDb<AppMenu>
+{
+    public id?: number;
+    public menuType?: APP_MENU_TYPE;
+    public appMenuId?: number;
+    public sequence?: number;
+    public name?: string;
+    public to?: string;
+    public icon?: string;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateAppMenu>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateAppMenu'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+export class DeleteAppMenu implements IReturnVoid, IDeleteDb<AppMenu>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteAppMenu>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteAppMenu'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+export class CreateAppRole implements IReturn<CRUDResponse>, ICreateDb<AppRole>
+{
+    public roleName?: string;
+    public description?: string;
+
+    public constructor(init?: Partial<CreateAppRole>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateAppRole'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+export class UpdateAppRole implements IReturn<CRUDResponse>, IPatchDb<AppRole>
+{
+    public id?: number;
+    public roleName?: string;
+    public description?: string;
+
+    public constructor(init?: Partial<UpdateAppRole>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateAppRole'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+export class DeleteAppRole implements IReturnVoid, IDeleteDb<AppRole>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteAppRole>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteAppRole'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }

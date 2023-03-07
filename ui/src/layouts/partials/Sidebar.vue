@@ -2,15 +2,17 @@
 import { ref, watch, onMounted } from "vue";
 import { useTemplateStore } from "@/stores/template";
 
+import { useAppMenuStore } from "@/stores/appmenu";
+
 import BaseNavigation from "@/components/BaseNavigation.vue";
 
 // SimpleBar, for more info and examples you can check out https://github.com/Grsmto/simplebar/tree/master/packages/simplebar-vue
 import SimpleBar from "simplebar";
 
-// Grab menu navigation arrays
-import menu from "@/data/menu";
+// // Grab menu navigation arrays
+// import menu from "@/data/menu";
 
-const navigation = menu.main;
+
 
 // Component properties
 defineProps({
@@ -20,6 +22,9 @@ defineProps({
     description: "If the sidebar is in Mini Nav Mode",
   },
 });
+
+// App Menu Store
+const appMenuStore = useAppMenuStore();
 
 // Main store
 const store = useTemplateStore();
@@ -42,11 +47,13 @@ function setDarkModeRadioDefault() {
 
 // When the user sets dark mode preference through the radios
 function onDarkModeRadioChange() {
+  // navigation = appMenuStore.appMenuList;
+  // console.log(navigation)
   if (radioDarkMode.value === "system") {
     store.darkModeSystem({ mode: "on" });
   } else {
     store.darkModeSystem({ mode: "off" });
-
+    
     if (radioDarkMode.value === "dark") {
       store.darkMode({ mode: "on" });
     } else {
@@ -70,8 +77,17 @@ watch(
   }
 );
 
+watch(
+  () => appMenuStore.isReady,
+  () => {
+    navigation = appMenuStore.appMenuList;
+    console.log(navigation);
+  }
+);
+
 // Init SimpleBar (custom scrolling)
 onMounted(() => {
+  appMenuStore.getAppMenuList();
   new SimpleBar(document.getElementById("simplebar-sidebar"));
 });
 </script>
@@ -89,7 +105,7 @@ onMounted(() => {
     Adding 'smini-visible' to an element will show it (display: inline-block) only when the sidebar is in mini mode
     Adding 'smini-visible-block' to an element will show it (display: block) only when the sidebar is in mini mode
   -->
-  <nav
+  <nav 
     id="sidebar"
     :class="{ 'with-mini-nav': withMiniNav }"
     aria-label="Main Navigation"
@@ -315,7 +331,7 @@ onMounted(() => {
         <slot name="content">
           <!-- Side Navigation -->
           <div class="content-side">
-            <BaseNavigation :nodes="navigation" />
+            <BaseNavigation :nodes="appMenuStore.appMenuList" />
           </div>
           <!-- END Side Navigation -->
         </slot>
