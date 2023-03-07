@@ -13,6 +13,7 @@ export function createAttrs(auth?: AuthenticateResponse) {
     ] : []
 }
 
+export const selectedRole = ref('Admin')
 export const appUser = ref<AppUser>(new AppUser())
 export const auth = ref<AuthenticateResponse|undefined>()
 checkAuth().then(r => auth.value = r)
@@ -40,6 +41,7 @@ export const attrs = computed(() => createAttrs(auth.value))
 export const signin = (response?: AuthenticateResponse) => {
     auth.value = response
     getAppUser(auth.value?.userName)
+    selectedRole.value = auth.value?.roles == undefined ? "Guest" :  auth.value?.roles[0]
     return auth.value
 }
 

@@ -282,7 +282,7 @@ function handleHide() {
           >
             <div class="flex-grow-1 me-3">
               <p class="mb-0">
-                OneUI successfully
+                PTGDI successfully
                 <a class="alert-link" href="javascript:void(0)">updated</a>!
               </p>
             </div>

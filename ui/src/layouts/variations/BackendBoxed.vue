@@ -45,8 +45,8 @@ store.mainContent({ mode: "boxed" });
           :to="{ name: 'landing' }"
           class="fw-semibold fs-5 tracking-wider text-dual me-3"
         >
-          OneUI
-          <span class="fw-normal">Vue</span>
+          PTGDI
+          <span class="fw-normal">Apps</span>
         </RouterLink>
         <!-- END Logo -->
 

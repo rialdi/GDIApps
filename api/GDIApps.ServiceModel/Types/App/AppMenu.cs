@@ -89,8 +89,7 @@ public class GetAppMenuByRole : IReturn<CRUDResponse> {
 // [AutoApply(Behavior.AuditCreate)]
 public class CreateAppMenu : ICreateDb<AppMenu>, IReturn<CRUDResponse>
 {
-    [ApiAllowableValues(typeof(APP_MENU_TYPE))]
-    public APP_MENU_TYPE MenuType { get; set; }
+    public int? AppRoleId { get; set;}
     public int? AppMenuId { get; set;}
     public int Sequence { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -112,9 +111,7 @@ public class CreateAppMenu : ICreateDb<AppMenu>, IReturn<CRUDResponse>
 public class UpdateAppMenu : IPatchDb<AppMenu>, IReturn<CRUDResponse>
 {
     public int Id { get; set; } 
-    [ApiAllowableValues(typeof(APP_MENU_TYPE))]
-    public APP_MENU_TYPE MenuType { get; set; }
-    [AutoDefault(Eval = null)]
+    public int? AppRoleId { get; set;}
     public int? AppMenuId { get; set;}
     public int Sequence { get; set; }
     public string? Name { get; set; }

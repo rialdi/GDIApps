@@ -161,7 +161,21 @@ public class Migration1001 : MigrationBase
                                 IsActive = true
                             },
                         }
-                    }
+                    },
+                    new AppMenu {
+                        Sequence = 4,
+                        Name = "Projects",
+                        To = "backend-admins-project",
+                        Icon = "si si-speedometer",
+                        IsActive = true
+                    },
+                    new AppMenu {
+                        Sequence = 5,
+                        Name = "Invoices",
+                        To = "backend-admins-invoices",
+                        Icon = "si si-speedometer",
+                        IsActive = true
+                    },
                 }
             },
 

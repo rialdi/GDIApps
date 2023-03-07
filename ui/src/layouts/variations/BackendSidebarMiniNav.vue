@@ -84,8 +84,8 @@ onBeforeRouteLeave(() => {
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
             <span class="smini-hide fs-5 tracking-wider">
-              OneUI
-              <span class="fw-normal">Vue</span>
+              PTGDI
+              <span class="fw-normal">Apps</span>
             </span>
           </RouterLink>
           <!-- END Logo -->

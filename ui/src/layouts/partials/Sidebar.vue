@@ -1,9 +1,9 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { useTemplateStore } from "@/stores/template";
-
+import { auth, selectedRole } from "@/auth"
 import { useAppMenuStore } from "@/stores/appmenu";
-
+import { ComboBox as kComboBox } from "@progress/kendo-vue-dropdowns";
 import BaseNavigation from "@/components/BaseNavigation.vue";
 
 // SimpleBar, for more info and examples you can check out https://github.com/Grsmto/simplebar/tree/master/packages/simplebar-vue
@@ -12,7 +12,7 @@ import SimpleBar from "simplebar";
 // // Grab menu navigation arrays
 // import menu from "@/data/menu";
 
-
+const roles = auth.value?.roles ?? []
 
 // Component properties
 defineProps({
@@ -31,6 +31,19 @@ const store = useTemplateStore();
 
 // Dark Mode preference helper for radios
 const radioDarkMode = ref();
+
+const radioRole = ref();
+
+function setRoleRadioDefault() {
+  radioRole.value = selectedRole.value;
+}
+
+function onRoleRadioChange() {
+  selectedRole.value = radioRole.value;
+  appMenuStore.getAppMenuList(selectedRole.value);
+}
+
+setRoleRadioDefault();
 
 // Sets default dark mode preferences for radios
 function setDarkModeRadioDefault() {
@@ -77,17 +90,18 @@ watch(
   }
 );
 
-watch(
-  () => appMenuStore.isReady,
-  () => {
-    navigation = appMenuStore.appMenuList;
-    console.log(navigation);
-  }
-);
+// watch(
+//   () => appMenuStore.isReady,
+//   () => {
+//     navigation = appMenuStore.appMenuList;
+//     console.log(navigation);
+//   }
+// );
 
 // Init SimpleBar (custom scrolling)
 onMounted(() => {
-  appMenuStore.getAppMenuList();
+  console.log(selectedRole.value);
+  appMenuStore.getAppMenuList(selectedRole.value);
   new SimpleBar(document.getElementById("simplebar-sidebar"));
 });
 </script>
@@ -120,8 +134,8 @@ onMounted(() => {
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
             <span class="smini-hide fs-5 tracking-wider">
-              OneUI
-              <span class="fw-normal">Vue</span>
+              PTGDI
+              <span class="fw-normal">Apps</span>
             </span>
           </RouterLink>
           <!-- END Logo -->
@@ -130,6 +144,48 @@ onMounted(() => {
         <!-- Extra -->
         <div>
           <slot name="header-extra">
+            <!-- Role Mode -->
+            <div class="dropdown d-inline-block ms-1">
+              <button
+                type="button"
+                class="btn btn-sm btn-alt-secondary"
+                id="sidebar-dark-mode-dropdown"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i v-if="!store.settings.darkMode" class="far fa-id-card"></i>
+                <i v-if="store.settings.darkMode" class="fa fa-id-card"></i>
+              </button>
+              <div
+                class="dropdown-menu dropdown-menu-end dropdown-menu fs-sm smini-hide border-0"
+                style="min-width: 8rem"
+                aria-labelledby="sidebar-dark-mode-dropdown"
+              >
+                <div class="px-3 py-2 space-y-2" >
+                  <div v-for="role in roles" class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      id="radio-dark-mode-off"
+                      :value="role"
+                      v-model="radioRole"
+                      @change="onRoleRadioChange"
+                    />
+                    <label
+                      class="form-check-label fw-medium"
+                      for="radio-dark-mode-off"
+                      >{{role}}</label
+                    >
+                  </div>
+                  <!-- <kComboBox :data-items="sports" :style="{ width: '230px' }" :value-primitive="true">
+
+                  </kComboBox> -->
+                </div>
+              </div>
+            </div>
+            <!-- END Role Mode -->
             <!-- Dark Mode -->
             <div class="dropdown d-inline-block ms-1">
               <button

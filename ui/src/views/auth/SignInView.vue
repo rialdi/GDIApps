@@ -71,7 +71,7 @@ async function onSubmit() {
             </template>
 
             <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-              <h1 class="h2 mb-1">OneUI</h1>
+              <h1 class="h2 mb-1">PTGDI</h1>
               <p class="fw-medium text-muted">Welcome, please login.</p>
 
               <!-- Sign In Form -->

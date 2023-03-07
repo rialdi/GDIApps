@@ -10,8 +10,9 @@ export const useAppMenuStore = defineStore('appmenus', () => {
     let appMenuList = ref<AppMenu[]>([])
     let isReady = ref<boolean>(false)
     
-    const getAppMenuList = async() => {
-        const api = await client.api(new GetAppMenuByRole( {roleName: "Admin"}))
+    const getAppMenuList = async(selectedRoleName : string) => {
+        // console.log(selectedRoleName)
+        const api = await client.api(new GetAppMenuByRole( {roleName: selectedRoleName}))
         if (api.succeeded) {
             sourceAppMenuList.value = api.response! as AppMenu[]?? []
             appMenuList.value = process(sourceAppMenuList.value, {}).data as any[]
