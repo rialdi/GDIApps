@@ -32,3 +32,34 @@ public enum APP_MENU_TYPE {
     EMPLOYEE_DASHBOARD,
     GUEST_DASHBOARD
 }
+
+public enum PROJECT_TEAM_ROLE {
+    DEVELOPER,
+    QA,
+    TEAM_LEAD,
+    PM
+}
+
+// public enum PROJECT_TASK_STATUS {
+//     YET_TO_START,
+//     IN_PROGRESS,
+//     DEVELOPMENT,
+//     TESTING,
+//     COMPLETED,
+// }
+
+public enum TASK_STATUS {
+    YET_TO_START,
+    IN_PROGRESS,
+    COMPLETED,
+}
+
+public enum REVIEW_TYPE {
+    TEAM_LEADER,
+    QA,
+    TEAM_MEMBER
+}
+public enum REVIEW_QUESTION_CATEGORY {
+    EMPLOYEE_COMPETENCY,
+    KPI,
+}

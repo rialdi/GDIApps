@@ -23,7 +23,7 @@ public class Province
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
     public string? Postal { get; set; }
-}
+} 
 
 public class City
 {
@@ -58,20 +58,26 @@ public class Village
     public string? Postal { get; set; }
 }
 
+[Tag("LookupData")]
 public class QueryCountries : QueryDb<Country> {
 }
 
+[Tag("LookupData")]
 public class QueryProvinces : QueryDb<Province> {
     public int? CountryId { get; set;}
 }
+
+[Tag("LookupData")]
 public class QueryCities : QueryDb<City> {
     public int? ProvinceId { get; set;}
 }
 
+[Tag("LookupData")]
 public class QueryDistricts : QueryDb<District> {
     public int? CityId { get; set;}
 }
 
+[Tag("LookupData")]
 public class QueryVillages : QueryDb<Village> {
     public int? DistrictId { get; set;}
 }
@@ -83,6 +89,7 @@ public class MasterBank
     public string? SwiftCode { get; set; }
 }
 
+[Tag("LookupData")]
 public class QueryMasterBanks : QueryDb<MasterBank> {
     // [AutoDefault(Eval = null)]
     // public string? BankNameContains { get; set;} = null;

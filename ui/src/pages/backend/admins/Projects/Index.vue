@@ -4,13 +4,17 @@ import { Client, QueryClients } from "@/dtos"
 import { client } from "@/api"
 import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
 import { process, filterBy } from '@progress/kendo-data-query'
-import ProjectGrid from "./ProjectGrid.vue"
+// import ProjectGrid from "./ProjectGrid.vue"
+
+import MainGrid from "./MainGrid.vue"
 
 
 // import provinces from "@/data/regions/provinces"
 // import cities from "@/data/regions/cities"
 
-const projectGridtRef = ref<InstanceType<typeof ProjectGrid>>()
+const mainGridtRef = ref<InstanceType<typeof MainGrid>>()
+
+// const projectGridtRef = ref<InstanceType<typeof ProjectGrid>>()
 
 onMounted(async () => {
   await getClientList()
@@ -31,7 +35,8 @@ const getClientList = async() => {
 
 const cboClientOnChange = (e: any) => {
   selectedClientId.value = e.value ? e.value.id : undefined
-  projectGridtRef.value?.refreshDatas(selectedClientId.value)
+  mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
+  // mainGridtRef.value?.refreshDatas(selectedClientId.value)
 }
 
 const onCBOClientFilter = (e : any) => {
@@ -86,13 +91,21 @@ let selectedClientId = ref<number | undefined>()
     <!-- Result Data Grid -->
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content> 
       <!-- Main Data Grid --> 
-      <ProjectGrid ref="projectGridtRef"
+      <MainGrid ref="mainGridtRef"
               :selected-client-id="selectedClientId" 
               :client-list="clientList" 
               :filterable="false" 
               :sortable="true" 
               :pageable="true" 
               :show-export-button="true"/>
+
+      <!-- <ProjectGrid ref="projectGridtRef"
+              :selected-client-id="selectedClientId" 
+              :client-list="clientList" 
+              :filterable="false" 
+              :sortable="true" 
+              :pageable="true" 
+              :show-export-button="true"/> -->
       <!-- End Main Data Grid -->
     </BaseBlock>
     <!-- END Result Data Grid -->

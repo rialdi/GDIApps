@@ -7,7 +7,7 @@
               <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetForm" title="Reset Data"></kButton>
             </div>
         </template>
-        <EditForms ref="editFormsRef" :data-item="dataItemInEdit" @save="onSave" :client-list="clientList" />
+        <EditForm ref="editFormRef" :data-item="dataItemInEdit" @save="onSave" :client-list="clientList" />
         <kDialogActionsBar>
         <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
         <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton> -->
@@ -15,17 +15,19 @@
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
-    
+     
     <!-- Main Data Grid -->
     <KStandardGrid 
-        :responsive-column-title="'Banks'"
+        :responsive-column-title="'Projects'"
         :grid-data="gridData.data" 
         :grid-colum-properties="gridColumProperties" 
         :grid-data-total="gridData.total" 
-        :grid-export-file-name="'ClientBank'" 
+        :grid-export-file-name="'Projects'" 
         :filterable="filterable"
         :sortable="sortable"
         :pageable="pageable"
+        :skip="skip"
+        :take="take"
         :show-export-button="showExportButton"
         @pagechange="pageChangeHandler"
         @onCancelChanges="onCancelChanges"
@@ -36,12 +38,12 @@
         @onSave="onSave"
     />
     <!-- End Main Data Grid -->
-</template>
+</template> 
 <script setup lang="ts">
-import { formatDate } from "@/utils"
+// import { formatDate } from "@/utils"
 // import { toDateFmt } from '@servicestack/client'
 import { client } from "@/api"
-import { InvoiceView, QueryInvoices, CreateInvoice, UpdateInvoice, DeleteInvoice } from "@/dtos"
+import { ProjectView, QueryProjects, CreateProject, UpdateProject, DeleteProject } from "@/dtos"
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 
 import { Button as kButton} from '@progress/kendo-vue-buttons'
@@ -50,9 +52,9 @@ import { GridColumnProps } from '@progress/kendo-vue-grid'
 import { process, SortDescriptor, CompositeFilterDescriptor, DataResult } from '@progress/kendo-data-query'
 
 import KStandardGrid from "@/components/grids/KStandardGrid.vue"
-import EditForms from './EditForms.vue'
+import EditForm from './EditForm.vue'
 
-const editFormsRef = ref<InstanceType<typeof EditForms>>()
+const editFormRef = ref<InstanceType<typeof EditForm>>()
 
 // const props = 
 defineProps<{
@@ -61,21 +63,21 @@ defineProps<{
     filterable?: boolean,
     sortable?: boolean,
     pageable?: boolean,
-    showExportButton?: boolean
+    showExportButton?: boolean,
 }>()
 
 // const editFormRef = ref<InstanceType<typeof EditForm>>()
-let kDialogTitle = ref<string>("Add Client Address")
+let kDialogTitle = ref<string>("Add Project")
 
 onMounted(async () => {
   await refreshDatas()
 });
 
-let InvoiceData = ref<InvoiceView[]>([])
+let ProjectData = ref<ProjectView[]>([])
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 let take = ref<number | undefined>(10)
 let skip = ref<number | undefined>(0)
-let dataItemInEdit = ref<InvoiceView>()
+let dataItemInEdit = ref<ProjectView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
@@ -90,23 +92,13 @@ const responsiveCellTemplate = (h : any, tdElement : any , props : any, listener
 }
 
 const clientCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
-  return h(tdElement, {
-                // on: {
-                //     click: function(e : any){
-                //         listeners.custom(e);
-                //     }
-                // }
-            }, [props.dataItem.clientCode + ' - ' + props.dataItem.clientName])
-}
-
-const invoiceDateCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
-  return h(tdElement, {}, [ formatDate(props.dataItem.invoiceDate, "DD MMM YYYY") ])
+  return h(tdElement, {}, [props.dataItem.clientCode + ' - ' + props.dataItem.clientName])
 }
 
 let currSelectedClientId = ref<number | undefined>()
 const updateSelectedClientId = (val: any) => {
   currSelectedClientId.value = val
-
+  skip.value = 0
   // Show Hide Client Columns
   gridColumProperties.map( col => {
     if(col.title == "Client") {
@@ -118,28 +110,27 @@ const updateSelectedClientId = (val: any) => {
 }
 
 let gridColumProperties = [
-  { cell: responsiveCellTemplate, filterable: false, title: 'Banks', hidden: true },
+  { cell: responsiveCellTemplate, filterable: false, title: 'Projects', hidden: true },
   { cell: clientCellTemplate, filterable: false, title: 'Client'},
-  { field: 'invoiceNo', title: 'Invoice No', width:150 },
-  { cell: invoiceDateCellTemplate, title: 'Invoice Date'},
-  { field: 'description', title: 'Description'},
-  { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
-  // { field: 'isMain', title: 'Is Main', cell: 'isMainTemplate', width:85 },
+  { field: 'code', title: 'Code', width:150 },
+  { field: 'name', title: 'Name'},
+//   { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
+  { field: 'isActive', title: 'Is Main', cell: 'isActiveTemplate', width:85 },
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
 const refreshDatas = async () => {
   const currClientId = currSelectedClientId.value
-  const queryInvoices = (currClientId) ? 
-    new QueryInvoices({ clientId: currClientId, take: take.value, skip: skip.value }) : 
-    new QueryInvoices({ take: take.value, skip: skip.value }) 
+  const queryProjects = (currClientId) ? 
+    new QueryProjects({ clientId: currClientId, take: take.value, skip: skip.value}) : 
+    new QueryProjects({ take: take.value, skip: skip.value }) 
 
-  const api = await client.api(queryInvoices)
+  const api = await client.api(queryProjects)
   if (api.succeeded) {
-    InvoiceData.value = api.response!.results ?? []
-    gridData.data = process(InvoiceData.value, {
+    ProjectData.value = api.response!.results ?? []
+    gridData.data = process(ProjectData.value, {
       sort: sort.value,
-      filter: filter.value
+      filter: filter.value,
     }).data;
     gridData.total = api.response!.total as number
     dataItemInEdit.value = undefined
@@ -153,7 +144,7 @@ const pageChangeHandler = (e : any) => {
 }
 
 const onInsert = () => {
-  kDialogTitle.value = "Add Invoice"
+  kDialogTitle.value = "Add Project"
   // Set Default Value
   dataItemInEdit.value = {
   }
@@ -162,17 +153,17 @@ const onRemove = async(e: any) => {
   if( e.dataItem !== null) {
     let index = gridData.data.findIndex((p: { id: any; }) => p.id === e.dataItem.id);
     gridData.data.splice(index, 1);
-    const request = new DeleteInvoice({
+    const request = new DeleteProject({
       id: e.dataItem.id
     });
     const api = await client.api(request)
     if (api.succeeded) {
-      // showNotifSuccess('Delete Invoice', 'Successfully deleted data 🎉')
+      // showNotifSuccess('Delete Project', 'Successfully deleted data 🎉')
     }
   }
 }
 const onEdit = (e: any) => {
-  kDialogTitle.value = "Edit Invoice"
+  kDialogTitle.value = "Edit Project"
   dataItemInEdit.value = e.dataItem
   // editFormRef.value?.focus
 }
@@ -183,7 +174,7 @@ const onCancelChanges = () => {
 
 const onResetForm = () => {
   // editFormRef.value?.resetForm()
-  editFormsRef.value?.resetForm()
+  editFormRef.value?.resetForm()
 }
 
 const onSave = async (e: any) => {
@@ -191,57 +182,41 @@ const onSave = async (e: any) => {
   // console.log("Country : " + currData.country)
   // return
   if( currData.id == null) {
-    const request = new CreateInvoice({
+    const request = new CreateProject({
       clientId: currData.clientId,
       cContractId : currData.cContractId,
-      cBankId : currData.cBankId,
-      cAddressId : currData.cAddressId,
-      invoiceNo : currData.invoiceNo,
-      paymentTermDays : currData.paymentTermDays,
-      invoiceDate : currData.invoiceDate,
+      code : currData.code,
+      name : currData.name,
       description : currData.description,
-      poNumber : currData.poNumber,
-      vat : currData.vat,
-      wht : currData.wht,
-      totalAmount : currData.totalAmount,
-      vatAmount : currData.vatAmount,
-      invoiceStatus : currData.invoiceStatus
+      isActive : currData.isActive
     })
     const api = await client.api(request)
     if (api.succeeded) {
         refreshDatas()
-        showNotifSuccess('Add Invoice', 'Successfully added new Invoice data 🎉')
+        showNotifSuccess('Add Project', 'Successfully added new Project data 🎉')
     } else {
       if(api.error != null) {
-        showNotifError('Add Invoice', 'Failed to add new Invoice data.<br/>' + api.error.message)
+        showNotifError('Add Project', 'Failed to add new Project data.<br/>' + api.error.message)
       }
       else {
-        showNotifError('Add Invoice', 'Failed to add new Invoice data')
+        showNotifError('Add Project', 'Failed to add new Project data')
       }
     }
   }
   else{
-    const request = new UpdateInvoice({
+    const request = new UpdateProject({
       id : currData.id,
       clientId: currData.clientId,
       cContractId : currData.cContractId,
-      cBankId : currData.cBankId,
-      cAddressId : currData.cAddressId,
-      invoiceNo : currData.invoiceNo,
-      paymentTermDays : currData.paymentTermDays,
-      invoiceDate : currData.invoiceDate,
+      code : currData.code,
+      name : currData.name,
       description : currData.description,
-      poNumber : currData.poNumber,
-      vat : currData.vat,
-      wht : currData.wht,
-      totalAmount : currData.totalAmount,
-      vatAmount : currData.vatAmount,
-      invoiceStatus : currData.invoiceStatus
+      isActive : currData.isActive
     })
     const api = await client.api(request)
     if (api.succeeded) {
         refreshDatas()
-        showNotifSuccess('Update Invoice', 'Successfully updated Invoice data 🎉')
+        showNotifSuccess('Update Project', 'Successfully updated Project data 🎉')
     } 
   }
 }

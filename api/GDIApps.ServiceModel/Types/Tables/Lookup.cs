@@ -1,6 +1,3 @@
-
-using System;
-using System.Collections.Generic;
 using ServiceStack;
 using ServiceStack.DataAnnotations;
 
@@ -32,4 +29,46 @@ public class Lookup : AuditBase
             return "[" + LookupValue + "] " + LookupText;
         }
     }
+}
+
+[ValidateIsAuthenticated]
+[Tag("LookupData")]
+[AutoApply(Behavior.AuditQuery)]
+public class QueryLookups : QueryDb<Lookup> {
+    public LOOKUPTYPE? LookupType { get; set; } 
+    public string[]? LookupValues { get; set; }
+    
+}
+
+[ValidateIsAuthenticated]
+[Tag("LookupData")]
+[AutoApply(Behavior.AuditCreate)]
+public class CreateLookup : ICreateDb<Lookup>, IReturn<CRUDResponse>
+{
+    [ApiAllowableValues(typeof(LOOKUPTYPE))]
+    public LOOKUPTYPE LookupType { get; set; }  
+    public string LookupValue { get; set; } = string.Empty;
+    public string LookupText { get; set; } = string.Empty;
+    public bool? IsActive { get; set; }
+}
+
+[ValidateIsAuthenticated]
+[Tag("LookupData")]
+[AutoApply(Behavior.AuditModify)]
+public class UpdateLookup : IPatchDb<Lookup>, IReturn<CRUDResponse>
+{
+    public int? Id { get; set; } 
+    [ApiAllowableValues(typeof(LOOKUPTYPE))]
+    public LOOKUPTYPE LookupType { get; set; }  
+    public string LookupValue { get; set; } = string.Empty;
+    public string LookupText { get; set; } = string.Empty;
+    public bool? IsActive { get; set; }
+}
+
+[ValidateIsAuthenticated]
+[Tag("LookupData")]
+// [AutoApply(Behavior.d)]
+public class DeleteLookup : IDeleteDb<Lookup>, IReturnVoid
+{
+    public int Id { get; set; }        
 }

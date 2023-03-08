@@ -75,8 +75,12 @@ public class AppHost : AppHostBase, IHostingStartup
                 resolvePath: ctx => ctx.GetLocationPath(( ctx.Dto is CreateInvoiceAttachment create
                     ? $"[{create.InvoiceId}]-" 
                     : $"app/{ctx.Dto.GetId()}/") + $"{ctx.FileName}")),
-            // new UploadLocation("invoiceAttachments", appFs,
-            //     resolvePath: ResolveUploadPath),
+
+            new UploadLocation("projectDocs", appFs,
+                resolvePath: ctx => ctx.GetLocationPath(( ctx.Dto is CreateProjectDoc create
+                    ? $"[{create.ProjectId}]-" 
+                    : $"app/{ctx.Dto.GetId()}/") + $"{ctx.FileName}")),
+                    
             new UploadLocation("userprofile", wwwrootVfs, allowExtensions: FileExt.WebImages,
                 resolvePath: ctx => $"/assets/media/users/{ctx.UserAuthId}/profile/{ctx.FileName}"),
             // User Cover Photo    
