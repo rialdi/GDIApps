@@ -2,6 +2,7 @@
     <!-- Main Data Grid -->
     <kGrid ref="grid"
         :data-items="gridData"
+        :edit-field="props.editField"
         :sortable="props.sortable"
         :pageable="props.pageable"
         :total="gridDataTotal"
@@ -33,6 +34,7 @@
         <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
         </td>
     </template>
+    
     </kGrid>
     <!-- End Main Data Grid -->
 </template>
@@ -56,7 +58,8 @@ const props = defineProps<{
     filterable?: boolean,
     sortable?: boolean,
     pageable?: boolean,
-    showExportButton?: boolean
+    showExportButton?: boolean,
+    editField? : string | undefined
 }>()
 
 const emit = defineEmits<{

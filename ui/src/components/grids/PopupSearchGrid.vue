@@ -1,50 +1,70 @@
 <template>
-    <KLabel :editor-id="id" :editor-valid="isValid" :disabled="disabled" :optional="optional" class="form-label">
-          {{label}}
-    </KLabel>
-    <kDialog v-if="showPopup" @close="onCancel" width="60%" :title-render="'myTemplate'" >
-        <template v-slot:myTemplate="{}">
-            <div class="w-100">
-              {{ popupSearchTitle }} 
-              <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetGrids" title="Reset Grid"></kButton>
-            </div>
-        </template>
-        <kGrid ref="grid"
-                :data-items="gridData"
-                :sortable="props.sortable"
-                :pageable="props.pageable"
-                :total="total"
-                :filterable="props.filterable"
-                :filter="filter"
-                @filterchange="filterChangeHandler"
-                @sortchange="sortChangeHandler"
-                @rowdblclick="onRowDblClick"
-                :columns="gridColumProperties"
-            >
-          <template v-slot:isMainTemplate="{ props }">
-              <td :colspan="1" style="text-align:center">
-              <input type="checkbox" id="isMain" v-model="props.dataItem.isMain" :disabled="!props.dataItem.inEdit"/>
-              </td>
-          </template>
-          <template v-slot:isActiveTemplate="{ props }">
-              <td :colspan="1" style="text-align:center">
-              <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
-              </td>
-          </template>
-        </kGrid>
-        <kDialogActionsBar>
-        <!-- <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton> -->
-        <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" title="Save"> Save </kButton> -->
-        </kDialogActionsBar>
-    </kDialog>
-    <div class="k-form-field-wrap">
+    <div v-if="mode == 'gridcell'">
+      <td v-if="!gridcellInEdit">{{ selectedItemText }}</td>
+      <td v-else>
         <KInput :placeholder="'Search'" :icon-name="'search'" @focus="onSearch" :value="selectedItemText"/>
-        <KError v-if="!isValid">
-            {{ valMessage }}
-        </KError>
-        <KHint v-else>{{hint}}</KHint>
+      </td>
     </div>
+    <div v-if="mode == 'form'">
+      <KLabel :editor-id="id" :editor-valid="isValid" :disabled="disabled" :optional="optional" class="form-label">
+            {{label}}
+      </KLabel>
+      <div  class="k-form-field-wrap">
+          <KInput :placeholder="'Search'" :icon-name="'search'" @focus="onSearch" :value="selectedItemText"/>
+          <KError v-if="!isValid">
+              {{ valMessage }}
+          </KError>
+          <KHint v-else>{{hint}}</KHint>
+      </div>
+    </div>
+
+    <kDialog v-if="showPopup" @close="onCancel" width="60%" height="80%" :title-render="'myTemplate'" >
+      <template v-slot:myTemplate="{}">
+          <div class="w-100">
+            {{ popupSearchTitle }} 
+            <kButton class="float-end" icon="refresh" :fill-mode="'flat'" @click="onResetGrids" title="Reset Grid"></kButton>
+          </div>
+      </template>
+      <div>
+      <kGrid ref="grid"
+              :data-items="gridData.data"
+              :sortable="props.sortable"
+              :pageable="props.pageable"
+              :total="gridData.total"
+              :filterable="props.filterable"
+              :filter="filter"
+              @filterchange="filterChangeHandler"
+              @sortchange="sortChangeHandler"
+              @rowdblclick="onRowDblClick"
+              :columns="gridColumProperties"
+              :skip="skip"
+              :take="take"
+              @pagechange="pageChangeHandler"
+          >
+        <template v-slot:isMainTemplate="{ props }">
+            <td :colspan="1" style="text-align:center">
+            <input type="checkbox" id="isMain" v-model="props.dataItem.isMain" :disabled="!props.dataItem.inEdit"/>
+            </td>
+        </template>
+        <template v-slot:isActiveTemplate="{ props }">
+            <td :colspan="1" style="text-align:center">
+            <input type="checkbox" id="isActive" v-model="props.dataItem.isActive" :disabled="!props.dataItem.inEdit"/>
+            </td>
+        </template>
+      </kGrid>
+    </div>
+      <kDialogActionsBar>
+      <!-- <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton> -->
+      <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" title="Save"> Save </kButton> -->
+      </kDialogActionsBar>
+  </kDialog>
 </template>
+
+<script lang="ts">
+export default defineComponent({
+  inheritAttrs: false,
+});
+</script>
 
 <script setup lang="ts">
 import { Grid as kGrid, GridColumnProps } from '@progress/kendo-vue-grid'
@@ -75,6 +95,9 @@ interface Props {
     filterable?: boolean,
     sortable?: boolean,
     pageable?: boolean,
+    mode? : string,
+    gridcellInEdit? : boolean,
+    gridcellField? : string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,7 +106,8 @@ const props = withDefaults(defineProps<Props>(), {
     popupSearchTitle: 'Search Value',
     filterable: false,
     sortable: true,
-    pageable: false
+    pageable: true,
+    mode: "form"
 })
 
 const emit = defineEmits<{
@@ -94,8 +118,10 @@ const emit = defineEmits<{
     (e:'focus', value:any): () => void
 }>()
 
+let take = ref<number | undefined>(10)
+let skip = ref<number | undefined>(0)
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
-let total = ref<number | undefined>()
+// let total = ref<number | undefined>()
 let showPopup = ref<boolean>(false)
 
 let valMessage = ref<string | undefined>()
@@ -114,6 +140,12 @@ const getIsValid = (currValue : any) => {
     }
 }
 
+const pageChangeHandler = (e : any) => {
+    take.value = e.page.take
+    skip.value = e.page.skip
+    refreshData()
+}
+
 onMounted( () => {
     showPopup.value = false
 })
@@ -125,7 +157,6 @@ const selectedItemText = computed (() => {
 })
 
 const onSearch = (e : Event) => {
-  // console.log('onInput')
   refreshData()
   showPopup.value = true
   
@@ -133,9 +164,12 @@ const onSearch = (e : Event) => {
 const refreshData = () => {
     gridData.data = process(props.gridSourceData, {
       sort: sort.value,
-      filter: filter.value
+      filter: filter.value,
+      take: take.value,
+      skip: skip.value
     }).data;
-    total.value = process(props.gridSourceData,{}).total;
+    gridData.total = process(props.gridSourceData,{}).total;
+    // total.value = process(props.gridSourceData,{}).total;
 }
 
 const showPopupSearchDialog = () => {
@@ -159,7 +193,10 @@ const onCancel = () => {
 // }
 
 const onRowDblClick = (e: any) => {
+  // console.log('onRowDblClick')
+  // console.log(e.dataItem)
   emit('update:modelValue', e.dataItem.id)
+  emit('change',e.dataItem)
   showPopup.value = false
 }
 
@@ -189,4 +226,5 @@ defineExpose({
     showPopupSearchDialog,
     refreshData
 })
+
 </script>

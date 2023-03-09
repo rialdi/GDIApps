@@ -24,9 +24,18 @@ public class ProjectTeam
     public PROJECT_TEAM_ROLE ProjectTeamRole { get; set; } 
 }
 
+public class ProjectTeamView : ProjectTeam
+{
+    public string? UserName {get; set;}
+    public string? FirstName {get; set;}
+    public string? LastName {get; set;}
+    public string? Email {get; set;}
+}
+
 [ValidateIsAuthenticated]
 [Tag("Projects")]
-public class QueryProjectTeams : QueryDb<ProjectTeam>{
+public class QueryProjectTeams : QueryDb<ProjectTeam, ProjectTeamView>, IJoin<ProjectTeam, AppUser>{
+    public int? ProjectId { get; set;}
 }
 
 

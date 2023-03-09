@@ -8,10 +8,10 @@
             </div>
         </template>
         <EditForm ref="editFormRef" :data-item="dataItemInEdit" @save="onSave" :client-list="clientList" />
-        <kDialogActionsBar>
-        <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
-        <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton> -->
-        <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" title="Save"> Save </kButton>
+        <kDialogActionsBar  v-if="editFormRef?.showFormSubmitButton">
+          <kButton @click="onCancelChanges" :theme-color="'secondary'" ref="cancelDialog"> Cancel </kButton>
+          <!-- <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" :disabled="!editFormRef?.formAllowSubmit"> Save </kButton> -->
+          <kButton :theme-color="'primary'" :type="'submit'" Form="mainForm" title="Save"> Save </kButton>
         </kDialogActionsBar>
     </kDialog>
     <!-- END Kendo Dialog for Editing Data -->
@@ -187,7 +187,14 @@ const onSave = async (e: any) => {
       cContractId : currData.cContractId,
       code : currData.code,
       name : currData.name,
-      description : currData.description,
+      description: currData.description,
+      durationDays: currData.durationDays,
+      projectOwner: currData.projectOwner,
+      projectManager: currData.projectManager,
+      estimatedStartDate: currData.estimatedStartDate,
+      estimatedEndDate: currData.estimatedEndDate,
+      actualtartDate : currData.actualStartDate,
+      actualEndDate : currData.actualEndDate,
       isActive : currData.isActive
     })
     const api = await client.api(request)
@@ -210,7 +217,14 @@ const onSave = async (e: any) => {
       cContractId : currData.cContractId,
       code : currData.code,
       name : currData.name,
-      description : currData.description,
+      description: currData.description,
+      durationDays: currData.durationDays,
+      projectOwner: currData.projectOwner,
+      projectManager: currData.projectManager,
+      estimatedStartDate: currData.estimatedStartDate,
+      estimatedEndDate: currData.estimatedEndDate,
+      actualtartDate : currData.actualStartDate,
+      actualEndDate : currData.actualEndDate,
       isActive : currData.isActive
     })
     const api = await client.api(request)

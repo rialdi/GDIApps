@@ -4519,6 +4519,10 @@
     background-color: #ffffff;
 }
 
+.k-tabstrip > .k-content > .k-animation-container {
+    width: 100%;
+}
+
 .k-tabstrip-content:focus, .k-tabstrip-content.k-focus,
 .k-tabstrip > .k-content:focus,
 .k-tabstrip > .k-content.k-focus {

@@ -2,10 +2,10 @@
     <td v-if="!dataItem.inEdit" :class="className">{{ dataItem[field] }}</td>
     <td v-else>
         <dropdownlist
-            :style="{ width: '100px' }"
+            :style="{ width: '100%' }"
             @change="change"
             :value="dataItem[field]"
-            :data-items="dataitems"
+            :data-items="itemList"
         ></dropdownlist>
     </td>
 </template>
@@ -18,6 +18,7 @@ export default {
     },
     props: {
         field: String,
+        itemList: Array,
         dataItem: Object,
         format: String,
         className: String,
@@ -30,7 +31,6 @@ export default {
     },
     data() {
         return {
-            dataitems: ['True', 'False'],
         };
     },
     methods: {

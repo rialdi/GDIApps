@@ -80,6 +80,14 @@ public class CreateProject : ICreateDb<Project>, IReturn<CRUDResponse>
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string? ProjectOwner { get; set; }
+    public string? ProjectManager { get; set; }
+    public decimal? NominalValue { get; set; }
+    public int? DurationDays { get; set; }
+    public DateTime? EstimatedStartDate { get; set; }
+    public DateTime? EstimatedEndDate { get; set; }
+    public DateTime? ActualtartDate { get; set; }
+    public DateTime? ActualEndDate { get; set; }
     public bool? IsActive { get; set; }
 }
 
@@ -95,6 +103,14 @@ public class UpdateProject : IPatchDb<Project>, IReturn<CRUDResponse>
     public string? Code { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+    public string? ProjectOwner { get; set; }
+    public string? ProjectManager { get; set; }
+    public decimal? NominalValue { get; set; }
+    public int? DurationDays { get; set; }
+    public DateTime? EstimatedStartDate { get; set; }
+    public DateTime? EstimatedEndDate { get; set; }
+    public DateTime? ActualtartDate { get; set; }
+    public DateTime? ActualEndDate { get; set; }
     public bool? IsActive { get; set; }
 }
 
