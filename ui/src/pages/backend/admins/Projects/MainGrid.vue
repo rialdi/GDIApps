@@ -39,7 +39,7 @@
     />
     <!-- End Main Data Grid -->
 </template> 
-<script setup lang="ts">
+<script setup lang="ts" name="ProjectGrid">
 // import { formatDate } from "@/utils"
 // import { toDateFmt } from '@servicestack/client'
 import { client } from "@/api"
@@ -56,7 +56,7 @@ import EditForm from './EditForm.vue'
 
 const editFormRef = ref<InstanceType<typeof EditForm>>()
 
-// const props = 
+ const props = 
 defineProps<{
     selectedClientId: any,
     clientList: any[],
@@ -70,7 +70,9 @@ defineProps<{
 let kDialogTitle = ref<string>("Add Project")
 
 onMounted(async () => {
-  await refreshDatas()
+  updateSelectedClientId(props.selectedClientId)
+  // console.log('onMounted')
+  // await refreshDatas()
 });
 
 let ProjectData = ref<ProjectView[]>([])

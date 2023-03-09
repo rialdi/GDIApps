@@ -9,7 +9,8 @@ import { process, State, SortDescriptor, DataResult } from '@progress/kendo-data
 import CommandCell from '../../../layouts/partials/KGridCommandCell.vue';
 import { showNotifError, showNotifSuccess } from '@/stores/commons'
 
-import ProjectGrid from './Projects/ProjectGrid.vue'
+import ProjectGrid from "./Projects/MainGrid.vue"
+// import ProjectGrid from './Projects/Main.vue'
 
 
 // const ClientTypeList = Object.keys(ClientTYPE)

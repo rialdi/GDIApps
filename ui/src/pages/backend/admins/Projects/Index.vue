@@ -4,17 +4,13 @@ import { Client, QueryClients } from "@/dtos"
 import { client } from "@/api"
 import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
 import { process, filterBy } from '@progress/kendo-data-query'
-// import ProjectGrid from "./ProjectGrid.vue"
-
-import MainGrid from "./MainGrid.vue"
+import ProjectGrid from "./MainGrid.vue"
 
 
 // import provinces from "@/data/regions/provinces"
 // import cities from "@/data/regions/cities"
 
-const mainGridtRef = ref<InstanceType<typeof MainGrid>>()
-
-// const projectGridtRef = ref<InstanceType<typeof ProjectGrid>>()
+const mainGridtRef = ref<InstanceType<typeof ProjectGrid>>()
 
 onMounted(async () => {
   await getClientList()
@@ -91,7 +87,7 @@ let selectedClientId = ref<number | undefined>()
     <!-- Result Data Grid -->
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content> 
       <!-- Main Data Grid --> 
-      <MainGrid ref="mainGridtRef"
+      <ProjectGrid ref="mainGridtRef"
               :selected-client-id="selectedClientId" 
               :client-list="clientList" 
               :filterable="false" 
