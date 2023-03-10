@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-09 11:15:22
+Date: 2023-03-10 14:55:56
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -853,6 +853,15 @@ export class ProjectTask extends AuditBase
     public projectTeamId?: number;
 
     public constructor(init?: Partial<ProjectTask>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ProjectTaskView extends ProjectTask
+{
+    public projectCode?: string;
+    public projectName?: string;
+    public projectIsActive?: boolean;
+
+    public constructor(init?: Partial<ProjectTaskView>) { super(init); (Object as any).assign(this, init); }
 }
 
 export enum PROJECT_TEAM_ROLE
@@ -1875,14 +1884,14 @@ export class QueryProjectDocs extends QueryDb_1<ProjectDoc> implements IReturn<Q
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryProjectTasks extends QueryDb_1<ProjectTask> implements IReturn<QueryResponse<ProjectTask>>
+export class QueryProjectTasks extends QueryDb_2<ProjectTask, ProjectTaskView> implements IReturn<QueryResponse<ProjectTaskView>>
 {
-    public clientId?: number;
+    public projectId?: number;
 
     public constructor(init?: Partial<QueryProjectTasks>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryProjectTasks'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<ProjectTask>(); }
+    public createResponse() { return new QueryResponse<ProjectTaskView>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")

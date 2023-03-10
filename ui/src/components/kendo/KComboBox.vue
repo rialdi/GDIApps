@@ -6,7 +6,7 @@
         </kLabel>
         <div class="k-form-field-wrap">
             <kComboBox
-                :data-items="dataItems"
+                :data-items="currentDataItemList"
                 :id="id"
                 :name="id"
                 :value-field="valueField"
@@ -31,13 +31,16 @@
 <script setup lang="ts">
 import { ComboBox as kComboBox } from "@progress/kendo-vue-dropdowns";
 import { Error as kError, Hint as kHint, Label as kLabel } from "@progress/kendo-vue-labels";
+import { process, filterBy, CompositeFilterDescriptor } from '@progress/kendo-data-query'
+
+// let currentDataItemList = ref<any[]>([])
 
 const props = 
 defineProps<{
     dataItems: any[],
     id: string,
-    valueField: string | undefined,
-    textField: string | undefined,
+    valueField?: string | undefined,
+    textField?: string | undefined,
     value?: string | number | undefined,
     showLabel?: boolean|true,
     label?: string,
@@ -58,14 +61,39 @@ const emit = defineEmits<{
     (e:'focus', value:any): () => void
 }>()
 
+onMounted(() => {
+    // console.log('On Mounted' + props.id)
+    // currentDataItemList.value = props.dataItems
+});
+
+let filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
+// let filter = ref<FilterDescriptor>({ operator:"and", field: ""})
+
+const currentDataItemList = computed( () => {
+    const data = process(props.dataItems, {}).data as any[]
+    return filterBy(data, filter.value)
+})
+
+watch(
+  () => props.value,
+  () => {
+    if(props.value === undefined) {
+        // console.log(props.value)
+        filter.value.filters = [];
+    }
+  }
+);
+
 const showValidationMessage = computed( () => props.touched && props.validationMessage )
 const showHint = computed( () => !showValidationMessage && props.hint )
 
 const handleChange = (e : any) =>{
+    // console.log('handleChange' + e.target.value)
     emit('update:modelValue', e.target.value)
     emit('change', e);
 }
 const handleFilterChange = (e : any) =>{
+    filter.value = e.filter 
     emit('filterchange', e);
 }
 const handleBlur = (e : any) =>{

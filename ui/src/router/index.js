@@ -33,6 +33,7 @@ const UserListPages = () => import("@/pages/user/UserList.vue");
 const LookupPages = () => import("@/pages/backend/admins/Lookups.vue");
 const ClientPages = () => import("@/pages/backend/admins/Clients.vue");
 const ProjectPages = () => import("@/pages/backend/admins/Projects/Index.vue");
+const ProjectTaskPages = () => import("@/pages/backend/admins/ProjectTask/Index.vue");
 const CAddressPages = () => import("@/pages/backend/admins/CAddress/Index.vue");
 const CBankPages = () => import("@/pages/backend/admins/CBank/Index.vue");
 const CContractPages = () => import("@/pages/backend/admins/CContract/Index.vue");
@@ -163,6 +164,11 @@ const routes = [
             path: "project",
             name: "backend-admins-project",
             component: ProjectPages,
+          },
+          {
+            path: "projecttask",
+            name: "backend-admins-projecttask",
+            component: ProjectTaskPages,
           },
           {
             path: "caddress",

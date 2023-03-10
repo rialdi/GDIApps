@@ -22,7 +22,6 @@ public class ProjectTask : AuditBase
     [StringLength(200)] 
     public string TaskName { get; set; } = string.Empty;
 
-
     [StringLength(1000)] 
     public string Description { get; set; } = string.Empty;
     [Required]
@@ -43,11 +42,18 @@ public class ProjectTask : AuditBase
     public int? ProjectTeamId { get; set;}
 }
 
+public class ProjectTaskView : ProjectTask
+{
+    public string ProjectCode { get; set; } = string.Empty;
+    public string ProjectName { get; set; } = string.Empty;
+    public bool ProjectIsActive { get; set; }
+}
+
 [ValidateIsAuthenticated]
 [Tag("Projects")]
 [AutoApply(Behavior.AuditQuery)]
-public class QueryProjectTasks : QueryDb<ProjectTask> {
-    public int? ClientId {get; set;}
+public class QueryProjectTasks : QueryDb<ProjectTask, ProjectTaskView>, IJoin<ProjectTask, Project> {
+    public int? ProjectId {get; set;}
 }
 
 [ValidateIsAuthenticated]
