@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-05 19:57:17
+Date: 2023-03-09 21:07:20
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -155,23 +155,50 @@ export class AuditBase
     public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
 }
 
+// @DataContract
 export class Overtime extends AuditBase
 {
-    public id?: number;
-    public oT_NUMBER?: string;
-    public employeE_ID?: string;
-    public name?: string;
-    public oT_DATE?: string;
-    public oT_HOUR?: number;
-    public oT_REASON?: string;
-    public oT_REASON_CODE?: string;
-    public poS_DEPT?: string;
-    public positioN_ID?: string;
-    public firsT_APPROVER_ID?: string;
-    public firsT_APPROVER_NAME?: string;
-    public secondarY_APPROVER_ID?: string;
-    public secondarY_APPROVER_NAME?: string;
-    public status?: string;
+    // @DataMember(Name="OT_NUMBER")
+    public OT_NUMBER?: string;
+
+    // @DataMember(Name="EMPLOYEE_ID")
+    public EMPLOYEE_ID?: string;
+
+    // @DataMember(Name="NAME")
+    public NAME?: string;
+
+    // @DataMember(Name="OT_DATE")
+    public OT_DATE?: string;
+
+    // @DataMember(Name="OT_HOUR")
+    public OT_HOUR?: number;
+
+    // @DataMember(Name="OT_REASON")
+    public OT_REASON?: string;
+
+    // @DataMember(Name="OT_REASON_CODE")
+    public OT_REASON_CODE?: string;
+
+    // @DataMember(Name="POS_DEPT")
+    public POS_DEPT?: string;
+
+    // @DataMember(Name="POSITION_ID")
+    public POSITION_ID?: string;
+
+    // @DataMember(Name="FIRST_APPROVER_ID")
+    public FIRST_APPROVER_ID?: string;
+
+    // @DataMember(Name="FIRST_APPROVER_NAME")
+    public FIRST_APPROVER_NAME?: string;
+
+    // @DataMember(Name="SECONDARY_APPROVER_ID")
+    public SECONDARY_APPROVER_ID?: string;
+
+    // @DataMember(Name="SECONDARY_APPROVER_NAME")
+    public SECONDARY_APPROVER_NAME?: string;
+
+    // @DataMember(Name="STATUS")
+    public STATUS?: string;
 
     public constructor(init?: Partial<Overtime>) { super(init); (Object as any).assign(this, init); }
 }
