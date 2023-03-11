@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "outDir": "./dist",
     "baseUrl": ".",
     "module": "ESNext",
     "target": "es2016",

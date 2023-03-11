@@ -74,7 +74,7 @@ let selectedProjectId = ref<number | undefined>(0)
     <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
       <div class="row">
             <div class="col-6 p-1">
-              <KComboBox :id="'cboClient'" :show-label="true" :label="'Client'" v-model="selectedClientId"
+              <KComboBox :id="'cboClient'" :show-label="false" :label="'Client'" v-model="selectedClientId"
                 :data-items="clientList" 
                 :valid="true"
                 :value-field="'id'"
@@ -83,7 +83,7 @@ let selectedProjectId = ref<number | undefined>(0)
                 @change="cboClientOnChange"/>
             </div>
           <div class="col-6 p-1">
-            <KComboBox :id="'cboProject'" :show-label="true" :label="'Project'" v-model="selectedProjectId"
+            <KComboBox :id="'cboProject'" :show-label="false" :label="'Project'" v-model="selectedProjectId"
                 :data-items="projectList" :value="selectedProjectId" 
                 :valid="true"
                 :value-field="'id'"

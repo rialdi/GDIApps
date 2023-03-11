@@ -1,14 +1,16 @@
 <template>
     <div>
         <!-- <label v-if="useLabel && showLabel" :for="id" class="form-label">{{ useLabel }}</label> -->
-        <kLabel :editor-id="id" :editor-valid="valid" class="form-label">
+        <kLabel v-if="showLabel" :editor-id="id" :editor-valid="valid" class="form-label">
             {{label}}
         </kLabel>
         <div class="k-form-field-wrap">
             <kComboBox
+                :style="{ width: '100%' }" 
                 :data-items="currentDataItemList"
                 :id="id"
                 :name="id"
+                :label="(showLabel ? undefined : label)"
                 :value-field="valueField"
                 :text-field="textField"
                 :value-primitive="true"
