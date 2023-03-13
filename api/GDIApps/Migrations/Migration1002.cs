@@ -160,20 +160,20 @@ public class Migration1002 : MigrationBase
 
     public override void Down()
     {
-        Db.CreateTable<DailyScrumMeeting>();
+        Db.DropTable<DailyScrumMeeting>();
 
-        Db.CreateTable<EmployeeReviewDetail>();
-        Db.CreateTable<EmployeeReview>();
+        Db.DropTable<EmployeeReviewDetail>();
+        Db.DropTable<EmployeeReview>();
 
-        Db.CreateTable<ReviewMasterQuestion>();
+        Db.DropTable<ReviewMasterQuestion>();
 
-        Db.CreateTable<TimeSheetDetail>();
-        Db.CreateTable<TimeSheet>();
+        Db.DropTable<TimeSheetDetail>();
+        Db.DropTable<TimeSheet>();
 
-        Db.CreateTable<OtherTask>();
-        Db.CreateTable<ProjectTask>();
-        Db.CreateTable<ProjectDoc>();
-        Db.CreateTable<ProjectTeam>();
+        Db.DropTable<OtherTask>();
+        Db.DropTable<ProjectTask>();
+        Db.DropTable<ProjectDoc>();
+        Db.DropTable<ProjectTeam>();
     }
 
     private int GetAppUserId(string email)

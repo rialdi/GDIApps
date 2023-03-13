@@ -26,17 +26,17 @@ public class EmployeeReview : AuditBase
 
     [Required]
     [References(typeof(AppUser))]
-    public int ReviewerId { get; set;}
-
-    [ReferenceField(typeof(AppUser),"ReviewerId","UserName")]
-    public string ReviewerUserName { get; set;} 
-
-    [Required]
-    [References(typeof(AppUser))]
     public int ReviewedEmployeeId { get; set;}
 
     [ReferenceField(typeof(AppUser),"ReviewedEmployeeId","UserName")]
     public string ReviewedEmployeeUserName { get; set;} 
+
+    [Required]
+    [References(typeof(AppUser))]
+    public int ReviewerId { get; set;}
+
+    [ReferenceField(typeof(AppUser),"ReviewerId","UserName")]
+    public string ReviewerUserName { get; set;} 
 
 
     // [ReferenceField(typeof(AppUser),"ReviewerId","FullName")]
@@ -67,14 +67,14 @@ public class EmployeeReviewView
     public int ReviewedEmployeeId { get; set;}
 }
 
-
-
 [ValidateIsAuthenticated]
 [Tag("Reviews")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmployeeReviews : QueryDb<EmployeeReview>, IJoin<EmployeeReview, AppUser> {
     public int? ReviewerId { get; set;}
-    public string? AppUserUserName { get; set; }
+   
+    [QueryDbField(Field = "AppUserUserName")]
+    public string? ReviewedEmployeeUserName { get; set; }
 }
 
 [ValidateIsAuthenticated]
