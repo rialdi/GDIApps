@@ -6,7 +6,7 @@ using ServiceStack.DataAnnotations;
 namespace GDIApps.ServiceModel.Types;
 
 [CompositeIndex(true, nameof(EmployeeReviewId), nameof(ReviewType), nameof(Category), nameof(No))]
-public class EmployeeReviewDetail : AuditBase
+public class EmployeeReviewDetail
 {
     [AutoIncrement]
     public int Id { get; set; }
@@ -36,7 +36,7 @@ public class EmployeeReviewDetail : AuditBase
 
 [ValidateIsAuthenticated]
 [Tag("Reviews")]
-[AutoApply(Behavior.AuditQuery)]
+// [AutoApply(Behavior.AuditQuery)]
 public class QueryEmployeeReviewDetails : QueryDb<EmployeeReviewDetail> {
 }
 
@@ -57,7 +57,7 @@ public class CreateEmployeeReviewDetail : ICreateDb<EmployeeReviewDetail>, IRetu
 
 [ValidateIsAuthenticated]
 [Tag("Reviews")]
-[AutoApply(Behavior.AuditModify)]
+// [AutoApply(Behavior.AuditModify)]
 public class UpdateEmployeeReviewDetail : IPatchDb<EmployeeReviewDetail>, IReturn<CRUDResponse>
 {
     public int Id { get; set; } 

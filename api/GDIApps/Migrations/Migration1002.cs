@@ -315,10 +315,10 @@ public class Migration1002 : MigrationBase
             No = no,
             Question = question,
             QuestionValue = questionValue,
-            CreatedBy="Admin@email.com",
-            CreatedDate= DateTime.Now,
-            ModifiedBy="Admin@email.com",
-            ModifiedDate = DateTime.Now
+            // CreatedBy="Admin@email.com",
+            // CreatedDate= DateTime.Now,
+            // ModifiedBy="Admin@email.com",
+            // ModifiedDate = DateTime.Now
         });
 
     private long CreateDailyScrumMeeting(

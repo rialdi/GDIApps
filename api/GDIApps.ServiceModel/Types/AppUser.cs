@@ -15,7 +15,9 @@ public class AppUser : UserAuth
     [Format(FormatMethods.IconRounded)]
     [Input(Type = "file"), UploadTo("userprofile")]
     public string? ProfileUrl { get; set; }
+    [IgnoreDataMember]
     public string? LastLoginIp { get; set; }
+    [IgnoreDataMember]
     public DateTime? LastLoginDate { get; set; }
     public string? EmployeeId {get; set;}
     public Department Department {get; set;} = Department.None;
