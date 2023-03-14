@@ -17,7 +17,6 @@ public class Migration1002 : MigrationBase
         Db.CreateTable<OtherTask>();
 
         Db.CreateTable<TimeSheet>();
-        Db.CreateTable<TimeSheetDetail>();
 
         Db.CreateTable<ReviewMasterQuestion>();
         Db.CreateTable<EmployeeReview>();
@@ -65,8 +64,11 @@ public class Migration1002 : MigrationBase
             otherTaskPlanStart, otherTaskPlanEnd, otherTaskActualStart, otherTaskActualEnd, 0, TASK_STATUS.YET_TO_START);
         #endregion
     
-        int timeSheetId = (int) CreateTimeSheet(projectId, appUserId, DateTime.Today);
-        CreateTimeSheetDetail(timeSheetId, projectId, "Common Features");
+        DateTime tsDate = new DateTime(2023, 2, 13);
+        int clientId = GetClientId("PONS");
+        projectId = GetProjectId("POIBSFQR");
+        int timeSheetId = (int) CreateTimeSheet(tsDate, appUserId, clientId, projectId, 1, "Setup DB & SSIS to new Harbour Server");
+        // CreateTimeSheetDetail(timeSheetId, projectId, "Common Features");
 
         #region Seed Data Master Question
 
@@ -167,7 +169,6 @@ public class Migration1002 : MigrationBase
 
         Db.DropTable<ReviewMasterQuestion>();
 
-        Db.DropTable<TimeSheetDetail>();
         Db.DropTable<TimeSheet>();
 
         Db.DropTable<OtherTask>();
@@ -186,6 +187,15 @@ public class Migration1002 : MigrationBase
         return returnId;
     }
 
+    private int GetClientId(string code)
+    {
+        int returnId = 0;
+        var foundItem = Db.Select<Client>(w => w.Code == code).FirstOrDefault();
+        if(foundItem != null) {
+            returnId = foundItem.Id;
+        }
+        return returnId;
+    }
     private int GetProjectId(string code)
     {
         int returnId = 0;
@@ -249,23 +259,14 @@ public class Migration1002 : MigrationBase
         });
 
     private long CreateTimeSheet(
-        int projectId, int appUserId, DateTime tsDate
+        DateTime tsDate, int appUserId, int clientId, int projectId, int no, string taskName
     ) =>
         Db.Insert(new TimeSheet {
-            AppUserId = appUserId,
             TSDate = tsDate,
-            CreatedBy="Admin@email.com",
-            CreatedDate= DateTime.Now,
-            ModifiedBy="Admin@email.com",
-            ModifiedDate = DateTime.Now
-        });
-
-    private long CreateTimeSheetDetail(
-        int timesheetId, int? projectId, string taskName
-    ) =>
-        Db.Insert(new TimeSheetDetail {
-            TimeSheetId = timesheetId,
+            AppUserId = appUserId,
+            ClientId = clientId,
             ProjectId = projectId,
+            No = no,
             TaskName = taskName,
             CreatedBy="Admin@email.com",
             CreatedDate= DateTime.Now,

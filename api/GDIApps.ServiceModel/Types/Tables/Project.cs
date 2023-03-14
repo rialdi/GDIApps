@@ -68,6 +68,8 @@ public class QueryProjects : QueryDb<Project, ProjectView>, IJoin<Project, Clien
 
     public string? NameContains { get; set; }
     public string? CodeContains { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }
 
 [ValidateIsAuthenticated]

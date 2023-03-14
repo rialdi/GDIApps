@@ -43,7 +43,7 @@ defineProps<{
     id: string,
     valueField?: string | undefined,
     textField?: string | undefined,
-    value?: string | number | undefined,
+    value?: string | number | undefined | null,
     showLabel?: boolean|true,
     label?: string,
     valid?: boolean | true,
@@ -79,7 +79,7 @@ const currentDataItemList = computed( () => {
 watch(
   () => props.value,
   () => {
-    if(props.value === undefined) {
+    if(props.value === null || props.value === undefined) {
         // console.log(props.value)
         filter.value.filters = [];
     }

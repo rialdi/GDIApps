@@ -118,7 +118,7 @@ public class Migration1000 : MigrationBase
 
         #region Client POI
 
-        clientId = (int) CreateDataClient("POI", "PREMIER OIL INDONESIA", "", true);
+        clientId = (int) CreateDataClient("PONS", "Premier Oil Natuna Sea BV", "", true);
         CreateDataCAddress(clientId, "Premier Oil", "Indonesia", "DKI Jakarta", "Jakarta Selatan", "Pasar Minggu", null, "Gedung CIBIS NINE Lantai 19", "Jl. TB Simatupang No. 2", "12560", "+622150863000", true);
         CreateDataCContract(clientId, "POI#4508962801", "InEight", contractStartDate, contractEndDate, 45399, "Mrs. Ratri Andaruresmi", null, 60, "USD", true);
         

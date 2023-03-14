@@ -39,6 +39,9 @@ const CBankPages = () => import("@/pages/backend/admins/CBank/Index.vue");
 const CContractPages = () => import("@/pages/backend/admins/CContract/Index.vue");
 const InvoicesPages = () => import("@/pages/backend/admins/Invoices/Index.vue");
 
+// Employee: Pages
+const TimeSheetPages = () => import("@/pages/backend/employees/TimeSheet/Index.vue");
+
 // Backend: Pages
 const BackendPagesAuth = () => import("@/views/backend/pages/AuthView.vue");
 const BackendPagesErrors = () => import("@/views/backend/pages/ErrorsView.vue");
@@ -191,6 +194,17 @@ const routes = [
             component: InvoicesPages,
           }
         ],
+      },
+      {
+        path: "employees",
+        redirect: "/employees/timesheet",
+        children: [
+          {
+            path: "timesheet",
+            name: "backend-employees-timesheet",
+            component: TimeSheetPages,
+          },
+        ]
       },
       // {
       //   path: "admins",

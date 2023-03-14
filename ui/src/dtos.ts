@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-10 14:55:56
+Date: 2023-03-14 15:39:42
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -616,7 +616,7 @@ export enum REVIEW_QUESTION_CATEGORY
     KPI = 'KPI',
 }
 
-export class EmployeeReviewDetail extends AuditBase
+export class EmployeeReviewDetail
 {
     public id?: number;
     // @Required()
@@ -639,7 +639,7 @@ export class EmployeeReviewDetail extends AuditBase
     // @StringLength(4000)
     public questionValue?: number;
 
-    public constructor(init?: Partial<EmployeeReviewDetail>) { super(init); (Object as any).assign(this, init); }
+    public constructor(init?: Partial<EmployeeReviewDetail>) { (Object as any).assign(this, init); }
 }
 
 export class EmployeeReview extends AuditBase
@@ -656,12 +656,14 @@ export class EmployeeReview extends AuditBase
 
     // @Required()
     // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
-    public reviewerId?: number;
-
-    // @Required()
-    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
     public reviewedEmployeeId?: number;
 
+    public reviewedEmployeeUserName?: string;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public reviewerId?: number;
+
+    public reviewerUserName?: string;
     public reviewNotes?: string;
     public reviewDetailList?: EmployeeReviewDetail[];
 
@@ -922,36 +924,42 @@ export class ReviewMasterQuestion extends AuditBase
     public constructor(init?: Partial<ReviewMasterQuestion>) { super(init); (Object as any).assign(this, init); }
 }
 
-export class TimeSheetDetail extends AuditBase
-{
-    public id?: number;
-    // @Required()
-    // @References("typeof(GDIApps.ServiceModel.Types.TimeSheet)")
-    public timeSheetId?: number;
-
-    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
-    public projectId?: number;
-
-    // @Required()
-    // @StringLength(1000)
-    public taskName?: string;
-
-    public constructor(init?: Partial<TimeSheetDetail>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class TimeSheet extends AuditBase
 {
     public id?: number;
+    // @Required()
+    public tsDate?: string;
+
     // @Required()
     // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
     public appUserId?: number;
 
     // @Required()
-    public tsDate?: string;
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
 
-    public tsDetailList?: TimeSheetDetail[];
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
+    public projectId?: number;
+
+    public no?: number;
+    // @Required()
+    // @StringLength(1000)
+    public taskName?: string;
 
     public constructor(init?: Partial<TimeSheet>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class TimeSheetView extends TimeSheet
+{
+    public appUserUserName?: string;
+    public appUserFullName?: string;
+    public clientCode?: string;
+    public clientName?: string;
+    public projectCode?: string;
+    public projectName?: string;
+
+    public constructor(init?: Partial<TimeSheetView>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -1051,8 +1059,6 @@ export class AppUser extends UserAuth
     // @Input(Type="file")
     public profileUrl?: string;
 
-    public lastLoginIp?: string;
-    public lastLoginDate?: string;
     public employeeId?: string;
     public department?: Department;
     public isArchived?: boolean;
@@ -1777,6 +1783,8 @@ export class QueryEmailTemplates extends QueryDb_1<EmailTemplate> implements IRe
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryEmployeeReviews extends QueryDb_1<EmployeeReview> implements IReturn<QueryResponse<EmployeeReview>>
 {
+    public reviewerId?: number;
+    public reviewedEmployeeUserName?: string;
 
     public constructor(init?: Partial<QueryEmployeeReviews>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryEmployeeReviews'; }
@@ -1865,6 +1873,7 @@ export class QueryProjects extends QueryDb_2<Project, ProjectView> implements IR
     public clientNameContains?: string;
     public nameContains?: string;
     public codeContains?: string;
+    public isActive?: boolean;
 
     public constructor(init?: Partial<QueryProjects>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryProjects'; }
@@ -1916,23 +1925,17 @@ export class QueryReviewMasterQuestions extends QueryDb_1<ReviewMasterQuestion> 
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class QueryTimeSheets extends QueryDb_1<TimeSheet> implements IReturn<QueryResponse<TimeSheet>>
+export class QueryTimeSheets extends QueryDb_2<TimeSheet, TimeSheetView> implements IReturn<QueryResponse<TimeSheetView>>
 {
+    public appUserIds?: number[];
+    public tsDateBetween?: string[];
+    public clientIds?: number[];
+    public projectIds?: number[];
 
     public constructor(init?: Partial<QueryTimeSheets>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryTimeSheets'; }
     public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<TimeSheet>(); }
-}
-
-// @ValidateRequest(Validator="IsAuthenticated")
-export class QueryTimeSheetDetails extends QueryDb_1<TimeSheetDetail> implements IReturn<QueryResponse<TimeSheetDetail>>
-{
-
-    public constructor(init?: Partial<QueryTimeSheetDetails>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryTimeSheetDetails'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<TimeSheetDetail>(); }
+    public createResponse() { return new QueryResponse<TimeSheetView>(); }
 }
 
 export class CreateAppMenu implements IReturn<CRUDResponse>, ICreateDb<AppMenu>
@@ -2879,8 +2882,12 @@ export class DeleteReviewMasterQuestion implements IReturnVoid, IDeleteDb<Review
 // @ValidateRequest(Validator="IsAuthenticated")
 export class CreateTimeSheet implements IReturn<CRUDResponse>, ICreateDb<TimeSheet>
 {
-    public appUserId?: number;
     public tsDate?: string;
+    public appUserId?: number;
+    public clientId?: number;
+    public projectId?: number;
+    public no?: number;
+    public taskName?: string;
 
     public constructor(init?: Partial<CreateTimeSheet>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateTimeSheet'; }
@@ -2892,8 +2899,12 @@ export class CreateTimeSheet implements IReturn<CRUDResponse>, ICreateDb<TimeShe
 export class UpdateTimeSheet implements IReturn<CRUDResponse>, IPatchDb<TimeSheet>
 {
     public id?: number;
-    public appUserId?: number;
     public tsDate?: string;
+    public appUserId?: number;
+    public clientId?: number;
+    public projectId?: number;
+    public no?: number;
+    public taskName?: string;
 
     public constructor(init?: Partial<UpdateTimeSheet>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateTimeSheet'; }
@@ -2908,44 +2919,6 @@ export class DeleteTimeSheet implements IReturnVoid, IDeleteDb<TimeSheet>
 
     public constructor(init?: Partial<DeleteTimeSheet>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DeleteTimeSheet'; }
-    public getMethod() { return 'DELETE'; }
-    public createResponse() {}
-}
-
-// @ValidateRequest(Validator="IsAuthenticated")
-export class CreateTimeSheetDetail implements IReturn<CRUDResponse>, ICreateDb<TimeSheetDetail>
-{
-    public timeSheetId?: number;
-    public projectId?: number;
-    public taskName?: string;
-
-    public constructor(init?: Partial<CreateTimeSheetDetail>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'CreateTimeSheetDetail'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new CRUDResponse(); }
-}
-
-// @ValidateRequest(Validator="IsAuthenticated")
-export class UpdateTimeSheetDetail implements IReturn<CRUDResponse>, IPatchDb<TimeSheetDetail>
-{
-    public id?: number;
-    public timeSheetId?: number;
-    public projectId?: number;
-    public taskName?: string;
-
-    public constructor(init?: Partial<UpdateTimeSheetDetail>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'UpdateTimeSheetDetail'; }
-    public getMethod() { return 'PATCH'; }
-    public createResponse() { return new CRUDResponse(); }
-}
-
-// @ValidateRequest(Validator="IsAuthenticated")
-export class DeleteTimeSheetDetail implements IReturnVoid, IDeleteDb<TimeSheetDetail>
-{
-    public id?: number;
-
-    public constructor(init?: Partial<DeleteTimeSheetDetail>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'DeleteTimeSheetDetail'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }
