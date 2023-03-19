@@ -11,7 +11,7 @@ namespace GDIApps.ServiceModel
     public class CreateOvertimeDraft: IPost, IReturn<CRUDClaimItemResponse>
     {
         public string OtDate { get; set; }
-        public List<string> EmployeeIds { get; set; }
+        public List<string> EmployeeIds { get; set; }=new List<string>();
     }
     public class CRUDClaimItemResponse
     {
