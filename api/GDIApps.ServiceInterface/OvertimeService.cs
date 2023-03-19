@@ -25,7 +25,7 @@ namespace GDIApps.ServiceInterface
             CreateOvertimeResponse response = new CreateOvertimeResponse();
             foreach (var empId in request.EmployeeIds)
             {
-                var itemResponse = new CreateClaimItemResponse();
+                var itemResponse = new CRUDClaimItemResponse();
                 try
                 {
                     DateTime dt = DateTime.ParseExact(request.OtDate, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-US"));
@@ -44,9 +44,9 @@ namespace GDIApps.ServiceInterface
             return response;
 
         }
-        public SubmitClaimResponse Post(SubmitClaimRequest request)
+        public CRUDClaimItemResponse Post(SubmitClaimRequest request)
         {
-            var response = new SubmitClaimResponse();
+            var response = new CRUDClaimItemResponse();
             response.OtNumber = request.OtNumber;
             try
             {
@@ -63,6 +63,36 @@ namespace GDIApps.ServiceInterface
             return response;
 
         }
+        public CRUDClaimItemResponse Any(UpdateClaimRequest request)
+        {
+            var response = new CRUDClaimItemResponse();
+            try 
+            {
+                Rules.UpdateClaimEntries(request.OTNumber, request.OTHour, request.ReasonCode);
+                response.Success = true;
+            }
+            catch(Exception ex)
+            {
+                response.Success=false;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+        public CRUDClaimItemResponse Any(DeleteClaimRequest request)
+        {
+            var response = new CRUDClaimItemResponse();
+            try
+            {
+                Rules.DeleteClaim(request.OTNumber);
+                response.Success = true;
+                return response;
+            }catch(Exception ex)
+            {
+                response.Success=false;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
         public object Any(QueryOvertimeDraft query)
         {
             using var db = AutoQuery.GetDb(query, base.Request);
@@ -73,10 +103,10 @@ namespace GDIApps.ServiceInterface
             return AutoQuery.Execute(query, q, Request);
 
         }
-        public HttpResult Get(EmployeeSelections request)
+        public EmployeeSelectionsResponse Get(EmployeeSelections request)
         {
             var employees = Rules.GetEmployeeSelections(request.ODataParam);
-            var res=new HttpResult(new EmployeeSelectionsResponse()
+            var res = new EmployeeSelectionsResponse()
             {
                 Employees = employees.Select(d => new EmployeeOption()
                 {
@@ -84,21 +114,10 @@ namespace GDIApps.ServiceInterface
                     NAME = d.NAME,
                     POS_DEPT = d.POS_DEPT
                 }).ToList()
-            })
-            {
-                ResultScope = () => JsConfig.With(
-        emitLowercaseUnderscoreNames: true, excludeDefaultValues: true)
             };
+           
             return res;
-          //  return new EmployeeSelectionsResponse()
-            //{
-            //    Employees = employees.Select(d => new EmployeeOption()
-            //    {
-            //        EMPLOYEE_ID = d.EMPLOYEE_ID,
-            //        NAME = d.NAME,
-            //        POS_DEPT = d.POS_DEPT
-            //    }).ToList()
-            //};
+        
         }
         LogicRules _rules = null;
     private LogicRules Rules

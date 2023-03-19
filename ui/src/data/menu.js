@@ -30,7 +30,7 @@ export default {
         },
 
       ],
-        },
+    },
         {
             name: "Overtime",
             subActivePaths: "/overtime",

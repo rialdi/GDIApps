@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EmployeeQuery.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ServiceStack" Version="6.*" />
     <PackageReference Include="ServiceStack.Interfaces" Version="6.*" />
   </ItemGroup>

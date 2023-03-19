@@ -103,7 +103,20 @@ namespace BusinessRules
             overtimeData.SECONDARY_APPROVER_ID = managerInfo[0].Trim();
             overtimeData.SECONDARY_APPROVER_NAME= managerInfo[1].Trim();
         }
-
+        public void UpdateClaimEntries(string oTNumber, decimal? oTHour, string reasonCode)
+        {
+            using var cn = _db.Open();
+            var overtimeData = cn.Select<Overtime>(o => o.OT_NUMBER == oTNumber).FirstOrDefault();
+            if (overtimeData != null)
+            {
+                overtimeData.OT_HOUR = oTHour.Value;
+                var reasonLookup = cn.Select<Lookup>(l => l.LookupType == LOOKUPTYPE.OT_REASON && l.LookupValue == reasonCode).FirstOrDefault();
+                overtimeData.OT_REASON = reasonLookup.LookupText;
+                overtimeData.OT_REASON_CODE= reasonCode;
+                UpdateAudit<Overtime>(overtimeData);
+                cn.Save(overtimeData);
+            }
+        }
         private T CreateAuditBase<T>() where T : AuditBase, new()
         {
             var obj = new T();
@@ -128,6 +141,18 @@ namespace BusinessRules
 
             data.DeletedBy = username;
             data.DeletedDate = DateTime.Now;
+        }
+
+        public void DeleteClaim(string oTNumber)
+        {
+            using var cn = _db.Open();
+            var ot=cn.Select<Overtime>(x=>x.OT_NUMBER== oTNumber).FirstOrDefault();
+            if(ot!=null)
+            {
+                DeleteAudit<Overtime>(ot);
+                ot.STATUS = "DELETED";
+                cn.Save(ot);
+            }
         }
     }
 }

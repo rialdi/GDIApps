@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace GDIApps.ServiceModel
 {
     [Route("/createclaim", "POST")]
-    public class CreateOvertimeDraft: IPost, IReturn<CreateOvertimeResponse>
+    public class CreateOvertimeDraft: IPost, IReturn<CRUDClaimItemResponse>
     {
         public string OtDate { get; set; }
         public List<string> EmployeeIds { get; set; }
     }
-    public class CreateClaimItemResponse
+    public class CRUDClaimItemResponse
     {
         public bool Success { get; set; }
         public string OtNumber { get; set; }
@@ -23,27 +23,31 @@ namespace GDIApps.ServiceModel
     }
     public class CreateOvertimeResponse
     {
-        public List<CreateClaimItemResponse> Items { get; set; }=new List<CreateClaimItemResponse>();
+        public List<CRUDClaimItemResponse> Items { get; set; }=new List<CRUDClaimItemResponse>();
     }
 
     [Route("/submitclaim", "POST")]
-    public class SubmitClaimRequest:IReturn<SubmitClaimResponse>
+    public class SubmitClaimRequest:IReturn<CRUDClaimItemResponse>
     {
         public string OtNumber { get; set; }
         public string ReasonCode { get; set; }
         public decimal OtHour { get; set; }
     }
-    public class SubmitClaimResponse
-    {
-        public bool Success { get; set; }
-        public string OtNumber { get; set;}
-        public string ErrorMessage { get; set;}
-    }
+
 
     
- 
+ public class UpdateClaimRequest : IReturn<CRUDClaimItemResponse>
+    {
+        public string OTNumber { get; set; }
+        public decimal? OTHour { get; set; }
+        public string ReasonCode { get; set; }
+    }
 
-  
+
+    public class DeleteClaimRequest:IReturn<CRUDClaimItemResponse>
+    {
+        public string OTNumber { get; set; }
+    }
  
     [Route("/OvertimeDraft", "GET")]
     public class QueryOvertimeDraft : QueryDb<Overtime>

@@ -2,35 +2,34 @@
     <!-- <div class="content"> -->
     <td v-if="!(dataItem  as any)['inEdit']" class="k-command-cell">
         <!-- <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-alt-primary"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Edit"
-                @click="editHandler">
-            <i class="fa fa-fw fa-pencil-alt"></i>
-            </button>
-            <button type="button" class="btn btn-sm btn-alt-danger" 
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Delete"
-                @click="removeHandler">
-            <i class="fa fa-fw fa-times"></i>
-            </button>
-        </div> -->
-        <kbutton
-            icon="edit"
-            title="edit"
-            :theme-color="'primary'"
-            class="k-grid-edit-command"
+        <button type="button" class="btn btn-sm btn-alt-primary"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Edit"
             @click="editHandler">
-        </kbutton>
-        <kbutton
-            icon="delete"
-            title="delete"
-            :theme-color="'error'"
-            class="k-grid-remove-command"
+        <i class="fa fa-fw fa-pencil-alt"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-alt-danger"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Delete"
             @click="removeHandler">
+        <i class="fa fa-fw fa-times"></i>
+        </button>
+    </div> -->
+        <kbutton icon="edit"
+                 title="edit"
+                 :theme-color="'primary'"
+                 class="k-grid-edit-command"
+                 @click="editHandler">
         </kbutton>
+        <kbutton icon="delete"
+                 title="delete"
+                 :theme-color="'error'"
+                 class="k-grid-remove-command"
+                 @click="removeHandler">
+        </kbutton>
+      
     </td>
     <td v-else>
             <kbutton

@@ -275,7 +275,6 @@
     <Content Include="src\layouts\BaseLayout.vue" />
     <Content Include="src\layouts\default.vue" />
     <Content Include="src\layouts\empty.vue" />
-    <Content Include="src\layouts\partials\KGridCommandCell.vue" />
     <Content Include="src\pages\backend\admins\Projects\EditDialog.vue" />
     <Content Include="src\pages\backend\admins\Projects\Index.vue" />
     <Content Include="src\pages\features.md" />

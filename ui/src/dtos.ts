@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-03-09 21:07:20
+Date: 2023-03-14 14:49:00
 Version: 6.60
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -463,15 +463,6 @@ export class UserAuth
     public constructor(init?: Partial<UserAuth>) { (Object as any).assign(this, init); }
 }
 
-export class CreateClaimItemResponse
-{
-    public success?: boolean;
-    public otNumber?: string;
-    public errorMessage?: string;
-
-    public constructor(init?: Partial<CreateClaimItemResponse>) { (Object as any).assign(this, init); }
-}
-
 // @DataContract
 export class EmployeeOption
 {
@@ -573,20 +564,13 @@ export class HelloResponse
     public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
 }
 
-export class CreateOvertimeResponse
-{
-    public items?: CreateClaimItemResponse[];
-
-    public constructor(init?: Partial<CreateOvertimeResponse>) { (Object as any).assign(this, init); }
-}
-
-export class SubmitClaimResponse
+export class CRUDClaimItemResponse
 {
     public success?: boolean;
     public otNumber?: string;
     public errorMessage?: string;
 
-    public constructor(init?: Partial<SubmitClaimResponse>) { (Object as any).assign(this, init); }
+    public constructor(init?: Partial<CRUDClaimItemResponse>) { (Object as any).assign(this, init); }
 }
 
 export class EmployeeSelectionsResponse
@@ -828,7 +812,7 @@ export class Hello implements IReturn<HelloResponse>
 }
 
 // @Route("/createclaim", "POST")
-export class CreateOvertimeDraft implements IReturn<CreateOvertimeResponse>, IPost
+export class CreateOvertimeDraft implements IReturn<CRUDClaimItemResponse>, IPost
 {
     public otDate?: string;
     public employeeIds?: string[];
@@ -836,11 +820,11 @@ export class CreateOvertimeDraft implements IReturn<CreateOvertimeResponse>, IPo
     public constructor(init?: Partial<CreateOvertimeDraft>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateOvertimeDraft'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new CreateOvertimeResponse(); }
+    public createResponse() { return new CRUDClaimItemResponse(); }
 }
 
 // @Route("/submitclaim", "POST")
-export class SubmitClaimRequest implements IReturn<SubmitClaimResponse>
+export class SubmitClaimRequest implements IReturn<CRUDClaimItemResponse>
 {
     public otNumber?: string;
     public reasonCode?: string;
@@ -849,7 +833,29 @@ export class SubmitClaimRequest implements IReturn<SubmitClaimResponse>
     public constructor(init?: Partial<SubmitClaimRequest>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'SubmitClaimRequest'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new SubmitClaimResponse(); }
+    public createResponse() { return new CRUDClaimItemResponse(); }
+}
+
+export class UpdateClaimRequest implements IReturn<CRUDClaimItemResponse>
+{
+    public otNumber?: string;
+    public otHour?: number;
+    public reasonCode?: string;
+
+    public constructor(init?: Partial<UpdateClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDClaimItemResponse(); }
+}
+
+export class DeleteClaimRequest implements IReturn<CRUDClaimItemResponse>
+{
+    public otNumber?: string;
+
+    public constructor(init?: Partial<DeleteClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDClaimItemResponse(); }
 }
 
 // @Route("/OvertimeDraft", "GET")
