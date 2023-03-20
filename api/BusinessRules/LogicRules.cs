@@ -75,15 +75,15 @@ namespace BusinessRules
            return _externalData.ExecutequeryByParam<List<Employee>>("QRY_EMP_APPROVAL", odatafilter);
         }
 
-        public void SubmitClaim(string otNumber, string reasonCode, decimal otHour)
+        public void SubmitClaim(string otNumber)
         {
             using var cn = _db.Open();
             var overtimeData=cn.Select<Overtime>(o=>o.OT_NUMBER==otNumber).FirstOrDefault();
             if (overtimeData == null)
                 throw new Exception("OT Number: " + otNumber + " not found");
             overtimeData.STATUS = "WAITING FOR FIRST APPROVAL";
-            overtimeData.OT_HOUR= otHour;
-            overtimeData.OT_REASON_CODE = reasonCode;
+          
+        
             var reason = cn.Select<Lookup>(l => l.LookupType == LOOKUPTYPE.OT_REASON && l.LookupValue==reasonCode).FirstOrDefault();
             overtimeData.OT_REASON = reason.LookupText;
             FillApprover(overtimeData);

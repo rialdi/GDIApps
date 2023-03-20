@@ -149,20 +149,28 @@ namespace SpecFlowProjectGDIApps.Drivers
             var lookups = lookupsResp.Response.Results;
             lookups.Should().NotBeNull();
             lookups.Count.Should().BeGreaterThan(0);
-            SubmitClaimRequest request = new SubmitClaimRequest();
-            request.OtNumber= otnumber;
-            foreach(var labelinput in inputs)
+
+            UpdateClaimRequest updateRequest=new UpdateClaimRequest();
+            updateRequest.OTNumber= otnumber;
+            foreach (var labelinput in inputs)
             {
-                if(labelinput.Label== "OT_HOUR")
-                    request.OtHour=decimal.Parse(labelinput.Input);
+                if (labelinput.Label == "OT_HOUR")
+                    updateRequest.OTHour = decimal.Parse(labelinput.Input);
                 if (labelinput.Label == "OT_REASON")
                 {
-                    string input=labelinput.Input;
-                    request.ReasonCode = lookups.FirstOrDefault(l => l.LookupText.ToLower() == input.ToLower()).LookupValue;
+                    string input = labelinput.Input;
+                    updateRequest.ReasonCode = lookups.FirstOrDefault(l => l.LookupText.ToLower() == input.ToLower()).LookupValue;
                 }
 
             }
-         var response=   client.Post(request);
+            var response=client.Post(updateRequest);
+            response.Success.Should().BeTrue();
+            response.OtNumber.Should().Be(otnumber);
+
+            SubmitClaimRequest request = new SubmitClaimRequest();
+            request.OtNumber= otnumber;
+           
+          response=   client.Post(request);
             response.Success.Should().BeTrue();
             response.OtNumber.Should().Be(otnumber);
 

@@ -108,7 +108,7 @@
     import { onMounted, ref, computed, reactive,defineEmits } from "vue";
     import { DatePicker } from '@progress/kendo-vue-dateinputs';
     import { Button as kbutton } from '@progress/kendo-vue-buttons';
-    import { CreateClaimItemResponse, CreateOvertimeDraft, DeleteClaimRequest, EmployeeOption, EmployeePOCO, EmployeeQuery, EmployeeSelections, Lookup, LOOKUPTYPE, Overtime, QueryLookups, QueryOvertimeDraft, QueryResponse, UpdateClaimRequest } from '@/dtos';
+    import { CreateClaimItemResponse, CreateOvertimeDraft, DeleteClaimRequest, EmployeeOption, EmployeePOCO, EmployeeQuery, EmployeeSelections, Lookup, LOOKUPTYPE, Overtime, QueryLookups, QueryOvertimeDraft, QueryResponse, SubmitClaimRequest, UpdateClaimRequest } from '@/dtos';
     import { client } from "@/api";
     import { Grid as kGrid, GridToolbar as kGridToolbar, GridDataStateChangeEvent, GridColumnProps,GridSelectionChangeEvent, GridPageChangeEvent,GridFilterChangeEvent } from '@progress/kendo-vue-grid';
     import { DropDownList, DropDownListChangeEvent } from '@progress/kendo-vue-dropdowns';
@@ -307,7 +307,22 @@
             return false;
         return true;
     }
-   
+    const submit= async (data: any) => {
+        if (IsSubmitable(data)) {
+            loadingDraftData.value = true;
+            let req = new SubmitClaimRequest({ otNumber: data.OT_NUMBER });
+            let apiResult = await client.api(req);
+            if (apiResult.completed) {
+                if (apiResult.response?.success) {
+                    showNotifSuccess("Submit Overtime", "Success");
+                    await LoadOvertimeDraft();
+                } else {
+                    showNotifError("Submit Overtime", apiResult.response?.errorMessage);
+                    loadingDraftData.value = false;
+                }
+            }
+        }
+     } 
     let CustomClaimInput =reactive({
         OT_HOUR: 0,
         OT_REASON_CODE:''

@@ -30,8 +30,7 @@ namespace GDIApps.ServiceModel
     public class SubmitClaimRequest:IReturn<CRUDClaimItemResponse>
     {
         public string OtNumber { get; set; }
-        public string ReasonCode { get; set; }
-        public decimal OtHour { get; set; }
+       
     }
 
 

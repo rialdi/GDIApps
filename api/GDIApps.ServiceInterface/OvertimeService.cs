@@ -50,7 +50,7 @@ namespace GDIApps.ServiceInterface
             response.OtNumber = request.OtNumber;
             try
             {
-                Rules.SubmitClaim(request.OtNumber, request.ReasonCode, request.OtHour);
+                Rules.SubmitClaim(request.OtNumber);
                 response.Success = true;
              
 
