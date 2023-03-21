@@ -8,7 +8,7 @@ using ServiceStack;
 namespace GDIApps.ServiceModel
 {
       [Route("/createclaim", "POST")]
-    public class CreateOvertimeDraft: IPost, IReturn<CRUDClaimItemResponse>
+    public class CreateOvertimeDraft: IPost, IReturn<CreateOvertimeResponse>
     {
         public string OtDate { get; set; }
         public List<string> EmployeeIds { get; set; }=new List<string>();
