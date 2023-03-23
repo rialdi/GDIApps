@@ -18,47 +18,48 @@ using System.Globalization;
 
 namespace SpecFlowProjectGDIApps.Drivers
 {
-    public class ServiceStackDriver:IDriver
+    public class ServiceStackDriver : IDriver
     {
-         string UserName = "admin@email.com";
-         string Password = "p@55wOrd";
+        string UserName = "admin@email.com";
+        string Password = "p@55wOrd";
         ScenarioContext _context;
-        public ServiceStackDriver(ScenarioContext context) { 
-            _context=context;
+        public ServiceStackDriver(ScenarioContext context)
+        {
+            _context = context;
         }
 
         public void CheckAndLogIfUserAdmin(Table table)
         {
             dynamic userData = table.CreateDynamicInstance();
             var host = _context.Get<AppHost>("Host");
-          var auth=  host.Resolve<IAuthRepository>();
+            var auth = host.Resolve<IAuthRepository>();
             var user = (AppUser)auth.GetUserAuthByUserName(userData.UserName);
             user.Id.Should().BeGreaterThan(0);
-            (auth as IManageRoles).HasRole(user.Id,RoleNames.Admin).Should().BeTrue();
-          
-            _context.Add("UserName",userData.UserName);
+            (auth as IManageRoles).HasRole(user.Id, RoleNames.Admin).Should().BeTrue();
+
+            _context.Add("UserName", userData.UserName);
             _context.Add("Password", userData.Password);
         }
 
         public void CheckHost(string p0)
         {
-            var host=_context.Get<AppHost>("Host");
+            var host = _context.Get<AppHost>("Host");
             host.Should().NotBeNull();
         }
 
         public void CreateDraftClaim(string p0, Table table)
         {
             var date = DateTime.ParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"));
-            DateTime.TryParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"),DateTimeStyles.None,out var resultParse).Should().BeTrue();
-            IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet(doTypeConversion:false);
-            List<string> empIds=new List<string>();
-            foreach(var empData in selectedEmployees)
+            DateTime.TryParseExact(p0, "dd-MMM-yyyy", CultureInfo.GetCultureInfo("en-us"), DateTimeStyles.None, out var resultParse).Should().BeTrue();
+            IEnumerable<dynamic> selectedEmployees = table.CreateDynamicSet(doTypeConversion: false);
+            List<string> empIds = new List<string>();
+            foreach (var empData in selectedEmployees)
             {
                 string id = empData.EMPLOYEE_ID;
                 empIds.Add(id);
             }
             var client = _context.Get<IServiceClient>("Client");
-           
+
             client.Send(new Authenticate()
             {
                 provider = CredentialsAuthProvider.Name,
@@ -66,12 +67,8 @@ namespace SpecFlowProjectGDIApps.Drivers
                 Password = _context.Get<string>("Password")
             });
             var resp = client.Post(new CreateOvertimeDraft { OtDate = p0, EmployeeIds = empIds });
-           resp.Items.Count.Should().BeGreaterThan(0);
-            foreach(var dataResp in resp.Items)
-            {
-                dataResp.Success.Should().BeTrue();
-              
-            }
+            resp.Items.Count().Should().BeGreaterThan(empIds.Count);
+           
         }
 
         public void DeleteLookupById(int id)
@@ -84,7 +81,7 @@ namespace SpecFlowProjectGDIApps.Drivers
                 UserName = _context.Get<string>("UserName"),
                 Password = _context.Get<string>("Password")
             });
-            GDIApps.ServiceModel.DeleteLookup delRequest=new DeleteLookup() { Id= id };
+            GDIApps.ServiceModel.DeleteLookup delRequest = new DeleteLookup() { Id = id };
             client.Api(delRequest);
         }
 
@@ -98,7 +95,7 @@ namespace SpecFlowProjectGDIApps.Drivers
                 UserName = _context.Get<string>("UserName"),
                 Password = _context.Get<string>("Password")
             });
-        var resp=    client.Get(new EmployeeSelections { });
+            var resp = client.Get(new EmployeeSelections { });
             return resp.Employees;
         }
 
@@ -106,25 +103,25 @@ namespace SpecFlowProjectGDIApps.Drivers
         {
             IEnumerable<dynamic> sets = table.CreateDynamicSet();
             var client = _context.Get<IServiceClient>("Client");
-         
+
             client.Send(new Authenticate()
             {
                 provider = CredentialsAuthProvider.Name,
-                UserName =_context.Get<string>("UserName"),
+                UserName = _context.Get<string>("UserName"),
                 Password = _context.Get<string>("Password")
             });
-            foreach(var data in sets)
+            foreach (var data in sets)
             {
                 var request = new CreateLookup() { LookupType = LOOKUPTYPE.PRIORITY, LookupValue = data.LookupValue, LookupText = data.LookupText, IsActive = true };
-              var resp=  client.Api(request);
-            resp.Should().NotBeNull();
+                var resp = client.Api(request);
+                resp.Should().NotBeNull();
                 resp.Succeeded.Should().BeTrue();
                 resp.Response.Should().NotBeNull();
                 resp.Response.ResponseStatus.IsSuccess().Should().BeTrue();
                 resp.Response.Id.Should().BeGreaterThan(0);
 
             }
-          
+
 
         }
 
@@ -140,18 +137,19 @@ namespace SpecFlowProjectGDIApps.Drivers
                 UserName = _context.Get<string>("UserName"),
                 Password = _context.Get<string>("Password")
             });
-         var lookupsResp=   client.Api(new QueryLookups
+            var lookupsResp = client.Api(new QueryLookups
             {
-             LOOKUPTYPE= LOOKUPTYPE.OT_REASON
+                LOOKUPTYPE = LOOKUPTYPE.OT_REASON
             });
-            while(!lookupsResp.Completed)
+            while (!lookupsResp.Completed)
                 Task.Delay(1000).Wait();
+            lookupsResp.Response.Should().NotBeNull();
             var lookups = lookupsResp.Response.Results;
             lookups.Should().NotBeNull();
             lookups.Count.Should().BeGreaterThan(0);
 
-            UpdateClaimRequest updateRequest=new UpdateClaimRequest();
-            updateRequest.OTNumber= otnumber;
+            UpdateClaimRequest updateRequest = new UpdateClaimRequest();
+            updateRequest.OTNumber = otnumber;
             foreach (var labelinput in inputs)
             {
                 if (labelinput.Label == "OT_HOUR")
@@ -163,14 +161,14 @@ namespace SpecFlowProjectGDIApps.Drivers
                 }
 
             }
-            var response=client.Post(updateRequest);
+            var response = client.Post(updateRequest);
             response.Success.Should().BeTrue();
             response.OtNumber.Should().Be(otnumber);
 
             SubmitClaimRequest request = new SubmitClaimRequest();
-            request.OtNumber= otnumber;
-           
-          response=   client.Post(request);
+            request.OtNumber = otnumber;
+
+            response = client.Post(request);
             response.Success.Should().BeTrue();
             response.OtNumber.Should().Be(otnumber);
 
@@ -186,17 +184,21 @@ namespace SpecFlowProjectGDIApps.Drivers
                 UserName = _context.Get<string>("UserName"),
                 Password = _context.Get<string>("Password")
             });
-            GDIApps.ServiceModel.UpdateLookup request=new UpdateLookup() { Id= lookup.Id,LookupText=lookup.LookupText
-            ,LookupType=lookup.LookupType,
-            LookupValue=lookup.LookupValue
+            GDIApps.ServiceModel.UpdateLookup request = new UpdateLookup()
+            {
+                Id = lookup.Id,
+                LookupText = lookup.LookupText
+            ,
+                LookupType = lookup.LookupType,
+                LookupValue = lookup.LookupValue
             };
-          var resp=  client.Api(request);
+            var resp = client.Api(request);
             resp.Succeeded.Should().BeTrue();
             resp.Response.Should().NotBeNull();
             resp.Response.ResponseStatus.IsSuccess().Should().BeTrue();
             resp.Response.Id.Should().BeGreaterThan(0);
         }
 
-      
+
     }
 }

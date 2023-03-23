@@ -32,7 +32,7 @@ namespace BusinessRules
                 if (createdDate == null) 
                     createdDate = DateTime.Now; 
                 var emp = _externalData.GetEmployeeById(employeeId);
-            Overtime data = CreateAuditBase<Overtime>();
+                Overtime data = CreateAuditBase<Overtime>();
                 data.STATUS = "DRAFT";
              
                 data.EMPLOYEE_ID = emp.EMPLOYEE_ID;
@@ -82,10 +82,7 @@ namespace BusinessRules
             if (overtimeData == null)
                 throw new Exception("OT Number: " + otNumber + " not found");
             overtimeData.STATUS = "WAITING FOR FIRST APPROVAL";
-          
-        
-            var reason = cn.Select<Lookup>(l => l.LookupType == LOOKUPTYPE.OT_REASON && l.LookupValue==reasonCode).FirstOrDefault();
-            overtimeData.OT_REASON = reason.LookupText;
+  
             FillApprover(overtimeData);
             UpdateAudit<Overtime>(overtimeData);
             cn.Save(overtimeData);
