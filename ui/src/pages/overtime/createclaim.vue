@@ -247,12 +247,21 @@ const onClaimSave= async (e:any)=>{
         await LoadOTDraftData();
     }
 }
-const onClaimRemove=(e:any)=>{
-
+const onClaimRemove=async (e:any)=>{
+    let req = new DeleteClaimRequest({ otNumber: e.dataItem.OT_NUMBER });
+        let apiRes = await client.api(req);
+        if (apiRes.completed) {
+            if (apiRes.response?.success) {
+                showNotifSuccess("Delete Draft Claim", `${e.dataItem.OT_NUMBER} deleted successfully`);
+            } else {
+                showNotifError("Delete Draft Claim", `${e.dataItem.OT_NUMBER} delete failed: ${apiRes.response?.errorMessage}`);
+            }
+            await LoadOTDraftData();
+        }
 }
 const onClaimCancelChanges=(e:any)=>{
-InEditOTData.value=undefined;
-MapGridOTData();
+    InEditOTData.value=undefined;
+    MapGridOTData();
 }
 let OTReasonData=ref<Lookup[]>([]);
 const LoadReasonData=async()=>{
