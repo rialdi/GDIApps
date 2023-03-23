@@ -30,6 +30,16 @@ export default {
         }
       ],
     },
+    {
+      name:"overtime",
+      icon: "si si-grid",
+      sub:[
+        {
+          name:'Create Claim',
+          to:'create-claim'
+        }
+      ]
+    }
     /*
     {
       name: "Page Packs",

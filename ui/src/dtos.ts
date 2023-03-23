@@ -1,6 +1,6 @@
 /* Options:
-Date: 2023-02-14 09:48:52
-Version: 6.60
+Date: 2023-03-21 12:21:04
+Version: 6.70
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
 
@@ -94,12 +94,6 @@ export class QueryBase
     public constructor(init?: Partial<QueryBase>) { (Object as any).assign(this, init); }
 }
 
-export class QueryData<T> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class QueryDb_1<T> extends QueryBase
 {
 
@@ -130,6 +124,60 @@ export class AuditBase
     public deletedBy?: string;
 
     public constructor(init?: Partial<AuditBase>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
+export class Overtime extends AuditBase
+{
+    // @DataMember(Name="OT_NUMBER")
+    public OT_NUMBER?: string;
+
+    // @DataMember(Name="EMPLOYEE_ID")
+    public EMPLOYEE_ID?: string;
+
+    // @DataMember(Name="NAME")
+    public NAME?: string;
+
+    // @DataMember(Name="OT_DATE")
+    public OT_DATE?: string;
+
+    // @DataMember(Name="OT_HOUR")
+    public OT_HOUR?: number;
+
+    // @DataMember(Name="OT_REASON")
+    public OT_REASON?: string;
+
+    // @DataMember(Name="OT_REASON_CODE")
+    public OT_REASON_CODE?: string;
+
+    // @DataMember(Name="POS_DEPT")
+    public POS_DEPT?: string;
+
+    // @DataMember(Name="POSITION_ID")
+    public POSITION_ID?: string;
+
+    // @DataMember(Name="FIRST_APPROVER_ID")
+    public FIRST_APPROVER_ID?: string;
+
+    // @DataMember(Name="FIRST_APPROVER_NAME")
+    public FIRST_APPROVER_NAME?: string;
+
+    // @DataMember(Name="SECONDARY_APPROVER_ID")
+    public SECONDARY_APPROVER_ID?: string;
+
+    // @DataMember(Name="SECONDARY_APPROVER_NAME")
+    public SECONDARY_APPROVER_NAME?: string;
+
+    // @DataMember(Name="STATUS")
+    public STATUS?: string;
+
+    public constructor(init?: Partial<Overtime>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class QueryData<T> extends QueryBase
+{
+
+    public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 export enum RoomType
@@ -185,7 +233,7 @@ export class Project extends AuditBase
     public durationDays?: number;
     public estimatedStartDate?: string;
     public estimatedEndDate?: string;
-    public actualtartDate?: string;
+    public actualStartDate?: string;
     public actualEndDate?: string;
     public isActive?: boolean;
 
@@ -283,6 +331,7 @@ export enum LOOKUPTYPE
 {
     STATUS = 'STATUS',
     PRIORITY = 'PRIORITY',
+    OT_REASON = 'OT_REASON',
 }
 
 export class Lookup extends AuditBase
@@ -392,6 +441,21 @@ export class UserAuth
 }
 
 // @DataContract
+export class EmployeeOption
+{
+    // @DataMember(Name="EMPLOYEE_ID")
+    public EMPLOYEE_ID?: string;
+
+    // @DataMember(Name="NAME")
+    public NAME?: string;
+
+    // @DataMember(Name="POS_DEPT")
+    public POS_DEPT?: string;
+
+    public constructor(init?: Partial<EmployeeOption>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
 export class ResponseStatus
 {
     // @DataMember(Order=1)
@@ -415,9 +479,7 @@ export class ResponseStatus
 // @ValidateRequest(Validator="IsAuthenticated")
 export class AppUser extends UserAuth
 {
-    // @Input(Type="file")
     public profileUrl?: string;
-
     public lastLoginIp?: string;
     public lastLoginDate?: string;
     public employeeId?: string;
@@ -432,7 +494,6 @@ export class AppUser extends UserAuth
 export class UploadUserProfile implements IReturn<UploadUserProfile>, IPost
 {
     public email?: string;
-    // @Input(Type="file")
     public profileUrl?: string;
 
     public constructor(init?: Partial<UploadUserProfile>) { (Object as any).assign(this, init); }
@@ -456,6 +517,50 @@ export class HelloResponse
     public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
 }
 
+export class CRUDClaimItemResponse
+{
+    public success?: boolean;
+    public otNumber?: string;
+    public errorMessage?: string;
+
+    public constructor(init?: Partial<CRUDClaimItemResponse>) { (Object as any).assign(this, init); }
+}
+
+export class CreateOvertimeResponse
+{
+    public items?: CRUDClaimItemResponse[];
+
+    public constructor(init?: Partial<CreateOvertimeResponse>) { (Object as any).assign(this, init); }
+}
+
+// @DataContract
+export class QueryResponse<Overtime>
+{
+    // @DataMember(Order=1)
+    public offset?: number;
+
+    // @DataMember(Order=2)
+    public total?: number;
+
+    // @DataMember(Order=3)
+    public results?: Overtime[];
+
+    // @DataMember(Order=4)
+    public meta?: { [index: string]: string; };
+
+    // @DataMember(Order=5)
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<QueryResponse<Overtime>>) { (Object as any).assign(this, init); }
+}
+
+export class EmployeeSelectionsResponse
+{
+    public employees?: EmployeeOption[];
+
+    public constructor(init?: Partial<EmployeeSelectionsResponse>) { (Object as any).assign(this, init); }
+}
+
 export class Todo
 {
     public id?: number;
@@ -466,24 +571,39 @@ export class Todo
 }
 
 // @DataContract
-export class QueryResponse<Todo>
+export class RegisterResponse implements IHasSessionId, IHasBearerToken
 {
     // @DataMember(Order=1)
-    public offset?: number;
+    public userId?: string;
 
     // @DataMember(Order=2)
-    public total?: number;
+    public sessionId?: string;
 
     // @DataMember(Order=3)
-    public results?: Todo[];
+    public userName?: string;
 
     // @DataMember(Order=4)
-    public meta?: { [index: string]: string; };
+    public referrerUrl?: string;
 
     // @DataMember(Order=5)
+    public bearerToken?: string;
+
+    // @DataMember(Order=6)
+    public refreshToken?: string;
+
+    // @DataMember(Order=7)
+    public roles?: string[];
+
+    // @DataMember(Order=8)
+    public permissions?: string[];
+
+    // @DataMember(Order=9)
     public responseStatus?: ResponseStatus;
 
-    public constructor(init?: Partial<QueryResponse<Todo>>) { (Object as any).assign(this, init); }
+    // @DataMember(Order=10)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -565,42 +685,6 @@ export class UnAssignRolesResponse
 }
 
 // @DataContract
-export class RegisterResponse implements IHasSessionId, IHasBearerToken
-{
-    // @DataMember(Order=1)
-    public userId?: string;
-
-    // @DataMember(Order=2)
-    public sessionId?: string;
-
-    // @DataMember(Order=3)
-    public userName?: string;
-
-    // @DataMember(Order=4)
-    public referrerUrl?: string;
-
-    // @DataMember(Order=5)
-    public bearerToken?: string;
-
-    // @DataMember(Order=6)
-    public refreshToken?: string;
-
-    // @DataMember(Order=7)
-    public roles?: string[];
-
-    // @DataMember(Order=8)
-    public permissions?: string[];
-
-    // @DataMember(Order=9)
-    public responseStatus?: ResponseStatus;
-
-    // @DataMember(Order=10)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<RegisterResponse>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
 export class IdResponse
 {
     // @DataMember(Order=1)
@@ -638,7 +722,6 @@ export class UpdateAppUser
     public email?: string;
     public fullName?: string;
     public phoneNumber?: string;
-    // @Input(Type="file")
     public profileUrl?: string;
 
     public constructor(init?: Partial<UpdateAppUser>) { (Object as any).assign(this, init); }
@@ -693,6 +776,73 @@ export class Hello implements IReturn<HelloResponse>
     public getTypeName() { return 'Hello'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new HelloResponse(); }
+}
+
+// @Route("/createclaim", "POST")
+export class CreateOvertimeDraft implements IReturn<CreateOvertimeResponse>, IPost
+{
+    public otDate?: string;
+    public employeeIds?: string[];
+
+    public constructor(init?: Partial<CreateOvertimeDraft>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateOvertimeDraft'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CreateOvertimeResponse(); }
+}
+
+// @Route("/submitclaim", "POST")
+export class SubmitClaimRequest implements IReturn<CRUDClaimItemResponse>
+{
+    public otNumber?: string;
+
+    public constructor(init?: Partial<SubmitClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'SubmitClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDClaimItemResponse(); }
+}
+
+export class UpdateClaimRequest implements IReturn<CRUDClaimItemResponse>
+{
+    public otNumber?: string;
+    public otHour?: number;
+    public reasonCode?: string;
+
+    public constructor(init?: Partial<UpdateClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDClaimItemResponse(); }
+}
+
+export class DeleteClaimRequest implements IReturn<CRUDClaimItemResponse>
+{
+    public otNumber?: string;
+
+    public constructor(init?: Partial<DeleteClaimRequest>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteClaimRequest'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDClaimItemResponse(); }
+}
+
+// @Route("/OvertimeDraft", "GET")
+export class QueryOvertimeDraft extends QueryDb_1<Overtime> implements IReturn<QueryResponse<Overtime>>
+{
+    public id?: string;
+
+    public constructor(init?: Partial<QueryOvertimeDraft>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryOvertimeDraft'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<Overtime>(); }
+}
+
+// @Route("/employeeoptions")
+export class EmployeeSelections implements IReturn<EmployeeSelectionsResponse>
+{
+    public oDataParam?: string;
+
+    public constructor(init?: Partial<EmployeeSelections>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'EmployeeSelections'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new EmployeeSelectionsResponse(); }
 }
 
 // @Route("/todos", "GET")
@@ -755,6 +905,48 @@ export class DeleteTodos implements IReturnVoid, IDelete
     public getTypeName() { return 'DeleteTodos'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
+}
+
+/** @description Sign Up */
+// @Route("/register", "PUT,POST")
+// @Api(Description="Sign Up")
+// @DataContract
+export class Register implements IReturn<RegisterResponse>, IPost
+{
+    // @DataMember(Order=1)
+    public userName?: string;
+
+    // @DataMember(Order=2)
+    public firstName?: string;
+
+    // @DataMember(Order=3)
+    public lastName?: string;
+
+    // @DataMember(Order=4)
+    public displayName?: string;
+
+    // @DataMember(Order=5)
+    public email?: string;
+
+    // @DataMember(Order=6)
+    public password?: string;
+
+    // @DataMember(Order=7)
+    public confirmPassword?: string;
+
+    // @DataMember(Order=8)
+    public autoLogin?: boolean;
+
+    // @DataMember(Order=10)
+    public errorView?: string;
+
+    // @DataMember(Order=11)
+    public meta?: { [index: string]: string; };
+
+    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'Register'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new RegisterResponse(); }
 }
 
 /** @description Sign In */
@@ -869,48 +1061,6 @@ export class UnAssignRoles implements IReturn<UnAssignRolesResponse>, IPost
     public createResponse() { return new UnAssignRolesResponse(); }
 }
 
-/** @description Sign Up */
-// @Route("/register", "PUT,POST")
-// @Api(Description="Sign Up")
-// @DataContract
-export class Register implements IReturn<RegisterResponse>, IPost
-{
-    // @DataMember(Order=1)
-    public userName?: string;
-
-    // @DataMember(Order=2)
-    public firstName?: string;
-
-    // @DataMember(Order=3)
-    public lastName?: string;
-
-    // @DataMember(Order=4)
-    public displayName?: string;
-
-    // @DataMember(Order=5)
-    public email?: string;
-
-    // @DataMember(Order=6)
-    public password?: string;
-
-    // @DataMember(Order=7)
-    public confirmPassword?: string;
-
-    // @DataMember(Order=8)
-    public autoLogin?: boolean;
-
-    // @DataMember(Order=10)
-    public errorView?: string;
-
-    // @DataMember(Order=11)
-    public meta?: { [index: string]: string; };
-
-    public constructor(init?: Partial<Register>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'Register'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new RegisterResponse(); }
-}
-
 /** @description Find Bookings */
 // @Route("/bookings", "GET")
 // @Route("/bookings/{Id}", "GET")
@@ -1011,7 +1161,6 @@ export class CreateBooking implements IReturn<IdResponse>, ICreateDb<Booking>
 
     public bookingStartDate?: string;
     public bookingEndDate?: string;
-    // @Input(Type="textarea")
     public notes?: string;
 
     public constructor(init?: Partial<CreateBooking>) { (Object as any).assign(this, init); }

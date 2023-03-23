@@ -69,7 +69,7 @@ const BackendPagesGenericInbox = () =>
 const BackendPagesGenericSidebarMiniNav = () =>
   import("@/views/backend/pages/generic/SidebarMiniNavView.vue");
 
-
+const CreateClaimOT=() => import("@/pages/overtime/createclaim.vue");
 const routes = [
   {
     path: "/",
@@ -155,6 +155,16 @@ const routes = [
             component: ProjectPages,
           }
         ],
+      },
+      {
+        path:"overtime",
+        children:[
+          {
+            path:"create",
+            name:"create-claim",
+            component:CreateClaimOT,
+          }
+        ]
       },
       // {
       //   path: "admins",
