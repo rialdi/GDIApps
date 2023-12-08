@@ -1,20 +1,27 @@
 <template>
-    <KLabel :editor-id="id" :editor-valid="isValid" :disabled="disabled" :optional="optional" class="form-label">
-        {{label}}
-    </KLabel>
     <div class="k-form-field-wrap">
-        <kDatePicker 
-            :id="id"
-            :value="modelValue"
-            :format="format"
-            :disabled="disabled"
-            :placeholder="placeholder"
-            :required="required"
-            :validation-message="valMessage"
-            @change="handleChange"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            />
+        <div class="row align-items-center m-1">
+            <div v-if="label != '' && labelPosition === 'left'" class="col-sm-3">
+                <label>{{ label }}</label>
+            </div>
+            <div class="col-sm">
+                <KLabel v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
+                    {{ label }}
+                </KLabel>
+                <kDatePicker 
+                    :id="id"
+                    :value="modelValue"
+                    :format="format"
+                    :disabled="disabled"
+                    :placeholder="placeholder"
+                    :required="required"
+                    :validation-message="valMessage"
+                    @change="handleChange"
+                    @blur="handleBlur"
+                    @focus="handleFocus"
+                    />
+            </div>
+        </div>
         <KError v-if="!isValid">
             {{ valMessage }}
         </KError>
@@ -22,7 +29,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Error as KError, Hint as KHint, Label as KLabel } from '@progress/kendo-vue-labels';
+import { Error as KError, Hint as KHint, Label as KLabel} from '@progress/kendo-vue-labels';
 import { DatePicker as kDatePicker } from '@progress/kendo-vue-dateinputs';
 
 export interface Props {
@@ -31,7 +38,7 @@ export interface Props {
     value?: Date |undefined,
     modelValue?: Date| undefined,
     format?: string | undefined,
-    showLabel?: boolean|true,
+    labelPosition?: string | undefined,
     label?: string,
     valid?: boolean | true,
     validationMessage?: string,

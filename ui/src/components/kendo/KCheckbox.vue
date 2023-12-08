@@ -1,16 +1,23 @@
 <template>
-    <KLabel :editor-id="id"  :optional="optional">
-    {{label}}
-    </KLabel>
     <div class="k-form-field-wrap">
-    <span>
-        <KCheckbox 
-            :value="modelValue"
-            :id="id"
-            @change="handleChange"
-            @blur="handleBlur"
-            @focus="handleFocus" />
-        </span>
+        <div class="row align-items-center m-1 ">
+            <div v-if="label != '' && labelPosition === 'left'" class="col-sm-3">
+                <label class="">{{ label }}</label>
+            </div>
+            <div class="col-sm">
+                <label v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
+                    {{ label }}
+                </label>
+                <span>
+                    <KCheckbox 
+                        :value="modelValue"
+                        :id="id"
+                        @change="handleChange"
+                        @blur="handleBlur"
+                        @focus="handleFocus" />
+                </span>
+            </div>
+        </div>
         <KError v-if="showValidationMessage">
             {{validationMessage}}
         </KError>
@@ -18,14 +25,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Error as KError, Hint as KHint, Label as KLabel } from '@progress/kendo-vue-labels';
+import { Error as KError, Hint as KHint } from '@progress/kendo-vue-labels';
 import { Checkbox  as KCheckbox } from "@progress/kendo-vue-inputs";
 
 const props = 
 defineProps<{
     id: string,
     modelValue?: boolean | string,
-    showLabel?: boolean|true,
+    labelPosition?: string | undefined,
     label?: string,
     optional?: boolean|true,
     valid?: boolean | true,

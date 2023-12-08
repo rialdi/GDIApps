@@ -1,28 +1,31 @@
 <template>
-    <div>
-        <!-- <label v-if="useLabel && showLabel" :for="id" class="form-label">{{ useLabel }}</label> -->
-        <kLabel v-if="showLabel" :editor-id="id" :editor-valid="valid" class="form-label">
-            {{label}}
-        </kLabel>
-        <div class="k-form-field-wrap">
-            <kComboBox
-                :style="{ width: '100%' }" 
-                :data-items="currentDataItemList"
-                :id="id"
-                :name="id"
-                :label="(showLabel ? undefined : label)"
-                :value-field="valueField"
-                :text-field="textField"
-                :value-primitive="true"
-                :value="value"
-                :filterable="true"
-                :disabled="disabled"
-                :required="required"
-                @filterchange="handleFilterChange"
-                @change="handleChange"
-                @blur="handleBlur"
-                @focus="handleFocus"
-                />
+    <div class="k-form-field-wrap">
+        <div class="row align-items-center m-1 ">
+            <div v-if="label != '' && labelPosition === 'left'" class="col-sm-3">
+                <label class="">{{ label }}</label>
+            </div>
+            <div class="col-sm">
+                <KLabel v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
+                    {{ label }}
+                </KLabel>
+                <kComboBox
+                    :style="{ width: '100%' }" 
+                    :data-items="currentDataItemList"
+                    :id="id"
+                    :name="id"
+                    :value-field="valueField"
+                    :text-field="textField"
+                    :value-primitive="true"
+                    :value="value"
+                    :filterable="true"
+                    :disabled="disabled"
+                    :required="required"
+                    @filterchange="handleFilterChange"
+                    @change="handleChange"
+                    @blur="handleBlur"
+                    @focus="handleFocus"
+                    />
+            </div>
         </div>
         <kError v-if="showValidationMessage">
             {{validationMessage}}
@@ -32,7 +35,7 @@
 </template>
 <script setup lang="ts">
 import { ComboBox as kComboBox } from "@progress/kendo-vue-dropdowns";
-import { Error as kError, Hint as kHint, Label as kLabel } from "@progress/kendo-vue-labels";
+import { Error as kError, Hint as kHint, Label as KLabel } from "@progress/kendo-vue-labels";
 import { process, filterBy, CompositeFilterDescriptor } from '@progress/kendo-data-query'
 
 // let currentDataItemList = ref<any[]>([])
@@ -44,7 +47,7 @@ defineProps<{
     valueField?: string | undefined,
     textField?: string | undefined,
     value?: string | number | undefined | null,
-    showLabel?: boolean|true,
+    labelPosition?: string | undefined,
     label?: string,
     valid?: boolean | true,
     validationMessage?: string,

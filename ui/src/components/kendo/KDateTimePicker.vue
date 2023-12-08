@@ -8,7 +8,7 @@
                 <KLabel v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
                     {{ label }}
                 </KLabel>
-                <NumericTextBox 
+                <kDateTimePicker 
                     :id="id"
                     :value="modelValue"
                     :format="format"
@@ -21,6 +21,7 @@
                     @focus="handleFocus"
                 />
             </div>
+            
         </div>
         <KError v-if="!isValid">
             {{ valMessage }}
@@ -30,16 +31,16 @@
 </template>
 <script setup lang="ts">
 import { Error as KError, Hint as KHint, Label as KLabel} from '@progress/kendo-vue-labels';
-import { NumericTextBox } from '@progress/kendo-vue-inputs';
+import { DateTimePicker as kDateTimePicker } from '@progress/kendo-vue-dateinputs';
 
 export interface Props {
     id: string,
     optional?: boolean|true,
-    value?: number | null | undefined,
-    modelValue?: number | null |undefined,
+    value?: Date |undefined,
+    modelValue?: Date| undefined,
     format?: string | undefined,
+    labelPosition?: string | undefined,
     label?: string,
-    labelPosition?: string | false,
     valid?: boolean | true,
     validationMessage?: string,
     touched?: boolean | false,
@@ -51,7 +52,7 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    format: 'N2'
+    format: 'dd-MMM-yyyy'
 })
 
 const emit = defineEmits<{

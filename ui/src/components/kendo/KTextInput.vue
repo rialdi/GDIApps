@@ -1,21 +1,28 @@
 <template>
-    <KLabel :editor-id="id" :editor-valid="isValid" :disabled="disabled" :optional="optional" class="form-label">
-        {{label}}
-    </KLabel>
     <div class="k-form-field-wrap">
-        <KInput 
-            :id="id"
-            :type="type"
-            :valid="isValid"
-            :value="modelValue"
-            :disabled="disabled"
-            :placeholder="placeholder"
-            :required="required"
-            :validation-message="valMessage"
-            @input="handleChange"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            />
+        <div class="row align-items-center m-1 ">
+            <div v-if="label != '' && labelPosition === 'left'" class="col-sm-3">
+                <label class="">{{ label }}</label>
+            </div>
+            <div class="col-sm">
+                <label v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
+                    {{ label }}
+                </label>
+                <KInput 
+                    :id="id"
+                    :type="type"
+                    :valid="isValid"
+                    :value="modelValue"
+                    :disabled="disabled"
+                    :placeholder="placeholder"
+                    :required="required"
+                    :validation-message="valMessage"
+                    @input="handleChange"
+                    @blur="handleBlur"
+                    @focus="handleFocus"
+                />
+            </div>
+        </div>
         <KError v-if="!isValid">
             {{ valMessage }}
         </KError>
@@ -23,7 +30,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Error as KError, Hint as KHint, Label as KLabel } from '@progress/kendo-vue-labels';
+import { Error as KError, Hint as KHint } from '@progress/kendo-vue-labels';
 import { Input as KInput } from '@progress/kendo-vue-inputs';
 
 const props = 
@@ -32,7 +39,7 @@ defineProps<{
     type: string | undefined,
     optional?: boolean|true,
     modelValue?: string | number | undefined,
-    showLabel?: boolean|true,
+    labelPosition?: string | undefined,
     label?: string,
     valid?: boolean | true,
     validationMessage?: string,

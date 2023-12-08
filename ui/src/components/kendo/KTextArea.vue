@@ -1,22 +1,29 @@
 <template>
-    <KLabel :editor-id="id" :disabled="disabled" :optional="optional" class="form-label">
-        {{label}}
-    </KLabel>
     <div class="k-form-field-wrap">
-        <KTextArea 
-            :id="id"
-            :value="modelValue"
-            :disabled="disabled"
-            :placeholder="placeholder"
-            :required="required"
-            :validation-message="validationMessage"
-            :maxlength="max"
-            :icon-name="iconName"
-            :rows="rows"
-            @input="handleChange"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            />
+        <div class="row align-items-center m-1 ">
+            <div v-if="label != '' && labelPosition === 'left'" class="col-sm-3">
+                <label class="">{{ label }}</label>
+            </div>
+            <div class="col-sm">
+                <label v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
+                    {{ label }}
+                </label>
+                <KTextArea 
+                    :id="id"
+                    :value="modelValue"
+                    :disabled="disabled"
+                    :placeholder="placeholder"
+                    :required="required"
+                    :validation-message="validationMessage"
+                    :maxlength="max"
+                    :icon-name="iconName"
+                    :rows="rows"
+                    @input="handleChange"
+                    @blur="handleBlur"
+                    @focus="handleFocus"
+                />
+            </div>
+        </div>
         <KError v-if="showValidationMessage">
           {{ validationMessage }}
           <KHint :direction="'end'"> {{ modelValue?.length }} / {{ max }} </KHint>
@@ -28,7 +35,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { Error as KError, Hint as KHint, Label as KLabel } from '@progress/kendo-vue-labels';
+import { Error as KError, Hint as KHint } from '@progress/kendo-vue-labels';
 import { TextArea as KTextArea } from '@progress/kendo-vue-inputs';
 
 const props = 
@@ -36,7 +43,7 @@ defineProps<{
     id: string,
     optional?: boolean|true,
     modelValue?: string | undefined,
-    showLabel?: boolean|true,
+    labelPosition?: string | undefined,
     label?: string,
     valid?: boolean | true,
     validationMessage?: string,
@@ -55,7 +62,7 @@ defineProps<{
     (e:'update:modelValue', value:any): () => void
     (e:'change', value:any): () => void
     (e:'filterchange', value:any): () => void
-    (e:'blur', value:any): () => void
+    (e:'blur', value:any): () => void 
     (e:'focus', value:any): () => void
 }>()
 
