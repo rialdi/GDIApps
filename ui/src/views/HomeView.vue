@@ -135,7 +135,7 @@ const dsManagement= [
               <span>GDIApps Home 9  version is here!</span>
             </div>
             <h1 class="fs-2 fw-bold mb-3">
-              Build web apps that your users will love using
+              GDI Apps for GDI Employees
             </h1>
             <p class="fs-5 fw-medium text-muted mb-5 mx-xl-8">
               One super flexible UI framework for amazing developers and web
