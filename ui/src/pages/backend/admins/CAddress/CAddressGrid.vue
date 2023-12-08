@@ -27,9 +27,11 @@
         :total="total"
         :filterable="props.filterable"
         :filter="filter"
+        :columns="gridColumProperties"
         @filterchange="filterChangeHandler"
         @sortchange="sortChangeHandler"
-        :columns="gridColumProperties"
+        @pagechange="pageChangeHandler"
+        
     >
     <kGridToolbar>
         <kButton icon="add" title="Add New" :theme-color="'primary'" @click='onInsert'></kButton>
@@ -93,57 +95,56 @@ const props = defineProps<{
     showExportButton?: boolean
 }>()
 
-function useBreakpoints() {
-  let windowWidth = ref(window.innerWidth)
-
-  const onWidthChange = () => windowWidth.value = window.innerWidth
-  
-  onMounted(() => window.addEventListener('resize', onWidthChange))
-  onUnmounted(() => window.removeEventListener('resize', onWidthChange))
-
-  const currWindowType = computed(() => {
-    if (windowWidth.value < 550) return 'xs'
-    if (windowWidth.value >= 550 && windowWidth.value < 1200) return 'md'
-    if (windowWidth.value >= 1200) return 'lg'
-    return null;
-  })
-
-  const width = computed(() =>  windowWidth.value)
-  return { width, currWindowType }
-}
-
-let lastWindowType = ref<string | null>("lg")
-
-const { width, currWindowType } = useBreakpoints()
-
 const editFormsRef = ref<InstanceType<typeof EditForms>>()
 
 // const editFormRef = ref<InstanceType<typeof EditForm>>()
 let kDialogTitle = ref<string>("Add Client Address")
 
-const onShowHideColumns = () => {
-  if(currWindowType.value != lastWindowType.value && width.value > 100) {
-    gridColumProperties.map( col => {
-      if(col.title != "Action") {
-        if(col.title == "CAddresss"){
-          col.hidden = !col.hidden
-        } else {
-          col.hidden = !col.hidden
-        }
-      }
-    })
-    lastWindowType.value = currWindowType.value
-    refreshDatas(props.selectedClientId)
-  }
-}
+// function useBreakpoints() {
+//   let windowWidth = ref(window.innerWidth)
+
+//   const onWidthChange = () => windowWidth.value = window.innerWidth
+  
+//   onMounted(() => window.addEventListener('resize', onWidthChange))
+//   onUnmounted(() => window.removeEventListener('resize', onWidthChange))
+
+//   const currWindowType = computed(() => {
+//     if (windowWidth.value < 550) return 'xs'
+//     if (windowWidth.value >= 550 && windowWidth.value < 1200) return 'md'
+//     if (windowWidth.value >= 1200) return 'lg'
+//     return null;
+//   })
+
+//   const width = computed(() =>  windowWidth.value)
+//   return { width, currWindowType }
+// }
+// let lastWindowType = ref<string | null>("lg")
+// const { width, currWindowType } = useBreakpoints()
+// const onShowHideColumns = () => {
+//   if(currWindowType.value != lastWindowType.value && width.value > 100) {
+//     gridColumProperties.map( col => {
+//       if(col.title != "Action") {
+//         if(col.title == "CAddresss"){
+//           col.hidden = !col.hidden
+//         } else {
+//           col.hidden = !col.hidden
+//         }
+//       }
+//     })
+//     lastWindowType.value = currWindowType.value
+//     refreshDatas(props.selectedClientId)
+//   }
+// }
 
 onMounted(async () => {
-  window.addEventListener('resize', onShowHideColumns)
+  // window.addEventListener('resize', onShowHideColumns)
   await refreshDatas(props.selectedClientId)
 });
 
 let CAddressData = ref<CAddressView[]>([])
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
+let take = ref<number | undefined>(10)
+let skip = ref<number | undefined>(0)
 let total = ref<number | undefined>(10)
 let dataItemInEdit = ref<CAddressView>()
 const sort = ref<SortDescriptor[] | undefined>([]);
@@ -159,10 +160,24 @@ let gridColumProperties = [
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
+let currSelectedClientId = ref<number | undefined>()
+const updateSelectedClientId = (val: any) => {
+  currSelectedClientId.value = val
+  skip.value = 0
+  // Show Hide Client Columns
+  gridColumProperties.map( col => {
+    if(col.title == "Client") {
+      col.hidden = !(!currSelectedClientId.value)
+    }
+  })
+
+  refreshDatas() 
+}
+
 const refreshDatas = async (selectedClientId?: any ) => {
   const queryCAddresss = (selectedClientId) ? 
-    new QueryCAddresss({ clientId: selectedClientId }) : 
-    new QueryCAddresss() 
+    new QueryCAddresss({ clientId: selectedClientId, take: take.value, skip: skip.value }) : 
+    new QueryCAddresss({ take: take.value, skip: skip.value }) 
 
   const api = await client.api(queryCAddresss)
   if (api.succeeded) {
@@ -295,7 +310,14 @@ const onExportToExcel = () => {
   });
 }
 
+const pageChangeHandler = (e : any) => {
+    take.value = e.page.take
+    skip.value = e.page.skip
+    refreshDatas()
+}
+
 defineExpose({
+    updateSelectedClientId,
     refreshDatas
 })
 

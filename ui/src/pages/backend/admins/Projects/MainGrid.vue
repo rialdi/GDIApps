@@ -117,7 +117,7 @@ let gridColumProperties = [
   { field: 'code', title: 'Code', width:150 },
   { field: 'name', title: 'Name'},
 //   { field: 'totalAmount', title: 'Total Amount', format:"{0:n0}"},
-  { field: 'isActive', title: 'Is Main', cell: 'isActiveTemplate', width:85 },
+  { field: 'isActive', title: 'Active', cell: 'isActiveTemplate', width:85 },
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 

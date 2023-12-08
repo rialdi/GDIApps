@@ -2,13 +2,9 @@
 import { onMounted, ref } from "vue"
 import { Client, QueryClients } from "@/dtos"
 import { client } from "@/api"
-import { ComboBox as kComboBox} from '@progress/kendo-vue-dropdowns'
+import KComboBox  from "@/components/kendo/KComboBox.vue" 
 import { process, filterBy } from '@progress/kendo-data-query'
 import ProjectGrid from "./MainGrid.vue"
-
-
-// import provinces from "@/data/regions/provinces"
-// import cities from "@/data/regions/cities"
 
 const mainGridtRef = ref<InstanceType<typeof ProjectGrid>>()
 
@@ -30,9 +26,8 @@ const getClientList = async() => {
 }
 
 const cboClientOnChange = (e: any) => {
-  selectedClientId.value = e.value ? e.value.id : undefined
+  selectedClientId.value = e.value ?? undefined
   mainGridtRef.value?.updateSelectedClientId(selectedClientId.value)
-  // mainGridtRef.value?.refreshDatas(selectedClientId.value)
 }
 
 const onCBOClientFilter = (e : any) => {
@@ -65,20 +60,20 @@ let selectedClientId = ref<number | undefined>()
   <div class="content">
     <!-- Page Filter Parameter -->
     <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
-      <div class="row pb-2">
-        <div class="col-sm-2 text-end">
-          <label class="mr-3 mt-1">Client</label>
-        </div>
-        <div class="col-sm-4">
-          <kComboBox :id="'clientParam'"
-              :style="{ width: '230px' }"
-              :data-items="clientList"
-              :value-field="'id'"
-              :text-field="'name'"
-              :filterable="true"
-              @change="cboClientOnChange"
-              @filterchange="onCBOClientFilter"
-          ></kComboBox>
+      <div class="row">
+          <div class="col-6">
+            <!-- :style="{ width: '50%' }" -->
+            <KComboBox :id="'clientParam'"
+                :data-items="clientList"
+                :value-field="'id'"
+                :text-field="'name'"
+                :filterable="true"
+                :label="'Client'"
+                :label-position="'left'"
+                :valid="true"
+                @change="cboClientOnChange"
+                @filterchange="onCBOClientFilter"
+            ></KComboBox>
         </div>
       </div>
     </BaseBlock>
