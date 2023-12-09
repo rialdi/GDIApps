@@ -40,6 +40,11 @@ public class ProjectTask : AuditBase
 
     [References(typeof(ProjectTeam))]
     public int? ProjectTeamId { get; set;}
+
+    [References(typeof(ProjectTask))]
+    public int ProjectTaskId { get; set; }
+
+    public int TaskIndentLevel { get; set; }
 }
 
 public class ProjectTaskView : ProjectTask

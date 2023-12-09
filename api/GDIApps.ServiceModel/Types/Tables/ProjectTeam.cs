@@ -22,6 +22,13 @@ public class ProjectTeam
     [Required]
     [StringLength(100)]
     public PROJECT_TEAM_ROLE ProjectTeamRole { get; set; } 
+
+    [Required]
+    [StringLength(100)]
+    public CURRENCY_RATE ProjectTeamRoleCurrRate { get; set; } 
+
+    [Required]
+    public decimal ProjectTeamRoleRatePerDay { get; set; }
 }
 
 public class ProjectTeamView : ProjectTeam
@@ -48,6 +55,10 @@ public class CreateProjectTeam : ICreateDb<ProjectTeam>, IReturn<CRUDResponse>
 
     [ApiAllowableValues(typeof(PROJECT_TEAM_ROLE))]
     public PROJECT_TEAM_ROLE ProjectTeamRole { get; set; } 
+
+    [ApiAllowableValues(typeof(CURRENCY_RATE))]
+    public CURRENCY_RATE ProjectTeamRoleCurrRate { get; set; } 
+    public decimal ProjectTeamRoleRatePerDay { get; set; }
 }
 
 [ValidateIsAuthenticated]
@@ -60,6 +71,9 @@ public class UpdateProjectTeam : IPatchDb<ProjectTeam>, IReturn<CRUDResponse>
     
     [ApiAllowableValues(typeof(PROJECT_TEAM_ROLE))]
     public PROJECT_TEAM_ROLE ProjectTeamRole { get; set; } 
+    [ApiAllowableValues(typeof(CURRENCY_RATE))]
+    public CURRENCY_RATE ProjectTeamRoleCurrRate { get; set; } 
+    public decimal ProjectTeamRoleRatePerDay { get; set; }
 }
 
 [ValidateIsAuthenticated]

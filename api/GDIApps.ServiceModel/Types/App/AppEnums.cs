@@ -40,6 +40,11 @@ public enum PROJECT_TEAM_ROLE {
     PM
 }
 
+public enum CURRENCY_RATE {
+    USD,
+    IDR
+}
+
 // public enum PROJECT_TASK_STATUS {
 //     YET_TO_START,
 //     IN_PROGRESS,
