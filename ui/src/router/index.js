@@ -39,6 +39,10 @@ const CBankPages = () => import("@/pages/backend/admins/CBank/Index.vue");
 const CContractPages = () => import("@/pages/backend/admins/CContract/Index.vue");
 const InvoicesPages = () => import("@/pages/backend/admins/Invoices/Index.vue");
 
+
+// Projects: Pages
+const ProjectPlanPages = () => import("@/pages/backend/ProjectPlan/Index.vue");
+
 // Employee: Pages
 const TimeSheetPages = () => import("@/pages/backend/employees/TimeSheet/Index.vue");
 
@@ -209,6 +213,22 @@ const routes = [
             name: "backend-employees-review",
             component: TimeSheetPages,
           },
+        ]
+      },
+      {
+        path: "projects",
+        redirect: "/projects/plans",
+        children: [
+          {
+            path: "plans",
+            name: "backend-projects-plans",
+            component: ProjectPlanPages,
+          },
+          // {
+          //   path: "task",
+          //   name: "backend-projects-tasks",
+          //   component: TimeSheetPages,
+          // },
         ]
       },
       // {

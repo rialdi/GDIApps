@@ -18,10 +18,10 @@ public class Migration1004 : MigrationBase
 
     public override void Down()
     {
+        Db.DropTable<TimeSheet>();
         Db.DropTable<ProjectTaskDoc>();
         Db.DropTable<ProjectTask>();
         Db.DropTable<ProjectPlan>();
-        Db.DropTable<TimeSheet>();
     }
 
 }

@@ -5,6 +5,8 @@
       :edit-field="props.editField"
       :sortable="props.sortable"
       :pageable="props.pageable"
+      :groupable="props.groupable"
+      :group="$props.group"
       :total="gridDataTotal"
       :filterable="props.filterable"
       :filter="filter"
@@ -156,7 +158,7 @@ const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
 interface Props {
-responsiveColumnTitle?: string,
+  responsiveColumnTitle?: string,
   lookupList?: any[],
   lookupList1?: any[],
   valueField1?: string,
@@ -177,6 +179,8 @@ responsiveColumnTitle?: string,
   filterable?: boolean,
   sortable?: boolean,
   pageable?: boolean,
+  groupable?: boolean,
+  group?: any[],
   showExportButton?: boolean,
   showAddButton?: boolean,
   editField? : string ,

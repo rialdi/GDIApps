@@ -40,6 +40,11 @@ public class AppUser : UserAuth
     // public string MicrosoftUserId { get; set; }
 }
 
+[ValidateIsAuthenticated]
+[Tag("Projects")]
+public class QueryAppUsers : QueryDb<AppUser>{
+}
+
 [Tag("appusers")]
 [ValidateIsAuthenticated]
 public class UpdatePassword: IReturn<ResponseStatus>

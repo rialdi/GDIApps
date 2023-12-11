@@ -75,22 +75,30 @@ public class QueryProjectTasks : QueryDb<ProjectTask, ProjectTaskView>, IJoin<Pr
 [AutoApply(Behavior.AuditCreate)]
 public class CreateProjectTask : ICreateDb<ProjectTask>, IReturn<CRUDResponse>
 {
+    // #pragma warning disable CS8618 
+    #nullable disable
     public int ProjectId { get; set; }
+    public int ProjectPlanId { get; set; }
     public int No { get; set; }
-    public string TaskName { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public decimal DurationDays { get; set; }
+    public string TaskCode { get; set; }
+    public string TaskName { get; set; }
+    public string Description { get; set; }
+    public decimal? DurationDays { get; set; }
+    public DateTime? DueDate { get; set; }
     public DateTime? PlanStart { get; set; }
     public DateTime? PlanEnd { get; set; }
     public DateTime? ActualStart { get; set; }
     public DateTime? ActualEnd { get; set; }
-    // In Percent
     public decimal Completed { get; set; }
-
     [ApiAllowableValues(typeof(TASK_STATUS))]
     public TASK_STATUS Status { get; set; }
+    [ApiAllowableValues(typeof(TASK_LABEL))]
+    public TASK_LABEL TaskLabel { get; set; }
+    public int? ProjectTeamId { get; set; }
+    public bool? IsArchived { get; set; }
 
-    public int? ProjectTeamId { get; set;}
+    #nullable restore
+    // #pragma warning restore CS8618 
 }
 
 [ValidateIsAuthenticated]
@@ -98,24 +106,31 @@ public class CreateProjectTask : ICreateDb<ProjectTask>, IReturn<CRUDResponse>
 [AutoApply(Behavior.AuditModify)]
 public class UpdateProjectTask : IPatchDb<ProjectTask>, IReturn<CRUDResponse>
 {
+    // #pragma warning disable CS8618 
+    #nullable disable
     public int Id { get; set; } 
     public int ProjectId { get; set; }
+    public int ProjectPlanId { get; set; }
     public int No { get; set; }
-    public string TaskName { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public decimal DurationDays { get; set; }
+    public string TaskCode { get; set; }
+    public string TaskName { get; set; }
+    public string Description { get; set; }
+    public decimal? DurationDays { get; set; }
+    public DateTime? DueDate { get; set; }
     public DateTime? PlanStart { get; set; }
     public DateTime? PlanEnd { get; set; }
     public DateTime? ActualStart { get; set; }
     public DateTime? ActualEnd { get; set; }
-    // In Percent
     public decimal Completed { get; set; }
-
     [ApiAllowableValues(typeof(TASK_STATUS))]
     public TASK_STATUS Status { get; set; }
+    [ApiAllowableValues(typeof(TASK_LABEL))]
+    public TASK_LABEL TaskLabel { get; set; }
+    public int? ProjectTeamId { get; set; }
+    public bool? IsArchived { get; set; }
 
-    [AutoDefault(Eval = null)]
-    public int? ProjectTeamId { get; set;}
+    #nullable restore
+    // #pragma warning restore CS8618 
 }
 
 [ValidateIsAuthenticated]

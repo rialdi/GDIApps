@@ -1,6 +1,6 @@
 /* Options:
-Date: 2023-03-14 15:39:42
-Version: 6.60
+Date: 2023-12-11 17:23:29
+Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
 
@@ -41,14 +41,6 @@ export interface IHasBearerToken
 }
 
 export interface IDeleteDb<Table>
-{
-}
-
-export interface IPut
-{
-}
-
-export interface IDelete
 {
 }
 
@@ -102,7 +94,6 @@ export class InvoiceAttachment
     // @Required()
     public fileName?: string;
 
-    // @Input(Type="file")
     public attachmentUrl?: string;
 
     public constructor(init?: Partial<InvoiceAttachment>) { (Object as any).assign(this, init); }
@@ -179,12 +170,6 @@ export class QueryBase
     public meta?: { [index: string]: string; };
 
     public constructor(init?: Partial<QueryBase>) { (Object as any).assign(this, init); }
-}
-
-export class QueryData<T> extends QueryBase
-{
-
-    public constructor(init?: Partial<QueryData<T>>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class QueryDb_1<T> extends QueryBase
@@ -530,6 +515,47 @@ export class ContactUs extends AuditBase
     public constructor(init?: Partial<ContactUs>) { super(init); (Object as any).assign(this, init); }
 }
 
+export enum PROJECT_ROLE_NAME
+{
+    PROJECT_MANAGER = 'PROJECT_MANAGER',
+    BUSINESS_ANALYST = 'BUSINESS_ANALYST',
+    SYSTEM_ANALYST = 'SYSTEM_ANALYST',
+    SENIOR_DEVELOPER = 'SENIOR_DEVELOPER',
+    JUNIOR_DEVELOPER = 'JUNIOR_DEVELOPER',
+    TECHNICAL_WRITER = 'TECHNICAL_WRITER',
+}
+
+export class CRoleRate extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Client)")
+    public clientId?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public projectRoleName?: PROJECT_ROLE_NAME;
+
+    // @Required()
+    // @StringLength(100)
+    public currency?: string;
+
+    // @Required()
+    public rateInDay?: number;
+
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CRoleRate>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class CRoleRateView extends CRoleRate
+{
+    public clientCode?: string;
+    public clientName?: string;
+
+    public constructor(init?: Partial<CRoleRateView>) { super(init); (Object as any).assign(this, init); }
+}
+
 export class DailyScrumMeeting extends AuditBase
 {
     public id?: number;
@@ -760,8 +786,11 @@ export class Lookup extends AuditBase
 
 export enum TASK_STATUS
 {
+    BACKLOG = 'BACKLOG',
     YET_TO_START = 'YET_TO_START',
     IN_PROGRESS = 'IN_PROGRESS',
+    IN_REVIEW = 'IN_REVIEW',
+    TESTING = 'TESTING',
     COMPLETED = 'COMPLETED',
 }
 
@@ -814,10 +843,94 @@ export class ProjectDoc
     // @Required()
     public fileName?: string;
 
-    // @Input(Type="file")
     public attachmentUrl?: string;
 
     public constructor(init?: Partial<ProjectDoc>) { (Object as any).assign(this, init); }
+}
+
+export class ProjectPlan
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
+    public projectId?: number;
+
+    // @Required()
+    public versionNo?: number;
+
+    // @Required()
+    public taskLevel?: number;
+
+    // @Required()
+    public taskNo?: number;
+
+    // @Required()
+    public parentCode?: string;
+
+    // @Required()
+    public taskCode?: string;
+
+    public dependecyTaskCode?: string;
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public taskTitle?: string;
+
+    public durationDays?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public completedPercentage?: number;
+    public resourceCost?: number;
+
+    public constructor(init?: Partial<ProjectPlan>) { (Object as any).assign(this, init); }
+}
+
+export class ProjectPlanView extends ProjectPlan
+{
+    // @Ignore()
+    public codeTitle?: string;
+
+    // @Ignore()
+    public group1?: string;
+
+    // @Ignore()
+    public group2?: string;
+
+    // @Ignore()
+    public group3?: string;
+
+    // @Ignore()
+    public group4?: string;
+
+    public constructor(init?: Partial<ProjectPlanView>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ProjectPlanVersion
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
+    public projectId?: number;
+
+    // @Required()
+    public versionNo?: number;
+
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<ProjectPlanVersion>) { (Object as any).assign(this, init); }
+}
+
+export enum TASK_LABEL
+{
+    BUG = 'BUG',
+    ENHANCEMENT = 'ENHANCEMENT',
+    DOCUMENTATION = 'DOCUMENTATION',
+    WONTFIX = 'WONTFIX',
+    QUESTION = 'QUESTION',
+    DUPLICATE = 'DUPLICATE',
+    GOODFIRSTISSUE = 'GOODFIRSTISSUE',
+    INVALID = 'INVALID',
 }
 
 export class ProjectTask extends AuditBase
@@ -827,8 +940,15 @@ export class ProjectTask extends AuditBase
     // @References("typeof(GDIApps.ServiceModel.Types.Project)")
     public projectId?: number;
 
+    // @References("typeof(GDIApps.ServiceModel.Types.ProjectPlan)")
+    public projectPlanId?: number;
+
     // @Required()
     public no?: number;
+
+    // @Required()
+    // @StringLength(100)
+    public taskCode?: string;
 
     // @Required()
     // @StringLength(200)
@@ -837,9 +957,8 @@ export class ProjectTask extends AuditBase
     // @StringLength(1000)
     public description?: string;
 
-    // @Required()
     public durationDays?: number;
-
+    public dueDate?: string;
     public planStart?: string;
     public planEnd?: string;
     public actualStart?: string;
@@ -851,8 +970,13 @@ export class ProjectTask extends AuditBase
     // @StringLength(100)
     public status?: TASK_STATUS;
 
+    // @StringLength(1000)
+    public taskLabel?: TASK_LABEL;
+
     // @References("typeof(GDIApps.ServiceModel.Types.ProjectTeam)")
     public projectTeamId?: number;
+
+    public isArchived?: boolean;
 
     public constructor(init?: Partial<ProjectTask>) { super(init); (Object as any).assign(this, init); }
 }
@@ -866,12 +990,32 @@ export class ProjectTaskView extends ProjectTask
     public constructor(init?: Partial<ProjectTaskView>) { super(init); (Object as any).assign(this, init); }
 }
 
+export class ProjectTaskDoc
+{
+    public id?: number;
+    // @References("typeof(GDIApps.ServiceModel.Types.ProjectTask)")
+    public projectTaskId?: number;
+
+    // @Required()
+    public fileName?: string;
+
+    public attachmentUrl?: string;
+
+    public constructor(init?: Partial<ProjectTaskDoc>) { (Object as any).assign(this, init); }
+}
+
 export enum PROJECT_TEAM_ROLE
 {
     DEVELOPER = 'DEVELOPER',
     QA = 'QA',
     TEAM_LEAD = 'TEAM_LEAD',
     PM = 'PM',
+}
+
+export enum CURRENCY_RATE
+{
+    USD = 'USD',
+    IDR = 'IDR',
 }
 
 export class ProjectTeam
@@ -888,6 +1032,13 @@ export class ProjectTeam
     // @Required()
     // @StringLength(100)
     public projectTeamRole?: PROJECT_TEAM_ROLE;
+
+    // @Required()
+    // @StringLength(100)
+    public projectTeamRoleCurrRate?: CURRENCY_RATE;
+
+    // @Required()
+    public projectTeamRoleRatePerDay?: number;
 
     public constructor(init?: Partial<ProjectTeam>) { (Object as any).assign(this, init); }
 }
@@ -942,10 +1093,13 @@ export class TimeSheet extends AuditBase
     // @References("typeof(GDIApps.ServiceModel.Types.Project)")
     public projectId?: number;
 
-    public no?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.ProjectTask)")
+    public projectTaskId?: number;
+
     // @Required()
     // @StringLength(1000)
-    public taskName?: string;
+    public notes?: string;
 
     public constructor(init?: Partial<TimeSheet>) { super(init); (Object as any).assign(this, init); }
 }
@@ -1056,9 +1210,7 @@ export class ResponseStatus
 // @ValidateRequest(Validator="IsAuthenticated")
 export class AppUser extends UserAuth
 {
-    // @Input(Type="file")
     public profileUrl?: string;
-
     public employeeId?: string;
     public department?: Department;
     public isArchived?: boolean;
@@ -1072,7 +1224,6 @@ export class AppUser extends UserAuth
 export class UploadUserProfile implements IReturn<UploadUserProfile>, IPost
 {
     public email?: string;
-    // @Input(Type="file")
     public profileUrl?: string;
 
     public constructor(init?: Partial<UploadUserProfile>) { (Object as any).assign(this, init); }
@@ -1089,49 +1240,12 @@ export class ContactUsEmailResponse
     public constructor(init?: Partial<ContactUsEmailResponse>) { (Object as any).assign(this, init); }
 }
 
-export class HelloResponse
-{
-    public result?: string;
-
-    public constructor(init?: Partial<HelloResponse>) { (Object as any).assign(this, init); }
-}
-
 export class CRUDResponse
 {
     public id?: number;
     public responseStatus?: ResponseStatus;
 
     public constructor(init?: Partial<CRUDResponse>) { (Object as any).assign(this, init); }
-}
-
-export class Todo
-{
-    public id?: number;
-    public text?: string;
-    public isFinished?: boolean;
-
-    public constructor(init?: Partial<Todo>) { (Object as any).assign(this, init); }
-}
-
-// @DataContract
-export class QueryResponse<Todo>
-{
-    // @DataMember(Order=1)
-    public offset?: number;
-
-    // @DataMember(Order=2)
-    public total?: number;
-
-    // @DataMember(Order=3)
-    public results?: Todo[];
-
-    // @DataMember(Order=4)
-    public meta?: { [index: string]: string; };
-
-    // @DataMember(Order=5)
-    public responseStatus?: ResponseStatus;
-
-    public constructor(init?: Partial<QueryResponse<Todo>>) { (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -1248,6 +1362,27 @@ export class UnAssignRolesResponse
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
+// @DataContract
+export class QueryResponse<AppMenu>
+{
+    // @DataMember(Order=1)
+    public offset?: number;
+
+    // @DataMember(Order=2)
+    public total?: number;
+
+    // @DataMember(Order=3)
+    public results?: AppMenu[];
+
+    // @DataMember(Order=4)
+    public meta?: { [index: string]: string; };
+
+    // @DataMember(Order=5)
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<QueryResponse<AppMenu>>) { (Object as any).assign(this, init); }
+}
+
 // @ValidateRequest(Validator="IsAuthenticated")
 export class UpdatePassword implements IReturn<ResponseStatus>
 {
@@ -1342,18 +1477,6 @@ export class AppUserConfirmEmail
     public createResponse() {}
 }
 
-// @Route("/hello")
-// @Route("/hello/{Name}")
-export class Hello implements IReturn<HelloResponse>
-{
-    public name?: string;
-
-    public constructor(init?: Partial<Hello>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'Hello'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new HelloResponse(); }
-}
-
 // @ValidateRequest(Validator="IsAuthenticated")
 export class DeleteInvoiceAttachment implements IReturnVoid, IDeleteDb<Invoice>
 {
@@ -1373,68 +1496,6 @@ export class GetAppMenuByRole implements IReturn<CRUDResponse>
     public getTypeName() { return 'GetAppMenuByRole'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new CRUDResponse(); }
-}
-
-// @Route("/todos", "GET")
-export class QueryTodos extends QueryData<Todo> implements IReturn<QueryResponse<Todo>>
-{
-    public id?: number;
-    public ids?: number[];
-    public textContains?: string;
-
-    public constructor(init?: Partial<QueryTodos>) { super(init); (Object as any).assign(this, init); }
-    public getTypeName() { return 'QueryTodos'; }
-    public getMethod() { return 'GET'; }
-    public createResponse() { return new QueryResponse<Todo>(); }
-}
-
-// @Route("/todos", "POST")
-export class CreateTodo implements IReturn<Todo>, IPost
-{
-    // @Validate(Validator="NotEmpty")
-    public text?: string;
-
-    public constructor(init?: Partial<CreateTodo>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'CreateTodo'; }
-    public getMethod() { return 'POST'; }
-    public createResponse() { return new Todo(); }
-}
-
-// @Route("/todos/{Id}", "PUT")
-export class UpdateTodo implements IReturn<Todo>, IPut
-{
-    public id?: number;
-    // @Validate(Validator="NotEmpty")
-    public text?: string;
-
-    public isFinished?: boolean;
-
-    public constructor(init?: Partial<UpdateTodo>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'UpdateTodo'; }
-    public getMethod() { return 'PUT'; }
-    public createResponse() { return new Todo(); }
-}
-
-// @Route("/todos/{Id}", "DELETE")
-export class DeleteTodo implements IReturnVoid, IDelete
-{
-    public id?: number;
-
-    public constructor(init?: Partial<DeleteTodo>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'DeleteTodo'; }
-    public getMethod() { return 'DELETE'; }
-    public createResponse() {}
-}
-
-// @Route("/todos", "DELETE")
-export class DeleteTodos implements IReturnVoid, IDelete
-{
-    public ids?: number[];
-
-    public constructor(init?: Partial<DeleteTodos>) { (Object as any).assign(this, init); }
-    public getTypeName() { return 'DeleteTodos'; }
-    public getMethod() { return 'DELETE'; }
-    public createResponse() {}
 }
 
 /** @description Sign Up */
@@ -1539,6 +1600,9 @@ export class Authenticate implements IReturn<AuthenticateResponse>, IPost
     public scope?: string;
 
     // @DataMember(Order=20)
+    public returnUrl?: string;
+
+    // @DataMember(Order=21)
     public meta?: { [index: string]: string; };
 
     public constructor(init?: Partial<Authenticate>) { (Object as any).assign(this, init); }
@@ -1610,6 +1674,16 @@ export class QueryAppRoles extends QueryDb_1<AppRole> implements IReturn<QueryRe
     public getTypeName() { return 'QueryAppRoles'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<AppRole>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryAppUsers extends QueryDb_1<AppUser> implements IReturn<QueryResponse<AppUser>>
+{
+
+    public constructor(init?: Partial<QueryAppUsers>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryAppUsers'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<AppUser>(); }
 }
 
 export class QueryCountries extends QueryDb_1<Country> implements IReturn<QueryResponse<Country>>
@@ -1745,6 +1819,23 @@ export class QueryContactUses extends QueryDb_1<ContactUs> implements IReturn<Qu
     public getTypeName() { return 'QueryContactUses'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<ContactUs>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryCRoleRates extends QueryDb_2<CRoleRate, CRoleRateView> implements IReturn<QueryResponse<CRoleRateView>>
+{
+    public clientId?: number;
+    // @Validate(Validator="Null")
+    public clientCodes?: string[];
+
+    public clientCodeContains?: string;
+    public clientNameContains?: string;
+    public projectRoleNameContains?: string;
+
+    public constructor(init?: Partial<QueryCRoleRates>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryCRoleRates'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<CRoleRateView>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -1893,6 +1984,29 @@ export class QueryProjectDocs extends QueryDb_1<ProjectDoc> implements IReturn<Q
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class QueryProjectPlans extends QueryDb_2<ProjectPlan, ProjectPlanView> implements IReturn<QueryResponse<ProjectPlanView>>
+{
+    public projectId?: number;
+    public versionNo?: number;
+
+    public constructor(init?: Partial<QueryProjectPlans>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProjectPlans'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<ProjectPlanView>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryProjectPlanVersions extends QueryDb_1<ProjectPlanVersion> implements IReturn<QueryResponse<ProjectPlanVersion>>
+{
+    public projectId?: number;
+
+    public constructor(init?: Partial<QueryProjectPlanVersions>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProjectPlanVersions'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<ProjectPlanVersion>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class QueryProjectTasks extends QueryDb_2<ProjectTask, ProjectTaskView> implements IReturn<QueryResponse<ProjectTaskView>>
 {
     public projectId?: number;
@@ -1901,6 +2015,17 @@ export class QueryProjectTasks extends QueryDb_2<ProjectTask, ProjectTaskView> i
     public getTypeName() { return 'QueryProjectTasks'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<ProjectTaskView>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryProjectTaskDocs extends QueryDb_1<ProjectTaskDoc> implements IReturn<QueryResponse<ProjectTaskDoc>>
+{
+    public projectTaskId?: number;
+
+    public constructor(init?: Partial<QueryProjectTaskDocs>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryProjectTaskDocs'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<ProjectTaskDoc>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -2209,6 +2334,48 @@ export class DeleteClient implements IReturnVoid, IDeleteDb<Client>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class CreateCRoleRate implements IReturn<CRUDResponse>, ICreateDb<CRoleRate>
+{
+    public clientId?: number;
+    public projectRoleName?: PROJECT_TEAM_ROLE;
+    public currency?: string;
+    public rateInDay?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateCRoleRate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateCRoleRate'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateCRoleRate implements IReturn<CRUDResponse>, IPatchDb<CRoleRate>
+{
+    public id?: number;
+    public clientId?: number;
+    public projectRoleName?: PROJECT_TEAM_ROLE;
+    public currency?: string;
+    public rateInDay?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateCRoleRate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateCRoleRate'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteCRoleRate implements IReturnVoid, IDeleteDb<CRoleRate>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteCRoleRate>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteCRoleRate'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class CreateDailyScrumMeeting implements IReturn<CRUDResponse>, ICreateDb<DailyScrumMeeting>
 {
     public appUserId?: number;
@@ -2493,7 +2660,6 @@ export class CreateInvoiceAttachment implements IReturn<CRUDResponse>, ICreateDb
 {
     public invoiceId?: number;
     public fileName?: string;
-    // @Input(Type="file")
     public attachmentUrl?: string;
 
     public constructor(init?: Partial<CreateInvoiceAttachment>) { (Object as any).assign(this, init); }
@@ -2710,7 +2876,6 @@ export class CreateProjectDoc implements IReturn<CRUDResponse>, ICreateDb<Projec
 {
     public projectId?: number;
     public fileName?: string;
-    // @Input(Type="file")
     public attachmentUrl?: string;
 
     public constructor(init?: Partial<CreateProjectDoc>) { (Object as any).assign(this, init); }
@@ -2723,7 +2888,6 @@ export class CreateProjectDoc implements IReturn<CRUDResponse>, ICreateDb<Projec
 export class UpdateProjectDoc implements IReturn<CRUDResponse>, IPatchDb<ProjectDoc>
 {
     public id?: number;
-    // @Input(Type="file")
     public fileName?: string;
 
     public constructor(init?: Partial<UpdateProjectDoc>) { (Object as any).assign(this, init); }
@@ -2744,20 +2908,125 @@ export class DeleteProjectDoc implements IReturnVoid, IDeleteDb<Project>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class CreateProjectPlan implements IReturn<CRUDResponse>, ICreateDb<ProjectPlan>
+{
+    public projectId?: number;
+    public versionNo?: number;
+    public taskLevel?: number;
+    public taskNo?: number;
+    public parentCode?: string;
+    public taskCode?: string;
+    public dependecyTaskCode?: string;
+    public appUserId?: number;
+    public taskTitle?: string;
+    public durationDays?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public completedPercentage?: number;
+    public resourceCost?: number;
+
+    public constructor(init?: Partial<CreateProjectPlan>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateProjectPlan'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateProjectPlan implements IReturn<CRUDResponse>, IPatchDb<ProjectPlan>
+{
+    public id?: number;
+    public projectId?: number;
+    public versionNo?: number;
+    public taskLevel?: number;
+    public taskNo?: number;
+    public parentCode?: string;
+    public taskCode?: string;
+    public dependecyTaskCode?: string;
+    public appUserId?: number;
+    public taskTitle?: string;
+    public durationDays?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public completedPercentage?: number;
+    public resourceCost?: number;
+
+    public constructor(init?: Partial<UpdateProjectPlan>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateProjectPlan'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteProjectPlan implements IReturnVoid, IDeleteDb<Project>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteProjectPlan>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteProjectPlan'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateProjectPlanVersion implements IReturn<CRUDResponse>, ICreateDb<ProjectPlanVersion>
+{
+    public projectId?: number;
+    public appUserId?: number;
+    public versionNo?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<CreateProjectPlanVersion>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateProjectPlanVersion'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateProjectPlanVersion implements IReturn<CRUDResponse>, IPatchDb<ProjectPlanVersion>
+{
+    public id?: number;
+    public projectId?: number;
+    public appUserId?: number;
+    public versionNo?: number;
+    public isActive?: boolean;
+
+    public constructor(init?: Partial<UpdateProjectPlanVersion>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateProjectPlanVersion'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteProjectPlanVersion implements IReturnVoid, IDeleteDb<Project>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteProjectPlanVersion>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteProjectPlanVersion'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class CreateProjectTask implements IReturn<CRUDResponse>, ICreateDb<ProjectTask>
 {
     public projectId?: number;
+    public projectPlanId?: number;
     public no?: number;
+    public taskCode?: string;
     public taskName?: string;
     public description?: string;
     public durationDays?: number;
+    public dueDate?: string;
     public planStart?: string;
     public planEnd?: string;
     public actualStart?: string;
     public actualEnd?: string;
     public completed?: number;
     public status?: TASK_STATUS;
+    public taskLabel?: TASK_LABEL;
     public projectTeamId?: number;
+    public isArchived?: boolean;
 
     public constructor(init?: Partial<CreateProjectTask>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateProjectTask'; }
@@ -2770,17 +3039,22 @@ export class UpdateProjectTask implements IReturn<CRUDResponse>, IPatchDb<Projec
 {
     public id?: number;
     public projectId?: number;
+    public projectPlanId?: number;
     public no?: number;
+    public taskCode?: string;
     public taskName?: string;
     public description?: string;
     public durationDays?: number;
+    public dueDate?: string;
     public planStart?: string;
     public planEnd?: string;
     public actualStart?: string;
     public actualEnd?: string;
     public completed?: number;
     public status?: TASK_STATUS;
+    public taskLabel?: TASK_LABEL;
     public projectTeamId?: number;
+    public isArchived?: boolean;
 
     public constructor(init?: Partial<UpdateProjectTask>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateProjectTask'; }
@@ -2800,11 +3074,50 @@ export class DeleteProjectTask implements IReturnVoid, IDeleteDb<ProjectTask>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class CreateProjectTaskDoc implements IReturn<CRUDResponse>, ICreateDb<ProjectTaskDoc>
+{
+    public projectTaskId?: number;
+    public fileName?: string;
+    public attachmentUrl?: string;
+
+    public constructor(init?: Partial<CreateProjectTaskDoc>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateProjectTaskDoc'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateProjectTaskDoc implements IReturn<CRUDResponse>, IPatchDb<ProjectTaskDoc>
+{
+    public id?: number;
+    public projectTaskId?: number;
+    public fileName?: string;
+
+    public constructor(init?: Partial<UpdateProjectTaskDoc>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateProjectTaskDoc'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteProjectTaskDoc implements IReturnVoid, IDeleteDb<Project>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteProjectTaskDoc>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteProjectTaskDoc'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class CreateProjectTeam implements IReturn<CRUDResponse>, ICreateDb<ProjectTeam>
 {
     public projectId?: number;
     public appUserId?: number;
     public projectTeamRole?: PROJECT_TEAM_ROLE;
+    public projectTeamRoleCurrRate?: CURRENCY_RATE;
+    public projectTeamRoleRatePerDay?: number;
 
     public constructor(init?: Partial<CreateProjectTeam>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateProjectTeam'; }
@@ -2819,6 +3132,8 @@ export class UpdateProjectTeam implements IReturn<CRUDResponse>, IPatchDb<Projec
     public projectId?: number;
     public appUserId?: number;
     public projectTeamRole?: PROJECT_TEAM_ROLE;
+    public projectTeamRoleCurrRate?: CURRENCY_RATE;
+    public projectTeamRoleRatePerDay?: number;
 
     public constructor(init?: Partial<UpdateProjectTeam>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateProjectTeam'; }
@@ -2886,8 +3201,8 @@ export class CreateTimeSheet implements IReturn<CRUDResponse>, ICreateDb<TimeShe
     public appUserId?: number;
     public clientId?: number;
     public projectId?: number;
-    public no?: number;
-    public taskName?: string;
+    public projectTaskId?: number;
+    public notes?: string;
 
     public constructor(init?: Partial<CreateTimeSheet>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'CreateTimeSheet'; }
@@ -2903,8 +3218,8 @@ export class UpdateTimeSheet implements IReturn<CRUDResponse>, IPatchDb<TimeShee
     public appUserId?: number;
     public clientId?: number;
     public projectId?: number;
-    public no?: number;
-    public taskName?: string;
+    public projectTaskId?: number;
+    public notes?: string;
 
     public constructor(init?: Partial<UpdateTimeSheet>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'UpdateTimeSheet'; }

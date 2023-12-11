@@ -19,33 +19,95 @@ public class ProjectPlan
     public int VersionNo { get; set; }
 
     [Required]
-    public string TaskCode { get; set; } = string.Empty;
-
-    public string ParentCode { get; set; } = string.Empty;
-
-    [Required]
     public int TaskLevel { get; set; }
 
     [Required]
     public int TaskNo { get; set; }
 
     [Required]
+    public string ParentCode { get; set; } = string.Empty;
+
+    [Required]
+    public string TaskCode { get; set; } = string.Empty;
+
+    public string DependecyTaskCode { get; set; } = string.Empty;
+
+    [References(typeof(AppUser))]
+    public int? AppUserId { get; set;}
+
+    [Required]
     public string TaskTitle { get; set; } = string.Empty;
     public decimal DurationDays { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-
-    public decimal Percemtage { get; set; }
-
-    public string Assigned { get; set; } = string.Empty;
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public decimal CompletedPercentage { get; set; }
     public decimal ResourceCost { get; set; }
 }
 
 
+public class ProjectPlanView : ProjectPlan
+{
+    [Compute, Ignore]
+    public string CodeTitle {
+        get {
+            return TaskCode + ") " + TaskTitle;
+        }
+    }
+
+    [Compute, Ignore]
+    public string Group1 {
+        get {
+            return string.Empty;
+        }
+    }
+
+    [Compute, Ignore]
+    public string Group2 {
+        get {
+            if(TaskLevel >= 2)
+            {
+                if(TaskLevel == 2) return ParentCode;
+                else return ParentCode.Substring(0, ParentCode.IndexOf("."));
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+    }
+
+    [Compute, Ignore]
+    public string Group3 {
+        get {
+            
+            if(TaskLevel >= 3)
+            {
+                if(TaskLevel == 3) return ParentCode;
+                else {
+                    return ParentCode.Substring(0, ParentCode.IndexOf(".",3));
+                }
+
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+    }
+
+    [Compute, Ignore]
+    public string Group4 {
+        get {
+            return  (TaskLevel >= 4) ? ParentCode : string.Empty;
+        }
+    }
+}
+
 [ValidateIsAuthenticated]
 [Tag("Projects")]
-public class QueryProjectPlans : QueryDb<ProjectPlan>{
+public class QueryProjectPlans : QueryDb<ProjectPlan, ProjectPlanView>{
     public int? ProjectId { get; set;}
+    public int? VersionNo { get; set; }
 }
 
 
@@ -53,42 +115,51 @@ public class QueryProjectPlans : QueryDb<ProjectPlan>{
 [ValidateIsAuthenticated]
 public class CreateProjectPlan : ICreateDb<ProjectPlan>, IReturn<CRUDResponse>
 {
+    // #pragma warning disable CS8618 
+    #nullable disable
     public int ProjectId { get; set; }
     public int VersionNo { get; set; }
-    public string TaskCode { get; set; } = string.Empty;
-    public string ParentCode { get; set; } = string.Empty;
-    public string DependecyTaskCode { get; set; } = string.Empty;
     public int TaskLevel { get; set; }
     public int TaskNo { get; set; }
-    public string TaskTitle { get; set; } = string.Empty;
+    public string ParentCode { get; set; }
+    public string TaskCode { get; set; } 
+    public string DependecyTaskCode { get; set; }
+    public int? AppUserId { get; set;}
+    public string TaskTitle { get; set; } 
     public decimal DurationDays { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public decimal Percemtage { get; set; }
-    public string Assigned { get; set; } = string.Empty;
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public decimal CompletedPercentage { get; set; }
     public decimal ResourceCost { get; set; }
+
+    #nullable restore
+    // #pragma warning restore CS8618 
 }
 
 [ValidateIsAuthenticated]
 [Tag("Projects")]
 public class UpdateProjectPlan : IPatchDb<ProjectPlan>, IReturn<CRUDResponse>
 {
+    // #pragma warning disable CS8618 
+    #nullable disable
     public int Id { get; set; } 
     public int ProjectId { get; set; }
     public int VersionNo { get; set; }
-    public string TaskCode { get; set; } = string.Empty;
-    public string ParentCode { get; set; } = string.Empty;
-    public string DependecyTaskCode { get; set; } = string.Empty;
     public int TaskLevel { get; set; }
     public int TaskNo { get; set; }
-    public string TaskTitle { get; set; } = string.Empty;
+    public string ParentCode { get; set; } 
+    public string TaskCode { get; set; } 
+    public string DependecyTaskCode { get; set; } 
+    public int? AppUserId { get; set;}
+    public string TaskTitle { get; set; } 
     public decimal DurationDays { get; set; }
-    
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public decimal Percemtage { get; set; }
-    public string Assigned { get; set; } = string.Empty;
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public decimal CompletedPercentage { get; set; }
     public decimal ResourceCost { get; set; }
+
+    #nullable restore
+    // #pragma warning restore CS8618 
 }
 
 [ValidateIsAuthenticated]
