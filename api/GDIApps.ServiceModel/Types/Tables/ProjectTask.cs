@@ -15,8 +15,15 @@ public class ProjectTask : AuditBase
     [References(typeof(Project))]
     public int ProjectId { get; set; }
 
+    [References(typeof(ProjectPlan))]
+    public int ProjectPlanId { get; set; }
+
     [Required]
     public int No { get; set; }
+
+    [Required]
+    [StringLength(100)] 
+    public string TaskCode { get; set; } = string.Empty;
     
     [Required]
     [StringLength(200)] 
@@ -24,8 +31,10 @@ public class ProjectTask : AuditBase
 
     [StringLength(1000)] 
     public string Description { get; set; } = string.Empty;
-    [Required]
-    public decimal DurationDays { get; set; }
+
+    public decimal? DurationDays { get; set; }
+
+    public DateTime? DueDate { get; set; }
     public DateTime? PlanStart { get; set; }
     public DateTime? PlanEnd { get; set; }
     public DateTime? ActualStart { get; set; }
@@ -38,13 +47,13 @@ public class ProjectTask : AuditBase
     [StringLength(100)]
     public TASK_STATUS Status { get; set; }
 
+    [StringLength(1000)]
+    public TASK_LABEL TaskLabel { get; set; }
+
     [References(typeof(ProjectTeam))]
-    public int? ProjectTeamId { get; set;}
+    public int? ProjectTeamId { get; set; }
 
-    [References(typeof(ProjectTask))]
-    public int ProjectTaskId { get; set; }
-
-    public int TaskIndentLevel { get; set; }
+    public bool? IsArchived { get; set; }
 }
 
 public class ProjectTaskView : ProjectTask

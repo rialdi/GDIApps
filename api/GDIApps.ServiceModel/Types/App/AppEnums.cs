@@ -45,18 +45,31 @@ public enum CURRENCY_RATE {
     IDR
 }
 
-// public enum PROJECT_TASK_STATUS {
-//     YET_TO_START,
-//     IN_PROGRESS,
-//     DEVELOPMENT,
-//     TESTING,
-//     COMPLETED,
-// }
+public enum PRIORITY {
+    LOW,
+    MEDIUM,
+    HIGH,
+    URGENT,
+}
 
 public enum TASK_STATUS {
+    BACKLOG,
     YET_TO_START,
     IN_PROGRESS,
+    IN_REVIEW,
+    TESTING,
     COMPLETED,
+}
+
+public enum TASK_LABEL{
+    BUG,
+    ENHANCEMENT,
+    DOCUMENTATION,
+    WONTFIX,
+    QUESTION,
+    DUPLICATE,
+    GOODFIRSTISSUE,
+    INVALID
 }
 
 public enum REVIEW_TYPE {
@@ -68,7 +81,6 @@ public enum REVIEW_QUESTION_CATEGORY {
     EMPLOYEE_COMPETENCY,
     KPI
 }
-
 
 public enum PROJECT_ROLE_NAME {
     PROJECT_MANAGER,

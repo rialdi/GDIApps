@@ -5,7 +5,7 @@ using ServiceStack.DataAnnotations;
 
 namespace GDIApps.ServiceModel.Types;
 
-[CompositeIndex(true, nameof(TSDate), nameof(AppUserId), nameof(ClientId), nameof(ProjectId), nameof(No))]
+[CompositeIndex(true, nameof(TSDate), nameof(AppUserId), nameof(ClientId), nameof(ProjectId), nameof(ProjectTaskId))]
 public class TimeSheet : AuditBase
 {
     [AutoIncrement]
@@ -26,21 +26,13 @@ public class TimeSheet : AuditBase
     [References(typeof(Project))]
     public int  ProjectId { get; set; }
 
-    public int No {get; set;}
+    [Required]
+    [References(typeof(ProjectTask))]
+    public int  ProjectTaskId { get; set; }
 
     [Required]
     [StringLength(1000)] 
-    public string TaskName { get; set; } = string.Empty;
-
-
-    // [Reference]
-    // public Project Project { get; set;}
-
-    // [Reference]
-    // public AppUser AppUser { get; set;}
-
-    // [ReferenceField(typeof(AppUser),"AppUserId","UserName")]
-    // public string AppUserUserName { get; set;}
+    public string Notes { get; set; } = string.Empty;
 }
 
 public class TimeSheetView : TimeSheet
@@ -79,8 +71,8 @@ public class CreateTimeSheet : ICreateDb<TimeSheet>, IReturn<CRUDResponse>
     public int AppUserId { get; set;}
     public int  ClientId { get; set; }
     public int  ProjectId { get; set; }
-    public int No {get; set;}
-    public string TaskName { get; set; } = string.Empty;
+    public int  ProjectTaskId { get; set; }
+    public string Notes { get; set; } = string.Empty;
 
 }
 
@@ -94,8 +86,8 @@ public class UpdateTimeSheet : IPatchDb<TimeSheet>, IReturn<CRUDResponse>
     public int AppUserId { get; set;}
     public int  ClientId { get; set; }
     public int  ProjectId { get; set; }
-    public int No {get; set;}
-    public string TaskName { get; set; } = string.Empty;
+    public int  ProjectTaskId { get; set; }
+    public string Notes { get; set; } = string.Empty;
 }
 
 [ValidateIsAuthenticated]

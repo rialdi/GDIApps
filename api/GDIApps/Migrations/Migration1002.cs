@@ -64,11 +64,11 @@ public class Migration1002 : MigrationBase
             otherTaskPlanStart, otherTaskPlanEnd, otherTaskActualStart, otherTaskActualEnd, 0, TASK_STATUS.YET_TO_START);
         #endregion
     
-        DateTime tsDate = new DateTime(2023, 2, 13);
-        int clientId = GetClientId("PONS");
-        projectId = GetProjectId("POIBSFQR");
-        int timeSheetId = (int) CreateTimeSheet(tsDate, appUserId, clientId, projectId, 1, "Setup DB & SSIS to new Harbour Server");
-        // CreateTimeSheetDetail(timeSheetId, projectId, "Common Features");
+        // DateTime tsDate = new DateTime(2023, 2, 13);
+        // int clientId = GetClientId("PONS");
+        // projectId = GetProjectId("POIBSFQR");
+        // int timeSheetId = (int) CreateTimeSheet(tsDate, appUserId, clientId, projectId, 1, "Setup DB & SSIS to new Harbour Server");
+        // // CreateTimeSheetDetail(timeSheetId, projectId, "Common Features");
 
         #region Seed Data Master Question
 
@@ -258,21 +258,21 @@ public class Migration1002 : MigrationBase
             ModifiedDate = DateTime.Now
         });
 
-    private long CreateTimeSheet(
-        DateTime tsDate, int appUserId, int clientId, int projectId, int no, string taskName
-    ) =>
-        Db.Insert(new TimeSheet {
-            TSDate = tsDate,
-            AppUserId = appUserId,
-            ClientId = clientId,
-            ProjectId = projectId,
-            No = no,
-            TaskName = taskName,
-            CreatedBy="Admin@email.com",
-            CreatedDate= DateTime.Now,
-            ModifiedBy="Admin@email.com",
-            ModifiedDate = DateTime.Now
-        });
+    // private long CreateTimeSheet(
+    //     DateTime tsDate, int appUserId, int clientId, int projectId, int no, string taskName
+    // ) =>
+    //     Db.Insert(new TimeSheet {
+    //         TSDate = tsDate,
+    //         AppUserId = appUserId,
+    //         ClientId = clientId,
+    //         ProjectId = projectId,
+    //         No = no,
+    //         TaskName = taskName,
+    //         CreatedBy="Admin@email.com",
+    //         CreatedDate= DateTime.Now,
+    //         ModifiedBy="Admin@email.com",
+    //         ModifiedDate = DateTime.Now
+    //     });
 
     private long CreateReviewMasterQuestion(
         REVIEW_TYPE reviewType, REVIEW_QUESTION_CATEGORY category, int no, string question, string description
