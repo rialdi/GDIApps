@@ -14,9 +14,7 @@ namespace GDIApps.ServiceInterface
     public  class MyServices : Service
     {
         public IAutoQueryDb AutoQuery { get; set; }
-        public object Any(Hello request) {
-            return new HelloResponse { Result = $"Hello, {request.Name}!" };
-        }
+        
         public object Any(DeleteInvoiceAttachment request) {
             using var db = AutoQuery.GetDb<InvoiceAttachment>(Request);
             var currInvoiceAttachment = db.Select<InvoiceAttachment>( w => w.Id == request.Id).FirstNonDefault();
