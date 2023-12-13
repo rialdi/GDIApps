@@ -86,7 +86,7 @@ let selectedVersionNo = ref<number | undefined>()
           <li class="breadcrumb-item">
             <a class="link-fx" href="javascript:void(0)">Admins</a>
           </li>
-          <li class="breadcrumb-item" aria-current="page">Projects</li>
+          <li class="breadcrumb-item" aria-current="page">Project Plans</li>
         </ol>
       </nav>
     </template>
@@ -139,8 +139,8 @@ let selectedVersionNo = ref<number | undefined>()
               :filterable="false" 
               :sortable="true" 
               :pageable="true" 
-              :groupable="true"
-              :show-export-button="true"/>
+              :groupable="false"
+              :show-export-button="false"/>
     </BaseBlock>
     <!-- END Result Data Grid -->
   </div>

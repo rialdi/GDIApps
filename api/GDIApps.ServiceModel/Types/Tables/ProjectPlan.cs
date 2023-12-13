@@ -50,7 +50,14 @@ public class ProjectPlanView : ProjectPlan
     [Compute, Ignore]
     public string CodeTitle {
         get {
-            return TaskCode + ") " + TaskTitle;
+            var tabString = "";
+            for(int i=1; i < TaskLevel; i++)
+            {
+                // tabString += "&nbsp;&nbsp;";
+
+                tabString += "  ";
+            }
+            return  tabString + TaskCode + ") " + TaskTitle;
         }
     }
 
