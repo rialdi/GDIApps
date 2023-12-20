@@ -2,7 +2,8 @@
 import { onMounted, ref } from "vue"
 import { Client, QueryClients, Project, QueryProjects } from "@/dtos"
 import { client } from "@/api"
-import KComboBox  from "@/components/kendo/KComboBox.vue" 
+import KDropdownList  from "@/components/kendo/KDropDownList.vue" 
+import KNumericTextBox  from "@/components/kendo/KNumericTextBox.vue" 
 import { process, filterBy } from '@progress/kendo-data-query'
 
 import ProjectPlanGrid from "./ProjectPlanGrid.vue"
@@ -30,8 +31,8 @@ const getProjectList = async() => {
 }
 
 const cboProjectOnChange = (e: any) => {
-  selectedProjectId.value = e.value ?? undefined
-  mainGridRef.value?.updateSelectedProjectId(selectedProjectId.value)
+  selectedVersionNo.value = 1
+  refresMainGridData()
 }
 
 const cboProjectOnFilter = (e : any) => {
@@ -40,6 +41,7 @@ const cboProjectOnFilter = (e : any) => {
 }
 
 let selectedProjectId = ref<number | undefined>()
+
     
 /* END of Combobox Client */
 
@@ -53,13 +55,13 @@ const getClientList = async() => {
     sourceClientList.value = api.response!.results ?? []
     clientList.value = process(sourceClientList.value, {}).data as any[]
   }
-  // console.log(clientList.value)
 }
 
-const cboClientOnChange = (e: any) => {
-  selectedClientId.value = e.value ?? undefined
-  getProjectList()
-//   mainGridRef.value?.updateSelectedClientId(selectedClientId.value)
+const cboClientOnChange = async (e: any) => {
+  await getProjectList()
+  selectedProjectId.value = 0
+  selectedVersionNo.value = 1
+  refresMainGridData()
 }
 
 const onCBOClientFilter = (e : any) => {
@@ -71,8 +73,20 @@ let selectedClientId = ref<number | undefined>()
     
 /* END of Combobox Client */
 
+/* txtVersionNo */
 
-let selectedVersionNo = ref<number | undefined>()
+let selectedVersionNo = ref<number | undefined>(1)
+
+const txtVersionNoOnChange = (e : any) => {
+  refresMainGridData()
+}
+
+/* END if txtVersionNo */
+
+const refresMainGridData = () => {
+  console.log("selectedProjectId.value =" + selectedProjectId.value)
+  mainGridRef.value?.refresGridData(selectedProjectId.value, selectedVersionNo.value)
+}
 
 
 </script>
@@ -98,9 +112,9 @@ let selectedVersionNo = ref<number | undefined>()
     <!-- Page Filter Parameter -->
     <BaseBlock title="Search Parameter" btn-option-fullscreen btn-option-content>
         <div class="row">
-            <div class="col-6">
+            <div class="col-5">
                 <!-- :style="{ width: '50%' }" -->
-                <KComboBox :id="'clientParam'"
+                <KDropdownList :id="'clientParam'"
                     :data-items="clientList"
                     :value-field="'id'"
                     :text-field="'name'"
@@ -108,13 +122,14 @@ let selectedVersionNo = ref<number | undefined>()
                     :label="'Client'"
                     :label-position="'left'"
                     :valid="true"
+                    v-model="selectedClientId"
                     @change="cboClientOnChange"
                     @filterchange="onCBOClientFilter"
-                ></KComboBox>
+                ></KDropdownList>
             </div>
-            <div class="col-6">
+            <div class="col-5">
                 <!-- :style="{ width: '50%' }" -->
-                <KComboBox :id="'cboProject'"
+                <KDropdownList :id="'cboProject'"
                     :data-items="projectList"
                     :value-field="'id'"
                     :text-field="'name'"
@@ -122,9 +137,25 @@ let selectedVersionNo = ref<number | undefined>()
                     :label="'Project'"
                     :label-position="'left'"
                     :valid="true"
+                    :value="selectedProjectId"
+                    v-model="selectedProjectId"
                     @change="cboProjectOnChange"
                     @filterchange="cboProjectOnFilter"
-                ></KComboBox>
+                ></KDropdownList>
+            </div>
+            <div class="col-2">
+              <KNumericTextBox
+                    :id="'txtVersionNo'"
+                    :label="'Version'"
+                    :label-position="'left'"
+                    :valid="true"
+                    :format="'N0'"
+                    :value="selectedVersionNo"
+                    v-model="selectedVersionNo"
+                    @change="txtVersionNoOnChange"
+              >
+
+              </KNumericTextBox>
             </div>
         </div>
     </BaseBlock>

@@ -6,7 +6,7 @@ using ServiceStack.DataAnnotations;
 namespace GDIApps.ServiceModel.Types;
 
 [CompositeIndex(true, nameof(ProjectId), nameof(VersionNo), nameof(TaskCode))]
-public class ProjectPlan
+public class ProjectPlan : AuditBase
 {
     [AutoIncrement]
     public int Id { get; set; }  
@@ -42,6 +42,8 @@ public class ProjectPlan
     public DateTime? EndDate { get; set; }
     public decimal CompletedPercentage { get; set; }
     public decimal ResourceCost { get; set; }
+
+    public bool HasChild { get; set; }
 }
 
 
@@ -57,57 +59,64 @@ public class ProjectPlanView : ProjectPlan
 
                 tabString += "  ";
             }
-            return  tabString + TaskCode + ") " + TaskTitle;
+            return  tabString + TaskCode + ") ";// + TaskTitle;
         }
     }
 
-    [Compute, Ignore]
-    public string Group1 {
-        get {
-            return string.Empty;
-        }
-    }
+    // [Compute, Ignore]
+    // public bool HasChild {
+    //     get {
+    //         return true;
+    //     }
+    // }
 
-    [Compute, Ignore]
-    public string Group2 {
-        get {
-            if(TaskLevel >= 2)
-            {
-                if(TaskLevel == 2) return ParentCode;
-                else return ParentCode.Substring(0, ParentCode.IndexOf("."));
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-    }
+    // [Compute, Ignore]
+    // public string Group1 {
+    //     get {
+    //         return string.Empty;
+    //     }
+    // }
 
-    [Compute, Ignore]
-    public string Group3 {
-        get {
+    // [Compute, Ignore]
+    // public string Group2 {
+    //     get {
+    //         if(TaskLevel >= 2)
+    //         {
+    //             if(TaskLevel == 2) return ParentCode;
+    //             else return ParentCode.Substring(0, ParentCode.IndexOf("."));
+    //         }
+    //         else
+    //         {
+    //             return string.Empty;
+    //         }
+    //     }
+    // }
+
+    // [Compute, Ignore]
+    // public string Group3 {
+    //     get {
             
-            if(TaskLevel >= 3)
-            {
-                if(TaskLevel == 3) return ParentCode;
-                else {
-                    return ParentCode.Substring(0, ParentCode.IndexOf(".",3));
-                }
+    //         if(TaskLevel >= 3)
+    //         {
+    //             if(TaskLevel == 3) return ParentCode;
+    //             else {
+    //                 return ParentCode.Substring(0, ParentCode.IndexOf(".",3));
+    //             }
 
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-    }
+    //         }
+    //         else
+    //         {
+    //             return string.Empty;
+    //         }
+    //     }
+    // }
 
-    [Compute, Ignore]
-    public string Group4 {
-        get {
-            return  (TaskLevel >= 4) ? ParentCode : string.Empty;
-        }
-    }
+    // [Compute, Ignore]
+    // public string Group4 {
+    //     get {
+    //         return  (TaskLevel >= 4) ? ParentCode : string.Empty;
+    //     }
+    // }
 }
 
 [ValidateIsAuthenticated]

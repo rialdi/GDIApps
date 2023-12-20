@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-12-11 17:23:29
+Date: 2023-12-20 19:21:26
 Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -848,7 +848,7 @@ export class ProjectDoc
     public constructor(init?: Partial<ProjectDoc>) { (Object as any).assign(this, init); }
 }
 
-export class ProjectPlan
+export class ProjectPlan extends AuditBase
 {
     public id?: number;
     // @Required()
@@ -882,26 +882,15 @@ export class ProjectPlan
     public endDate?: string;
     public completedPercentage?: number;
     public resourceCost?: number;
+    public hasChild?: boolean;
 
-    public constructor(init?: Partial<ProjectPlan>) { (Object as any).assign(this, init); }
+    public constructor(init?: Partial<ProjectPlan>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class ProjectPlanView extends ProjectPlan
 {
     // @Ignore()
     public codeTitle?: string;
-
-    // @Ignore()
-    public group1?: string;
-
-    // @Ignore()
-    public group2?: string;
-
-    // @Ignore()
-    public group3?: string;
-
-    // @Ignore()
-    public group4?: string;
 
     public constructor(init?: Partial<ProjectPlanView>) { super(init); (Object as any).assign(this, init); }
 }

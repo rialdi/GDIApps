@@ -11,9 +11,7 @@ import { showNotifError } from '@/stores/commons'
 
 import KStandardGrid from "@/components/grids/KStandardGrid.vue"
 import { GridColumnProps, GridDataStateChangeEvent } from '@progress/kendo-vue-grid'
-import { process, SortDescriptor, CompositeFilterDescriptor, DataResult
-  // , GroupDescriptor 
-} from '@progress/kendo-data-query';
+import { process, SortDescriptor, CompositeFilterDescriptor, DataResult } from '@progress/kendo-data-query';
 
 const props = 
 defineProps<{
@@ -43,20 +41,39 @@ const titleCellTemplate = (h : any, tdElement : any , props : any, listeners : a
   return h(tdElement, {}, codeTitle)
 }
 
+
+//disable column when edit
+function isEditable(e : any){
+	// var dataSource = $("#grid").data("kendoGrid").dataSource;
+	return (e.hasChild == true);
+}
+
+
+// function isEditable (e: any){
+//   console.log('isEditable')
+//   console.log(e)
+//     return (!e.hasChild);
+// }
+
 let gridColumProperties = [
-    { cell: titleCellTemplate, title: 'Title', width:350},
-    { field: 'durationDays', title: 'Duration (days)'},
-    { field: 'startDate', title: 'Start', cell: 'datePickerTemplate', format:'DD-MMM-yyyy' },
-    { field: 'endDate', title: 'Start', cell: 'datePickerTemplate', format:'DD-MMM-yyyy' },
-    // { cell: endDateCellTemplate, title: 'End'},
-    { field: 'completedPercentage', title: 'Completed', format:"{0:p0}" },
+    { cell: titleCellTemplate, title: 'Task Code', width:135},
+    { field: 'taskTitle', title: 'Task Title'},
+    { field: 'dependecyTaskCode', title: 'Dependency Task Code'},
+    { field: 'durationDays', title: 'Duration (days)', width:130, editable: isEditable},
+    { field: 'startDate', title: 'Start', cell: 'datePickerTemplate', format:'DD-MMM-yyyy' , width:130},
+    { field: 'endDate', title: 'End', cell: 'datePickerTemplate', format:'DD-MMM-yyyy', width:130 },
+    { field: 'completedPercentage', title: 'Completed', format:"{0:p0}" , width:130},
+    { field: 'resourceCost', title: 'Cost', format:"{0:n0}", width:130},
+    { field: 'hasChild', title: 'Has Child', width:130},
   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
 
 let currSelectedProjectId = ref<number | undefined>()
-const updateSelectedProjectId = (val: any) => {
-    currSelectedProjectId.value = val
+let currSelectedVersionNo = ref<number | undefined>()
+const refresGridData = (projectId: any, versionNo: any) => {
+    currSelectedProjectId.value = projectId
+    currSelectedVersionNo.value = versionNo
     skip.value = 0
     refreshDatas() 
 }
@@ -64,7 +81,7 @@ const updateSelectedProjectId = (val: any) => {
 const refreshDatas = async () => {
     const queryProjectPlans = new QueryProjectPlans({ 
         projectId: currSelectedProjectId.value, 
-        versionNo: currSelectedProjectId.value, 
+        versionNo: currSelectedVersionNo.value, 
         take: take.value, 
         skip: skip.value,
     })
@@ -109,15 +126,6 @@ const onItemChange = (e: any) => {
     e.dataItem[e.field] = e.value;
   }
 }
-// const onGridDataitemChange = (e : any) => {
-//     if (e.dataItem.id) {
-//         let index = gridData.data.findIndex(p => p.id === e.dataItem.id);
-//         let updated = Object.assign({},gridData.data[index], {[e.field]:e.value});
-//         gridData.data.splice(index, 1, updated);
-//     } else {
-//         e.dataItem[e.field] = e.value;
-//     }
-// }
 
 const onInsert = () => {
     const dataItem = { projectId: props.selectedProjectId, inEdit: true };
@@ -142,17 +150,27 @@ const onEdit = (e: any) => {
     // currAppUser.value = e.dataItem.appUserId;
     let index = gridData.data.findIndex(p => p.id === e.dataItem.id);
     let updated = Object.assign({},gridData.data[index], {inEdit:true});
+    if(gridData.data[index]["hasChild"])
+    {
+      console.log(e)
+      console.log(gridData.data[index])
+      // e.container.find("input[name='durationDays']").attr('disabled',true);
+      console.log("Has Child")
+    }
     gridData.data.splice(index, 1, updated);
 }
+
+
 
 const onCancelChanges = () => {
   refreshDatas()
 }
 
 const onSave = async (e: any) => {
-  const currData = e.dataItem;
-    // console.log('save')
-    // console.log(currData);
+  // console.log(e);
+  const currData = e;
+    console.log('save')
+    console.log(currData);
   if( currData.id == null) {
     const request = new CreateProjectPlan({
       projectId: currData.projectId,
@@ -176,6 +194,18 @@ const onSave = async (e: any) => {
       id : currData.id,
       projectId: currData.projectId,
       appUserId: currData.appUserId,
+      versionNo: currData.versionNo,
+      taskLevel: currData.taskLevel,
+      taskNo: currData.taskNo,
+      parentCode: currData.parentCode,
+      taskCode: currData.taskCode,
+      dependecyTaskCode: currData.dependecyTaskCode,
+      taskTitle: currData.taskTitle,
+      durationDays: currData.durationDays,
+      startDate: currData.startDate,
+      endDate: currData.endDate,
+      completedPercentage: currData.completedPercentage,
+      resourceCost: currData.resourceCost
     })
     const api = await client.api(request)
     if (api.succeeded) {
@@ -185,18 +215,9 @@ const onSave = async (e: any) => {
   }
 }
 
-
-
-// const onDataStateChange = (e: any) => {
-//     createAppState(e.data)
-// }
-// const onExpandChange = (e: any) => {
-//     e.dataItem[e.target.$props.expandField] = e.value;
-// }
-
 defineExpose({
-    updateSelectedProjectId,
-    refreshDatas
+  refresGridData,
+  refreshDatas
 })
 
 </script>
