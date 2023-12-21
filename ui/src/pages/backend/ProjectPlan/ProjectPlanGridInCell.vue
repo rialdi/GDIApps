@@ -30,6 +30,8 @@ const titleCellTemplate = (h : any, tdElement : any , props : any, listeners : a
 
 let gridColumProperties = [
     { cell: titleCellTemplate, title: 'Task Code', width:135},
+    { field: 'taskLevel', title: 'Task Level'},
+    { field: 'taskNo', title: 'Task No'},
     { field: 'taskTitle', title: 'Task Title'},
     { field: 'dependecyTaskCode', title: 'Dependency Task Code'},
     { field: 'durationDays', title: 'Duration (days)', width:130},
@@ -78,7 +80,6 @@ onMounted(async () => {
 });
 
 const saveChanges = (e: any) => {
-
     console.log("saveChanges")
     var updatedData = gridData.data.filter(data => data.isModified)
     console.log(updatedData)
@@ -142,6 +143,51 @@ const cellClick = (e: any) => {
     
 }
 
+const addTask = (e: any) => {
+  var parentCode = ""
+  var dependecyTaskCode = ""
+  
+  var inLevelLastTaskNo = 0
+  var currTaskLevel = 1
+  var currTaskNo = 1
+  let prevTaskDataItem = ref<ProjectPlan>()
+
+  if(prevTaskDataItem.value != undefined)
+  {
+    inLevelLastTaskNo = prevTaskDataItem.value.taskNo ?? 0
+    currTaskNo = inLevelLastTaskNo + 1
+    parentCode = prevTaskDataItem.value.parentCode ?? ""
+    if(parentCode != "")
+    {
+      let parentDataItem = ref<ProjectPlan>()
+      if(parentDataItem.value != undefined)
+      {
+        var parentTaskLevel = parentDataItem.value.taskLevel ?? 0
+        currTaskLevel = parentTaskLevel + 1
+      }
+    }
+  }
+
+  
+
+  
+
+  const dataItem = { 
+    projectId: currSelectedProjectId, 
+    versionNo: currSelectedVersionNo, 
+    parentCode: parentCode,
+    taskLevel: currTaskLevel,
+    taskNo: currTaskNo,
+    dependecyTaskCode: dependecyTaskCode,
+    durationDays: 1,
+    inEdit: false 
+  };
+  gridData.data.splice(0, 0, dataItem)
+}
+
+const addChildTask = (e: any) => {
+
+}
 
 defineExpose({
   refresGridData
@@ -160,6 +206,12 @@ defineExpose({
     :columns="gridColumProperties"
   >
     <GridToolbar>
+      <KButton title="Add" @click="addTask">
+        Add Task
+      </KButton>
+      <KButton title="AddChild" @click="addChildTask">
+        Add Child Task
+      </KButton>
       <KButton title="Save Changes" @click="saveChanges" :disabled="!changes">
         Save Changes
       </KButton>

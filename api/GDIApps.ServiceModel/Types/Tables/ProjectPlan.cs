@@ -184,3 +184,16 @@ public class DeleteProjectPlan : IDeleteDb<Project>, IReturnVoid
 {
     public int Id { get; set; }        
 }
+
+
+public class UpdateProjectPlanInBatch : IReturn<CRUDResponse> {
+    public int ProjectId { get; set; }
+    public int VersionNo { get; set; }
+
+    // #pragma warning disable CS8618 
+    #nullable disable
+    public List<ProjectPlan> ProjectPlanList { get; set; }
+
+    #nullable restore
+    // #pragma warning restore CS8618 
+}
