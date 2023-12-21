@@ -6,9 +6,12 @@ import KDropdownList  from "@/components/kendo/KDropDownList.vue"
 import KNumericTextBox  from "@/components/kendo/KNumericTextBox.vue" 
 import { process, filterBy } from '@progress/kendo-data-query'
 
-import ProjectPlanGrid from "./ProjectPlanGrid.vue"
+// import ProjectPlanGrid from "./ProjectPlanGrid.vue"
+// const mainGridRef = ref<InstanceType<typeof ProjectPlanGrid>>()
 
-const mainGridRef = ref<InstanceType<typeof ProjectPlanGrid>>()
+import ProjectPlanGridInCell from "./ProjectPlanGridInCell.vue"
+
+const mainGridRef = ref<InstanceType<typeof ProjectPlanGridInCell>>()
 
 onMounted(async () => {
   await getClientList()
@@ -164,14 +167,15 @@ const refresMainGridData = () => {
     <!-- Result Data Grid -->
     <BaseBlock title="Result data" btn-option-fullscreen btn-option-content> 
       <!-- Main Data Grid --> 
-      <ProjectPlanGrid ref="mainGridRef"
+      <!-- <ProjectPlanGrid ref="mainGridRef"
               :selected-project-id="selectedProjectId" 
               :selected-version-no="selectedVersionNo"
               :filterable="false" 
               :sortable="true" 
               :pageable="true" 
               :groupable="false"
-              :show-export-button="false"/>
+              :show-export-button="false"/> -->
+      <ProjectPlanGridInCell ref="mainGridRef" />
     </BaseBlock>
     <!-- END Result Data Grid -->
   </div>
