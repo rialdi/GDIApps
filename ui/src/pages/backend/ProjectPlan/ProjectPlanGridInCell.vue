@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed } from "vue";
 import { client } from "@/api"
 // import { AppUser } from "@/dtos"
 import { 
@@ -20,6 +21,8 @@ let ProjectPlanData = ref<ProjectPlan[]>([])
 let gridData = ref<DataResult>({ data: [] as any, total: 0 }).value;
 let take = ref<number | undefined>(10)
 let skip = ref<number | undefined>(0)
+let selectedField = ref<string | undefined>('selected')
+let selectedID = ref<string | undefined>('1')
 const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
@@ -30,8 +33,10 @@ const titleCellTemplate = (h : any, tdElement : any , props : any, listeners : a
 
 let gridColumProperties = [
     { cell: titleCellTemplate, title: 'Task Code', width:135},
-    { field: 'taskLevel', title: 'Task Level'},
-    { field: 'taskNo', title: 'Task No'},
+    { field: 'taskLevel', title: 'Task Level', editable:false},
+    { field: 'taskNo', title: 'Task No', editable:false},
+    { field: 'parentCode', title: 'Parent Code', editable:false},
+    { field: 'taskCode', title: 'Task Code', editable:false},
     { field: 'taskTitle', title: 'Task Title'},
     { field: 'dependecyTaskCode', title: 'Dependency Task Code'},
     { field: 'durationDays', title: 'Duration (days)', width:130},
@@ -49,6 +54,17 @@ let currSelectedVersionNo = ref<number | undefined>()
 let changes = ref<boolean>(false)
 let editField = ref<string | undefined>(undefined)
 
+
+const selectedItem = computed(() => {
+  return gridData.data.find((item) => item.taskCode === selectedID.value)
+})
+
+const getMaxTaskNo = () => {
+  return selectedItem && selectedItem.value.taskLevel
+  // var taskLevel = 
+  
+}
+
 const refreshDatas = async () => {
     const queryProjectPlans = new QueryProjectPlans({ 
         projectId: currSelectedProjectId.value, 
@@ -59,14 +75,19 @@ const refreshDatas = async () => {
 
     const api = await client.api(queryProjectPlans)
     if (api.succeeded) {
-        ProjectPlanData.value = api.response!.results ?? []
-        gridData.data = process(ProjectPlanData.value, {
-        sort: sort.value,
-        filter: filter.value,
-        // group: groups.value,
-    }).data;
-    gridData.total = api.response!.total as number
-  }
+      ProjectPlanData.value = api.response!.results ?? []
+      gridData.data = process(ProjectPlanData.value, {
+          sort: sort.value,
+          filter: filter.value,
+          // group: groups.value,
+      }).data;
+      gridData.total = api.response!.total as number
+
+      if(gridData.data.length > 0) {
+        // selectedID.value = gridData.data[0].taskCode
+        gridData.data[0].selected = true
+      }
+    }
 }
 
 const refresGridData = (projectId: any, versionNo: any) => {
@@ -120,10 +141,18 @@ const itemChange = (e: any) => {
 }
 
 const rowClick = (e: any) => {
+  selectedID.value = e.dataItem.taskCode
     gridData.data.forEach((d) => {
+      // d.dataItem.selected = d.dataItem.taskCode === selectedID.value
+      if (e.dataItem === d) {
+        d.selected = true
+      } 
+      else {
+        d.selected = false
+      }
         if (d.inEdit) {
             if (e.dataItem !== d) {
-            d.inEdit = undefined;
+              d.inEdit = undefined;
             }
         }
     });
@@ -168,10 +197,6 @@ const addTask = (e: any) => {
     }
   }
 
-  
-
-  
-
   const dataItem = { 
     projectId: currSelectedProjectId, 
     versionNo: currSelectedVersionNo, 
@@ -186,7 +211,58 @@ const addTask = (e: any) => {
 }
 
 const addChildTask = (e: any) => {
+  var parentCode = selectedItem && selectedItem.value.taskCode
+  var currTaskLevel = getMaxTaskNo() + 1
 
+  var selectedTaskLevelData = gridData.data.filter(data => data.taskLevel === currTaskLevel && data.parentCode === parentCode)
+  
+  var maxTaskNo = 0
+  if(selectedTaskLevelData.length > 0) {
+    maxTaskNo = Math.max(...selectedTaskLevelData.map(property => property.taskNo))
+  }
+
+  // let index = gridData.data.findIndex(data => data.taskLevel === currTaskLevel && data.parentCode === parentCode && data.taskNo === maxTaskNo) + 1;
+  
+  var currTaskNo = maxTaskNo + 1
+  var currTaskCode = parentCode + '.' + + currTaskNo
+  var dependecyTaskCode = ""
+  const dataItem = { 
+    projectId: currSelectedProjectId.value, 
+    versionNo: currSelectedVersionNo.value, 
+    parentCode: parentCode,
+    taskLevel: currTaskLevel,
+    taskNo: currTaskNo,
+    taskCode: currTaskCode,
+    dependecyTaskCode: dependecyTaskCode,
+    durationDays: 1,
+    inEdit: false 
+  };
+  gridData.data.splice(0, 0, dataItem)
+
+  let newGridData = gridData.data.sort(function(a, b){
+		if(a.taskCode > b.taskCode) { return 1; }
+		if(a.taskCode < b.taskCode) { return -1; }
+		return 0;
+	});	
+
+
+      // gridData.data.slice().sort(function(a, b) {
+      //   if (a.taskCode > b.taskCode)
+      //                   return -1;
+      //               if (a.taskCode < b.taskCode)
+      //                   return 1;
+      //               return 0;
+      // })
+
+  console.log(gridData.data)
+  console.log(newGridData)
+  // gridData.data = gridData.data.orderBy(gridData.data, 'taskCode')
+
+  // console.log("currTaskLevel = " + currTaskLevel)
+  // console.log("parentCode = " + parentCode)
+  // console.log("maxTaskNo = " + maxTaskNo)
+  // console.log("currTaskNo = " + currTaskNo)
+  // console.log("currTaskCode = " + currTaskCode)
 }
 
 defineExpose({
@@ -196,10 +272,12 @@ defineExpose({
 
 </script>
 <template>
+  Selected Item:  {{selectedItem && selectedItem.taskCode}} , {{selectedItem && selectedItem.taskTitle}}
     <Grid
     ref="grid"
     :data-items="gridData"
     :edit-field="'inEdit'"
+    :selected-field="selectedField"
     @rowclick="rowClick"
     @cellclick="cellClick"
     @itemchange="itemChange"
