@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { client } from "@/api"
+// import { toDate } from "@servicestack/client"
+// import { formatDate } from "@/utils"
 // import { AppUser } from "@/dtos"
 import { 
     ProjectPlan, QueryProjectPlans, 
@@ -26,25 +28,27 @@ let selectedID = ref<string | undefined>('1')
 const sort = ref<SortDescriptor[] | undefined>([]);
 const filter = ref<CompositeFilterDescriptor>({logic: "and", filters: []});
 
-const titleCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
-  const codeTitle = h('pre',{}, [props.dataItem.codeTitle])
-  return h(tdElement, {}, codeTitle)
-}
+// const titleCellTemplate = (h : any, tdElement : any , props : any, listeners : any ) => {
+//   const codeTitle = h('pre',{}, [props.dataItem.codeTitle])
+//   return h(tdElement, {}, codeTitle)
+// }
 
 let gridColumProperties = [
-    { cell: titleCellTemplate, title: 'Task Code', width:135},
-    { field: 'taskLevel', title: 'Task Level', editable:false},
-    { field: 'taskNo', title: 'Task No', editable:false},
-    { field: 'parentCode', title: 'Parent Code', editable:false},
-    { field: 'taskCode', title: 'Task Code', editable:false},
+    // { cell: titleCellTemplate, title: 'Task Code', width:135},
+    // { field: 'taskLevel', title: 'Task Level', editable:false},
+    // { field: 'taskNo', title: 'Task No', editable:false},
+    // { field: 'parentCode', title: 'Parent Code', editable:false},
+    { field: 'taskCode', title: 'Task Code', width:130, editable:false},
     { field: 'taskTitle', title: 'Task Title'},
-    { field: 'dependecyTaskCode', title: 'Dependency Task Code'},
+    { field: 'dependecyTaskCode', title: 'Dependency Task Code', width:100},
     { field: 'durationDays', title: 'Duration (days)', width:130},
-    { field: 'startDate', title: 'Start', cell: 'datePickerTemplate', format:'DD-MMM-yyyy' , width:130},
-    // { field: 'endDate', title: 'End', cell: 'datePickerTemplate', format:'DD-MMM-yyyy', width:130 },
+    { field: 'startDate', title: 'Start', 
+    cell: 'datePickerTemplate', format:'DD-MMM-yyyy', editor: "date"},
+      // format:'{0:dd-MMM-yyyy}' ,width:130, editor: "date"},
+    { field: 'endDate', title: 'End', cell: 'datePickerTemplate', format:'DD-MMM-yyyy', width:130, editable:false },
     { field: 'completedPercentage', title: 'Completed', format:"{0:p0}" , width:130, editor: "numeric",},
     { field: 'resourceCost', title: 'Cost', format:"{0:n0}", width:130, editor: "numeric",},
-    { field: 'hasChild', title: 'Has Child', width:130, editor: "boolean"},
+    // { field: 'hasChild', title: 'Has Child', width:130, editor: "boolean"},
 //   { cell: 'actionTemplate', filterable: false, title: 'Action', className:"center" , width:95 }
 ] as GridColumnProps[];
 
@@ -59,11 +63,10 @@ const selectedItem = computed(() => {
   return gridData.data.find((item) => item.taskCode === selectedID.value)
 })
 
-const getMaxTaskNo = () => {
-  return selectedItem && selectedItem.value.taskLevel
-  // var taskLevel = 
-  
-}
+// const getMaxTaskNo = () => {
+//   return selectedItem && selectedItem.value.taskLevel
+//   // var taskLevel = 
+// }
 
 const refreshDatas = async () => {
     const queryProjectPlans = new QueryProjectPlans({ 
@@ -165,6 +168,12 @@ const cellClick = (e: any) => {
     if(e.dataItem.hasChild && e.field != "taskTitle") return;
 
     if (e.dataItem.inEdit && e.field === editField.value) return;
+
+    if (e.field === "startDate") {
+      console.log(e.dataItem.startDate)
+      // e.dataItem.startDate === toDate(e.dataItem.startDate)
+      // console.log(e.dataItem.startDate)
+    }
         
     exitEdit(e.dataItem, true);
     editField.value = e.field;
@@ -173,29 +182,25 @@ const cellClick = (e: any) => {
 }
 
 const addTask = (e: any) => {
-  var parentCode = ""
   var dependecyTaskCode = ""
-  
-  var inLevelLastTaskNo = 0
+  var parentCode = ""
   var currTaskLevel = 1
-  var currTaskNo = 1
-  let prevTaskDataItem = ref<ProjectPlan>()
 
-  if(prevTaskDataItem.value != undefined)
+  if(selectedItem.value)
   {
-    inLevelLastTaskNo = prevTaskDataItem.value.taskNo ?? 0
-    currTaskNo = inLevelLastTaskNo + 1
-    parentCode = prevTaskDataItem.value.parentCode ?? ""
-    if(parentCode != "")
-    {
-      let parentDataItem = ref<ProjectPlan>()
-      if(parentDataItem.value != undefined)
-      {
-        var parentTaskLevel = parentDataItem.value.taskLevel ?? 0
-        currTaskLevel = parentTaskLevel + 1
-      }
-    }
+    parentCode =  selectedItem.value.parentCode
+    currTaskLevel = selectedItem.value.taskLevel
   }
+
+  var selectedTaskLevelData = gridData.data.filter(data => data.taskLevel === currTaskLevel && data.parentCode === parentCode)
+
+  var maxTaskNo = 0
+  if(selectedTaskLevelData.length > 0) {
+    maxTaskNo = Math.max(...selectedTaskLevelData.map(property => property.taskNo))
+  }
+
+  var currTaskNo = maxTaskNo + 1
+  var currTaskCode = parentCode === "" ? currTaskNo : parentCode + '.' + + currTaskNo
 
   const dataItem = { 
     projectId: currSelectedProjectId, 
@@ -203,16 +208,30 @@ const addTask = (e: any) => {
     parentCode: parentCode,
     taskLevel: currTaskLevel,
     taskNo: currTaskNo,
+    taskCode: currTaskCode,
     dependecyTaskCode: dependecyTaskCode,
     durationDays: 1,
+    completedPercentage: 0,
+    resourceCost: 0,
     inEdit: false 
   };
   gridData.data.splice(0, 0, dataItem)
+
+  gridData.data.sort(function(a, b){
+		if(a.taskCode > b.taskCode) { return 1; }
+		if(a.taskCode < b.taskCode) { return -1; }
+		return 0;
+	});	
 }
 
 const addChildTask = (e: any) => {
-  var parentCode = selectedItem && selectedItem.value.taskCode
-  var currTaskLevel = getMaxTaskNo() + 1
+  var parentCode = ""
+  var currTaskLevel = selectedItem && selectedItem.value.taskLevel + 1
+  if(selectedItem)
+  {
+    parentCode =  selectedItem.value.taskCode
+    currTaskLevel = selectedItem.value.taskLevel + 1
+  }
 
   var selectedTaskLevelData = gridData.data.filter(data => data.taskLevel === currTaskLevel && data.parentCode === parentCode)
   
@@ -220,8 +239,6 @@ const addChildTask = (e: any) => {
   if(selectedTaskLevelData.length > 0) {
     maxTaskNo = Math.max(...selectedTaskLevelData.map(property => property.taskNo))
   }
-
-  // let index = gridData.data.findIndex(data => data.taskLevel === currTaskLevel && data.parentCode === parentCode && data.taskNo === maxTaskNo) + 1;
   
   var currTaskNo = maxTaskNo + 1
   var currTaskCode = parentCode + '.' + + currTaskNo
@@ -235,27 +252,21 @@ const addChildTask = (e: any) => {
     taskCode: currTaskCode,
     dependecyTaskCode: dependecyTaskCode,
     durationDays: 1,
+    completedPercentage: 0,
+    resourceCost: 0,
     inEdit: false 
   };
   gridData.data.splice(0, 0, dataItem)
 
-  let newGridData = gridData.data.sort(function(a, b){
+  // let newGridData = 
+  gridData.data.sort(function(a, b){
 		if(a.taskCode > b.taskCode) { return 1; }
 		if(a.taskCode < b.taskCode) { return -1; }
 		return 0;
 	});	
 
-
-      // gridData.data.slice().sort(function(a, b) {
-      //   if (a.taskCode > b.taskCode)
-      //                   return -1;
-      //               if (a.taskCode < b.taskCode)
-      //                   return 1;
-      //               return 0;
-      // })
-
-  console.log(gridData.data)
-  console.log(newGridData)
+  // console.log(gridData.data)
+  // console.log(newGridData)
   // gridData.data = gridData.data.orderBy(gridData.data, 'taskCode')
 
   // console.log("currTaskLevel = " + currTaskLevel)
@@ -263,6 +274,11 @@ const addChildTask = (e: any) => {
   // console.log("maxTaskNo = " + maxTaskNo)
   // console.log("currTaskNo = " + currTaskNo)
   // console.log("currTaskCode = " + currTaskCode)
+}
+
+const dateCellClick = (e: any) => {
+  console.log("dateCellClick")
+  console.log(e)
 }
 
 defineExpose({
@@ -307,6 +323,7 @@ defineExpose({
         :field="props.field"
         :data-item="props.dataItem"
         :format="props.format"
+        @click="dateCellClick"
       >
       </KGridDatePickerCell> 
     </td>

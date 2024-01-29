@@ -1,5 +1,5 @@
 /* Options:
-Date: 2023-12-20 19:21:26
+Date: 2023-12-22 13:30:47
 Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -143,6 +143,45 @@ export class Invoice extends AuditBase
     public attachments?: InvoiceAttachment[];
 
     public constructor(init?: Partial<Invoice>) { super(init); (Object as any).assign(this, init); }
+}
+
+export class ProjectPlan extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
+    public projectId?: number;
+
+    // @Required()
+    public versionNo?: number;
+
+    // @Required()
+    public taskLevel?: number;
+
+    // @Required()
+    public taskNo?: number;
+
+    // @Required()
+    public parentCode?: string;
+
+    // @Required()
+    public taskCode?: string;
+
+    public dependecyTaskCode?: string;
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public taskTitle?: string;
+
+    public durationDays?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public completedPercentage?: number;
+    public resourceCost?: number;
+    public hasChild?: boolean;
+
+    public constructor(init?: Partial<ProjectPlan>) { super(init); (Object as any).assign(this, init); }
 }
 
 // @DataContract
@@ -848,45 +887,6 @@ export class ProjectDoc
     public constructor(init?: Partial<ProjectDoc>) { (Object as any).assign(this, init); }
 }
 
-export class ProjectPlan extends AuditBase
-{
-    public id?: number;
-    // @Required()
-    // @References("typeof(GDIApps.ServiceModel.Types.Project)")
-    public projectId?: number;
-
-    // @Required()
-    public versionNo?: number;
-
-    // @Required()
-    public taskLevel?: number;
-
-    // @Required()
-    public taskNo?: number;
-
-    // @Required()
-    public parentCode?: string;
-
-    // @Required()
-    public taskCode?: string;
-
-    public dependecyTaskCode?: string;
-    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
-    public appUserId?: number;
-
-    // @Required()
-    public taskTitle?: string;
-
-    public durationDays?: number;
-    public startDate?: string;
-    public endDate?: string;
-    public completedPercentage?: number;
-    public resourceCost?: number;
-    public hasChild?: boolean;
-
-    public constructor(init?: Partial<ProjectPlan>) { super(init); (Object as any).assign(this, init); }
-}
-
 export class ProjectPlanView extends ProjectPlan
 {
     // @Ignore()
@@ -1483,6 +1483,18 @@ export class GetAppMenuByRole implements IReturn<CRUDResponse>
 
     public constructor(init?: Partial<GetAppMenuByRole>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'GetAppMenuByRole'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+export class UpdateProjectPlanInBatch implements IReturn<CRUDResponse>
+{
+    public projectId?: number;
+    public versionNo?: number;
+    public projectPlanList?: ProjectPlan[];
+
+    public constructor(init?: Partial<UpdateProjectPlanInBatch>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateProjectPlanInBatch'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new CRUDResponse(); }
 }
