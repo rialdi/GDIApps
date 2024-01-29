@@ -109,7 +109,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./api/GDIApps/wwwroot
           user_name: 'GitHub Action'
-          user_email: 'rialdi.kurniawan@gmail.com'
+          user_email: 'rialdi@ptgdi.com'
 
   deploy_via_ssh:
     needs: push_to_registry

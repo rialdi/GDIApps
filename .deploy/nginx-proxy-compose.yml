@@ -4,37 +4,78 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
-    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - conf:/etc/nginx/conf.d
-      - vhost:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - dhparam:/etc/nginx/dhparam
-      - certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /etc/nginx/certs
+      - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    network_mode: bridge
-
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion:2.0
-    container_name: nginx-proxy-le
-    restart: always
     environment:
-      - DEFAULT_EMAIL=rialdi@ptgdi.com
+      - LETSENCRYPT_HOST=apps.ptgdi.com
+      - VIRTUAL_HOST=apps.ptgdi.com
+      - VIRTUAL_PORT=49153
+    networks:
+      default:
+        external:
+          name: nginx-proxy
+    # networks:
+    #   - proxy
+
+  ssl-generator:
+    image: jrcs/letsencrypt-nginx-proxy-companion
     volumes_from:
       - nginx-proxy
     volumes:
-      - certs:/etc/nginx/certs:rw
-      - acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    network_mode: bridge
+    networks:
+      default:
+        external:
+          name: nginx-proxy
+    # networks:
+    #   - proxy
+   
+networks:
+  default:
+    external:
+      name: nginx-proxy
 
-volumes:
-  conf:
-  vhost:
-  html:
-  dhparam:
-  certs:
-  acme:
+# services:
+#   nginx-proxy:
+#     image: jwilder/nginx-proxy
+#     container_name: nginx-proxy
+#     restart: always
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - conf:/etc/nginx/conf.d
+#       - vhost:/etc/nginx/vhost.d
+#       - html:/usr/share/nginx/html
+#       - dhparam:/etc/nginx/dhparam
+#       - certs:/etc/nginx/certs:ro
+#       - /var/run/docker.sock:/tmp/docker.sock:ro
+#     network_mode: bridge
+
+#   letsencrypt:
+#     image: jrcs/letsencrypt-nginx-proxy-companion:2.0
+#     container_name: nginx-proxy-le
+#     restart: always
+#     environment:
+#       - DEFAULT_EMAIL=rialdi@ptgdi.com
+#     volumes_from:
+#       - nginx-proxy
+#     volumes:
+#       - certs:/etc/nginx/certs:rw
+#       - acme:/etc/acme.sh
+#       - /var/run/docker.sock:/var/run/docker.sock:ro
+#     network_mode: bridge
+
+# volumes:
+#   conf:
+#   vhost:
+#   html:
+#   dhparam:
+#   certs:
+#   acme:
