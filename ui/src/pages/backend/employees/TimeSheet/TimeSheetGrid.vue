@@ -185,8 +185,8 @@ const onSave = async (e: any) => {
         appUserId: currData.appUserId,
         clientId: currData.clientId,
         projectId: currData.projectId,
-        no : currData.no,
-        taskName : currData.taskName,
+        // no : currData.no,
+        // taskName : currData.taskName,
     })
     const api = await client.api(request)
     if (api.succeeded) {
@@ -208,8 +208,8 @@ const onSave = async (e: any) => {
         appUserId: currData.appUserId,
         clientId: currData.clientId,
         projectId: currData.projectId,
-        no : currData.no,
-        taskName : currData.taskName,
+        // no : currData.no,
+        // taskName : currData.taskName,
     })
     const api = await client.api(request)
     if (api.succeeded) {
