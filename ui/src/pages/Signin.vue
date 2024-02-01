@@ -23,15 +23,15 @@
               </p>
               <div class="flex justify-center">
                 <div class="btn-group" role="group" aria-label="Horizontal Secondary">
-                        <a class="btn btn-outline-primary" href="/auth/facebook?continue=/backend/dashboard" v-click-ripple>
+                        <!-- <a class="btn btn-outline-primary" href="/auth/facebook?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-facebook-f"></i>
-                        </a>
+                        </a> -->
                         <a class="btn btn-outline-primary" href="/auth/google?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-google"></i>
                         </a>
-                        <a class="btn btn-outline-primary" href="/auth/microsoft?continue=/backend/dashboard" v-click-ripple>
+                        <!-- <a class="btn btn-outline-primary" href="/auth/microsoft?continue=/backend/dashboard" v-click-ripple>
                           <i class="fab fa-microsoft"></i>
-                        </a>
+                        </a> -->
                       </div>
                     </div>
             </div>
@@ -163,6 +163,13 @@ let stop = watchEffect(() => {
   if (auth.value) {
     router.push(getRedirect(router) ?? '/')
     nextTick(() => stop())
+  }
+})
+
+onMounted(() => {
+  if(import.meta.env.DEV) {
+    username.value = 'rialdi@ptgdi.com'
+    password.value = 'Formula01'
   }
 })
 

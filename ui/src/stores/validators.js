@@ -87,3 +87,19 @@ export const formValidator = values => {
         : 'Email is required and should be in a valid format.',
   };
 };
+
+export const formChangePasswordValidator = values => {
+  const currPassword = values['currPassword'];
+  const newPassword = values['newPassword'];
+  const newPasswordConfirm = values['newPasswordConfirm'];
+  if(newPassword == newPasswordConfirm) {
+    return {};
+  }
+  return {
+    VALIDATION_SUMMARY: 'Please fill in the following fields.',
+    ['currPassword']: !currPassword ? 'currPassword is required.' : '',
+    ['newPassword']: !newPassword ? 'newPassword is required.' : '',
+    ['newPasswordConfirm']: !newPasswordConfirm &&  newPasswordConfirm == newPassword ? '' : 'New Password is not matched',
+  };
+}
+

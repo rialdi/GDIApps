@@ -1,13 +1,16 @@
 <template>
-    <input type="file" class="k-form form-control" @change="onChange($event)">
+    <input type="file" class="k-form form-control" @change="onChange($event)" :accept="acceptFile">
 </template>
 
 <script setup lang="ts">
 
 // const props = 
-defineProps<{
+withDefaults(defineProps<{ 
     modelValue : File | undefined
-}>()
+    acceptFile? : string | undefined
+}>(), {
+    acceptFile: '*'
+})
 
 const emit = defineEmits<{
     (e:'update:modelValue', value:File): () => void

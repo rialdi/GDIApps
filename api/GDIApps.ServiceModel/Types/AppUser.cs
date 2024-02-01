@@ -50,7 +50,8 @@ public class QueryAppUsers : QueryDb<AppUser>{
 public class UpdatePassword: IReturn<ResponseStatus>
 {
     public string Username {get; set;} = string.Empty;
-    public string Password {get; set;} = string.Empty;
+    public string CurrPassword {get; set;} = string.Empty;
+    public string NewPassword {get; set;} = string.Empty;
 }
 
 [Tag("appusers")]

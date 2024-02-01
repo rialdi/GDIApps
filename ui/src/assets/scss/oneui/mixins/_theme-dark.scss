@@ -26,6 +26,10 @@
       color: darken($body-bg-dark, 10%);
     }
 
+    .theme-modern .k-form, .theme-modern .k-form-inline, .k-form, .k-form-inline {
+      color: $body-bg-dark !important;
+    }
+
     // Typography
     h1,
     h2,
@@ -38,7 +42,8 @@
     .h3,
     .h4,
     .h5,
-    .h6 {
+    .h6,
+    .k-label{
       color: $body-bg-dark;
     }
 

@@ -5,7 +5,7 @@
         </klabel>
         <div class="k-form-field-wrap">
              <combobox
-          :style="{ width: '230px' }" 
+                :style="{ width: '230px' }" 
                 :name="name"
                 :data-items="data" 
                 :valid="valid"
@@ -39,7 +39,7 @@ export default {
         id: String,
         valid: Boolean,
         value: {
-             type: Object,
+             type: String ,
              default: function(){
                  return {};
              }

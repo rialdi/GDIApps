@@ -48,28 +48,28 @@ const dsScrollViewImages = [
   },
 ]
 
-const dsManagement= [
-  { 
-    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/01.jpg",
-    profileName : "Sandy Kwary",
-    profileTitle : "CEO", 
-  },
-  { 
-    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
-    profileName : "Aminullah",
-    profileTitle : "CTO", 
-  },
-  { 
-    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
-    profileName : "Hanky",
-    profileTitle : "CTO", 
-  },
-  { 
-    profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
-    profileName : "Rialdi",
-    profileTitle : "CTO", 
-  }
-]
+// const dsManagement= [
+//   { 
+//     profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/01.jpg",
+//     profileName : "Sandy Kwary",
+//     profileTitle : "CEO", 
+//   },
+//   { 
+//     profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+//     profileName : "Aminullah",
+//     profileTitle : "CTO", 
+//   },
+//   { 
+//     profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+//     profileName : "Hanky",
+//     profileTitle : "CTO", 
+//   },
+//   { 
+//     profileImage : "https://labartisan.net/demo/hafsa/assets/images/team/02.jpg",
+//     profileName : "Rialdi",
+//     profileTitle : "CTO", 
+//   }
+// ]
 </script>
 
 <template>
@@ -102,7 +102,7 @@ const dsManagement= [
         </kScrollView>
       </div>
       <!-- Management -->
-    <div style="text-align:center;">
+    <!-- <div style="text-align:center;">
       <h1>Management</h1>
       <div style="display:flex; justify-content: space-evenly; flex-wrap: wrap;">
         <div v-for="(card, index) in dsManagement" :key="index">
@@ -124,7 +124,7 @@ const dsManagement= [
             </card>
         </div>
     </div>
-    </div>
+    </div> -->
       <div class="content content-full">
         <div class="row g-0 justify-content-center text-center">
           <div class="col-md-10 pt-7 pb-9">

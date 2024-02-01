@@ -5,7 +5,7 @@ import { useTemplateStore } from "@/stores/template";
 import { auth, signout } from "@/auth"
 
 // Grab example data
-import notifications from "@/data/notifications";
+// import notifications from "@/data/notifications";
 
 // Main store and Router
 const store = useTemplateStore();
@@ -13,6 +13,9 @@ const router = useRouter();
 
 const user = auth.value!
 const roles = auth.value?.roles ?? []
+const isAdmin = computed(() => {
+  return roles.includes("Admin")
+})
 
 // Reactive variables
 const baseSearchTerm = ref("");
@@ -143,47 +146,24 @@ onUnmounted(() => {
                     /> -->
                     <p class="mt-2 mb-0 fw-medium">{{ user.displayName }}</p>
                     <div class="mw-20">
-                      <span v-for="role in roles"
-                            :key="role"
-                            class="mb-0 fs-sm fw-medium items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 bg-indigo-100 text-indigo-800">
+                      <span v-if="!isAdmin" v-for="role in roles" :key="role" class="mb-0 fs-sm fw-medium items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 bg-indigo-100 text-indigo-800">
                         {{ role }}
+                      </span>
+                      <span v-if="isAdmin" class="mb-0 fs-sm fw-medium items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 bg-indigo-100 text-indigo-800">
+                        Admin
                       </span>
                     </div>
                   </div>
                   <div class="p-2">
-                    <a
-                      class="dropdown-item d-flex align-items-center justify-content-between"
-                      href="javascript:void(0)"
-                    >
-                      <span class="fs-sm fw-medium">Inbox</span>
-                      <span class="badge rounded-pill bg-primary ms-2">3</span>
-                    </a>
-                    <RouterLink
-                      :to="{ name: 'user-profile' }"
-                      class="dropdown-item d-flex align-items-center justify-content-between"
-                    >
+                    <RouterLink :to="{ name: 'user-profile' }" class="dropdown-item d-flex align-items-center justify-content-between">
                       <span class="fs-sm fw-medium">Profile</span>
                       <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
                     </RouterLink>
-                    <a
-                      class="dropdown-item d-flex align-items-center justify-content-between"
-                      href="javascript:void(0)"
-                    >
-                      <span class="fs-sm fw-medium">Settings</span>
-                    </a>
+                    
                   </div>
                   <div role="separator" class="dropdown-divider m-0"></div>
                   <div class="p-2">
-                    <RouterLink
-                      :to="{ name: 'auth-lock' }"
-                      class="dropdown-item d-flex align-items-center justify-content-between"
-                    >
-                      <span class="fs-sm fw-medium">Lock Account</span>
-                    </RouterLink>
-                    <a
-                      class="dropdown-item d-flex align-items-center justify-content-between"
-                      @click="signout($router, '/')"
-                    >
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" @click="signout($router, '/')">
                       <span class="fs-sm fw-medium">Sign Out</span>
                     </a>
                   </div>
@@ -191,88 +171,14 @@ onUnmounted(() => {
               </div>
               <!-- END User Dropdown -->
 
-              <!-- Notifications Dropdown -->
-              <div class="dropdown d-inline-block ms-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-alt-secondary"
-                  id="page-header-notifications-dropdown"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i class="fa fa-fw fa-bell"></i>
-                  <span v-if="notifications.length > 0" class="text-primary"
-                    >•</span
-                  >
-                </button>
-                <div
-                  class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0 border-0 fs-sm"
-                  aria-labelledby="page-header-notifications-dropdown"
-                >
-                  <div
-                    class="p-2 bg-body-light border-bottom text-center rounded-top"
-                  >
-                    <h5 class="dropdown-header text-uppercase">
-                      Notifications
-                    </h5>
-                  </div>
-                  <ul class="nav-items mb-0">
-                    <li
-                      v-for="(notification, index) in notifications"
-                      :key="`notification-${index}`"
-                    >
-                      <a
-                        class="text-dark d-flex py-2"
-                        :href="`${notification.href}`"
-                      >
-                        <div class="flex-shrink-0 me-2 ms-3">
-                          <i :class="`${notification.icon}`"></i>
-                        </div>
-                        <div class="flex-grow-1 pe-2">
-                          <div class="fw-semibold">
-                            {{ notification.title }}
-                          </div>
-                          <span class="fw-medium text-muted">
-                            {{ notification.time }}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                    <li v-if="!notifications.length" class="p-2">
-                      <div
-                        class="alert alert-light d-flex align-items-center space-x-2 mb-0"
-                        role="alert"
-                      >
-                        <i class="fa fa-exclamation-triangle opacity-50"></i>
-                        <p class="mb-0">No new ones!</p>
-                      </div>
-                    </li>
-                  </ul>
-                  <div
-                    v-if="notifications.length > 0"
-                    class="p-2 border-top text-center"
-                  >
-                    <a
-                      class="d-inline-block fw-medium"
-                      href="javascript:void(0)"
-                    >
-                      <i class="fa fa-fw fa-arrow-down me-1 opacity-50"></i>
-                      Load More..
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <!-- END Notifications Dropdown -->
-
               <!-- Toggle Side Overlay -->
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-sm btn-alt-secondary ms-2"
                 @click="store.sideOverlay({ mode: 'toggle' })"
               >
                 <i class="fa fa-fw fa-list-ul fa-flip-horizontal"></i>
-              </button>
+              </button> -->
               <!-- END Toggle Side Overlay -->
             </slot>
           </div>

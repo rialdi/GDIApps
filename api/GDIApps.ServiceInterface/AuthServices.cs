@@ -13,8 +13,15 @@ public class AuthServices : Service
     public IAutoQueryDb AutoQuery { get; set; }
     public object Any (UpdatePassword request)
     {
-        var existingUser = AuthRepository.GetUserAuthByUserName(request.Username);
-        return AuthRepository.UpdateUserAuth(existingUser, existingUser, request.Password);
+        IUserAuth userAuth;
+        var isValidCurrPassword = AuthRepository.TryAuthenticate(request.Username, request.CurrPassword, out userAuth);
+
+        if(!isValidCurrPassword)
+        {
+            throw new System.Exception("Invalid Current Password");
+        }
+        // var existingUser = AuthRepository.GetUserAuthByUserName(request.Username);
+        return AuthRepository.UpdateUserAuth(userAuth, userAuth, request.NewPassword);
     }
 
     public object Any (UpdateAppUser request)
