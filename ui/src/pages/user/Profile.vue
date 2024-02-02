@@ -109,6 +109,20 @@ const onUploadProfileImg = async () => {
                 Security
               </button>
             </li>
+            <li class="nav-item">
+              <button id="btabs-static-tab-family" data-bs-target="#btabs-static-family"
+                  class="nav-link" data-bs-toggle="tab" role="tab"
+                  aria-controls="btabs-static-family" aria-selected="false" type="button">
+                Family Member
+              </button>
+            </li>
+            <li class="nav-item">
+              <button id="btabs-static-tab-resume" data-bs-target="#btabs-static-resume"
+                  class="nav-link" data-bs-toggle="tab" role="tab"
+                  aria-controls="btabs-static-resume" aria-selected="false" type="button">
+                Resume
+              </button>
+            </li>
           </ul>
           <div class="block-content tab-content">
             <div id="btabs-static-profile" aria-labelledby="btabs-static-tab-profile" tabindex="0" class="tab-pane active" role="tabpanel" >
@@ -124,11 +138,12 @@ const onUploadProfileImg = async () => {
             </div>
             <div id="btabs-static-security" aria-labelledby="btabs-static-tab-security" tabindex="1" class="tab-pane" role="tabpanel">
               <ChangePassword />
-              <!-- <BaseBlock title="Password" btn-option-fullscreen btn-option-content>
-                <template #options>
-                    <KButton id="btnChangePassword" @click="onChangePassword" :theme-color="'primary'" style="width:100px">Change Password</KButton>
-                </template>
-              </BaseBlock> -->
+            </div>
+            <div id="btabs-static-family" aria-labelledby="btabs-static-tab-family" tabindex="2" class="tab-pane" role="tabpanel">
+              <h1>Family</h1>
+            </div>
+            <div id="btabs-static-resume" aria-labelledby="btabs-static-tab-resume" tabindex="3" class="tab-pane" role="tabpanel">
+              <h1>Resume</h1>
             </div>
           </div>
       </template>
