@@ -29,8 +29,9 @@ let profileImage = ref<File |undefined> ()
 
 const roleInfoClass = ref<string>('mb-0 fs-sm fw-medium items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 bg-indigo-100 text-indigo-800')
 
-onMounted(async () => {
-  await getAppUser(auth.value?.userName)
+onMounted(() => {
+  getAppUser(auth.value?.userName)
+  console.log(auth.value)
 })
 
 const onUpdateUserProfile = async (dataItem: any) => {

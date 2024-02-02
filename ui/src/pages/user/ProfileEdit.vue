@@ -16,8 +16,9 @@ const currProfileImageUrl = computed(() => {
   return ((import.meta.env.DEV) ? "https://localhost:5005/" : "") + appUser.value.profileUrl
 })
 
-onMounted(async () => {
-  await getAppUser(auth.value?.userName)
+onMounted(() => {
+  getAppUser(auth.value?.userName)
+  // console.log(appUser)
 })
 
 // const onBeforeUpload = (event: any) => {
