@@ -2,9 +2,10 @@
 import { auth } from "@/auth"
 import { UpdatePassword } from "@/dtos";
 import { client } from "@/api"
+import { Form as KForm, Field as KField, FormElement as KFormElement } from "@progress/kendo-vue-form";
 import { passwordValidator, formChangePasswordValidator } from "@/stores/validators";
 import { showNotifSuccess, showNotifError } from '@/stores/commons'
-import { Form as KForm, Field as KField, FormElement as KFormElement, FormValidatorType } from "@progress/kendo-vue-form";
+
 import  FormInput  from "@/components/kform/FormInput.vue";
 import { Button as KButton} from '@progress/kendo-vue-buttons';
 
@@ -54,7 +55,7 @@ defineExpose(
 )
 </script>
 <template>
-    <KForm id="frmChangePassword" ref="frmChangePasswordRef" @submit="onChangePassword" :validator="(formChangePasswordValidator as FormValidatorType)">
+    <KForm id="frmChangePassword" ref="frmChangePasswordRef" @submit="onChangePassword" :validator="(formChangePasswordValidator as any)">
         <KFormElement :horizontal="true" id="frmChangePassword">
             <BaseBlock title="Password" btn-option-content>
                 <template #options>

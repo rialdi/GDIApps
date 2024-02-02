@@ -1,5 +1,5 @@
 /* Options:
-Date: 2024-02-01 15:19:19
+Date: 2024-02-02 10:52:36
 Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -668,6 +668,111 @@ export class EmailTemplate extends AuditBase
     public constructor(init?: Partial<EmailTemplate>) { super(init); (Object as any).assign(this, init); }
 }
 
+export enum FAMILY_MEMBER_TYPE
+{
+    HUSBAND = 'HUSBAND',
+    WIFE = 'WIFE',
+    CHILD = 'CHILD',
+}
+
+export enum LIVING_STATUS
+{
+    ALIVE = 'ALIVE',
+    DEAD = 'DEAD',
+}
+
+export enum GENDER
+{
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+}
+
+export class EmpFamilyMember extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public memberType?: FAMILY_MEMBER_TYPE;
+
+    // @Required()
+    public memberNo?: number;
+
+    // @Required()
+    public livingStatus?: LIVING_STATUS;
+
+    // @Required()
+    public gender?: GENDER;
+
+    // @Required()
+    public fullName?: string;
+
+    // @Required()
+    public nickName?: string;
+
+    // @Required()
+    public birthDate?: string;
+
+    public placeOfBirth?: string;
+    public phoneNo?: string;
+    public profileUrl?: string;
+
+    public constructor(init?: Partial<EmpFamilyMember>) { super(init); (Object as any).assign(this, init); }
+}
+
+export enum EMPLOYEE_LEAVE_TYPE
+{
+    FAMILY_BUSINESS = 'FAMILY_BUSINESS',
+    HOLIDAY = 'HOLIDAY',
+    PERSONAL = 'PERSONAL',
+    SICK = 'SICK',
+}
+
+export enum APPROVAL_STATUS
+{
+    DRAFT = 'DRAFT',
+    SUBMITTED = 'SUBMITTED',
+    WAITING_FOR_REVIEW = 'WAITING_FOR_REVIEW',
+    REJECTED = 'REJECTED',
+    APPROVED = 'APPROVED',
+}
+
+export class EmpLeave extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public year?: number;
+
+    // @Required()
+    public leaveType?: EMPLOYEE_LEAVE_TYPE;
+
+    // @Required()
+    public isPlanned?: boolean;
+
+    // @Required()
+    public startDate?: string;
+
+    // @Required()
+    public endDate?: string;
+
+    // @Required()
+    public totalWorkingDays?: number;
+
+    // @Required()
+    // @StringLength(1000)
+    public notes?: string;
+
+    public approvalStatus?: APPROVAL_STATUS;
+
+    public constructor(init?: Partial<EmpLeave>) { super(init); (Object as any).assign(this, init); }
+}
+
 export enum REVIEW_TYPE
 {
     TEAM_LEADER = 'TEAM_LEADER',
@@ -733,6 +838,122 @@ export class EmployeeReview extends AuditBase
     public reviewDetailList?: EmployeeReviewDetail[];
 
     public constructor(init?: Partial<EmployeeReview>) { super(init); (Object as any).assign(this, init); }
+}
+
+export enum REIMBURSEMENT_TYPE
+{
+    MEDICAL = 'MEDICAL',
+    MEALS = 'MEALS',
+    TRANSPORTATION = 'TRANSPORTATION',
+    OTHER = 'OTHER',
+}
+
+export enum REIMBURSEMENT_STATUS
+{
+    SUBMITTED = 'SUBMITTED',
+    IN_PROGRESS = 'IN_PROGRESS',
+    REJECTED = 'REJECTED',
+    COMPLETED = 'COMPLETED',
+}
+
+export class EmpReimbursement extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public year?: number;
+
+    // @Required()
+    public submitDate?: string;
+
+    // @Required()
+    public reimbursementType?: REIMBURSEMENT_TYPE;
+
+    // @Required()
+    public shortDesc?: string;
+
+    // @StringLength(4000)
+    public longDesc?: string;
+
+    public familyMemberName?: string;
+    // @Required()
+    public amount?: number;
+
+    public attahmentFile?: string;
+    public status?: REIMBURSEMENT_STATUS;
+    public statusNotes?: string;
+
+    public constructor(init?: Partial<EmpReimbursement>) { super(init); (Object as any).assign(this, init); }
+}
+
+export enum EMP_RESUME_TYPE
+{
+    FORMAL_EDUCATION = 'FORMAL_EDUCATION',
+    PROFESIONAL_EDUCATION = 'PROFESIONAL_EDUCATION',
+    PROFESIONAL_EXPERIENCE = 'PROFESIONAL_EXPERIENCE',
+    PROFESIONAL_TRAINING = 'PROFESIONAL_TRAINING',
+    PROJECT_EXPERIENCE = 'PROJECT_EXPERIENCE',
+    SKILL = 'SKILL',
+}
+
+export class EmpResume extends AuditBase
+{
+    public id?: number;
+    // @Required()
+    // @References("typeof(GDIApps.ServiceModel.Types.AppUser)")
+    public appUserId?: number;
+
+    // @Required()
+    public resumeType?: EMP_RESUME_TYPE;
+
+    // @Required()
+    public resumeNo?: number;
+
+    public startDate?: string;
+    public endDate?: string;
+    // @Required()
+    public title?: string;
+
+    public subTitle?: string;
+    public description?: string;
+    public certificationPublishedDate?: string;
+    public certificationExpiredDate?: string;
+    public attachmentFile?: string;
+
+    public constructor(init?: Partial<EmpResume>) { super(init); (Object as any).assign(this, init); }
+}
+
+export enum IDENTITY_OWNER
+{
+    EMPLOYEE = 'EMPLOYEE',
+    FAMILY_MEMBER = 'FAMILY_MEMBER',
+}
+
+export enum IDENTITY_TYPE
+{
+    KTP = 'KTP',
+    SIM_A = 'SIM_A',
+    SIM_C = 'SIM_C',
+    PASPOR = 'PASPOR',
+    NPWP = 'NPWP',
+    BPJS = 'BPJS',
+}
+
+export class IdentitiesNumber extends AuditBase
+{
+    public id?: number;
+    public owner?: IDENTITY_OWNER;
+    public ownerId?: number;
+    public identityType?: IDENTITY_TYPE;
+    public identityNUmber?: string;
+    public publishedDate?: string;
+    public expiredDate?: string;
+    public identityFile?: string;
+
+    public constructor(init?: Partial<IdentitiesNumber>) { super(init); (Object as any).assign(this, init); }
 }
 
 export class InvoiceView
@@ -1874,6 +2095,31 @@ export class QueryEmailTemplates extends QueryDb_1<EmailTemplate> implements IRe
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmpFamilyMembers extends QueryDb_1<EmpFamilyMember> implements IReturn<QueryResponse<EmpFamilyMember>>
+{
+    public appUserId?: number;
+
+    public constructor(init?: Partial<QueryEmpFamilyMembers>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmpFamilyMembers'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmpFamilyMember>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmpLeaves extends QueryDb_1<EmpLeave> implements IReturn<QueryResponse<EmpLeave>>
+{
+    public appUserId?: number;
+    public year?: number;
+    public leaveTypes?: string;
+    public isPlanned?: boolean;
+
+    public constructor(init?: Partial<QueryEmpLeaves>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmpLeaves'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmpLeave>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class QueryEmployeeReviews extends QueryDb_1<EmployeeReview> implements IReturn<QueryResponse<EmployeeReview>>
 {
     public reviewerId?: number;
@@ -1893,6 +2139,41 @@ export class QueryEmployeeReviewDetails extends QueryDb_1<EmployeeReviewDetail> 
     public getTypeName() { return 'QueryEmployeeReviewDetails'; }
     public getMethod() { return 'GET'; }
     public createResponse() { return new QueryResponse<EmployeeReviewDetail>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmpReimbursements extends QueryDb_1<EmpReimbursement> implements IReturn<QueryResponse<EmpReimbursement>>
+{
+    public appUserId?: number;
+    public year?: number;
+    public reimbursementTypes?: string;
+
+    public constructor(init?: Partial<QueryEmpReimbursements>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmpReimbursements'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmpReimbursement>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryEmpResumes extends QueryDb_1<EmpResume> implements IReturn<QueryResponse<EmpResume>>
+{
+    public appUserId?: number;
+
+    public constructor(init?: Partial<QueryEmpResumes>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryEmpResumes'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<EmpResume>(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class QueryIdentitiesNumbers extends QueryDb_1<IdentitiesNumber> implements IReturn<QueryResponse<IdentitiesNumber>>
+{
+    public ownerId?: number;
+
+    public constructor(init?: Partial<QueryIdentitiesNumbers>) { super(init); (Object as any).assign(this, init); }
+    public getTypeName() { return 'QueryIdentitiesNumbers'; }
+    public getMethod() { return 'GET'; }
+    public createResponse() { return new QueryResponse<IdentitiesNumber>(); }
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
@@ -2505,6 +2786,110 @@ export class DeleteEmailTemplate implements IReturnVoid, IDeleteDb<EmailTemplate
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
+export class CreateEmpFamilyMember implements IReturn<CRUDResponse>, ICreateDb<EmpFamilyMember>
+{
+    public appUserId?: number;
+    public memberType?: FAMILY_MEMBER_TYPE;
+    public memberNo?: number;
+    public livingStatus?: LIVING_STATUS;
+    public gender?: GENDER;
+    public fullName?: string;
+    public nickName?: string;
+    public birthDate?: string;
+    public placeOfBirth?: string;
+    public phoneNo?: string;
+    public profileUrl?: string;
+
+    public constructor(init?: Partial<CreateEmpFamilyMember>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateEmpFamilyMember'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateEmpFamilyMember implements IReturn<CRUDResponse>, IPatchDb<EmpFamilyMember>
+{
+    public id?: number;
+    public appUserId?: number;
+    public memberType?: FAMILY_MEMBER_TYPE;
+    public memberNo?: number;
+    public livingStatus?: LIVING_STATUS;
+    public gender?: GENDER;
+    public fullName?: string;
+    public nickName?: string;
+    public birthDate?: string;
+    public placeOfBirth?: string;
+    public phoneNo?: string;
+    public profileUrl?: string;
+
+    public constructor(init?: Partial<UpdateEmpFamilyMember>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateEmpFamilyMember'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteEmpFamilyMember implements IReturnVoid, IDeleteDb<EmpFamilyMember>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteEmpFamilyMember>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteEmpFamilyMember'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateEmpLeave implements IReturn<CRUDResponse>, ICreateDb<EmpLeave>
+{
+    public appUserId?: number;
+    public year?: number;
+    public leaveType?: EMPLOYEE_LEAVE_TYPE;
+    public isPlanned?: boolean;
+    public startDate?: string;
+    public endDate?: string;
+    public totalWorkingDays?: number;
+    public notes?: string;
+    public approvalStatus?: APPROVAL_STATUS;
+
+    public constructor(init?: Partial<CreateEmpLeave>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateEmpLeave'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateEmpLeave implements IReturn<CRUDResponse>, IPatchDb<EmpLeave>
+{
+    public id?: number;
+    public appUserId?: number;
+    public year?: number;
+    public leaveType?: EMPLOYEE_LEAVE_TYPE;
+    public isPlanned?: boolean;
+    public startDate?: string;
+    public endDate?: string;
+    public totalWorkingDays?: number;
+    public notes?: string;
+    public approvalStatus?: APPROVAL_STATUS;
+
+    public constructor(init?: Partial<UpdateEmpLeave>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateEmpLeave'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteEmpLeave implements IReturnVoid, IDeleteDb<EmpLeave>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteEmpLeave>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteEmpLeave'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
 export class CreateEmployeeReview implements IReturn<CRUDResponse>, ICreateDb<EmployeeReview>
 {
     public periodYear?: number;
@@ -2593,6 +2978,161 @@ export class DeleteEmployeeReviewDetail implements IReturnVoid, IDeleteDb<Employ
 
     public constructor(init?: Partial<DeleteEmployeeReviewDetail>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'DeleteEmployeeReviewDetail'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateEmpReimbursement implements IReturn<CRUDResponse>, ICreateDb<EmpReimbursement>
+{
+    public appUserId?: number;
+    public year?: number;
+    public submitDate?: string;
+    public reimbursementType?: REIMBURSEMENT_TYPE;
+    public shortDesc?: string;
+    public longDesc?: string;
+    public familyMemberName?: string;
+    public amount?: number;
+    public attahmentFile?: string;
+    public status?: REIMBURSEMENT_STATUS;
+    public statusNotes?: string;
+
+    public constructor(init?: Partial<CreateEmpReimbursement>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateEmpReimbursement'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateEmpReimbursement implements IReturn<CRUDResponse>, IPatchDb<EmpReimbursement>
+{
+    public id?: number;
+    public appUserId?: number;
+    public year?: number;
+    public submitDate?: string;
+    public reimbursementType?: REIMBURSEMENT_TYPE;
+    public shortDesc?: string;
+    public longDesc?: string;
+    public familyMemberName?: string;
+    public amount?: number;
+    public attahmentFile?: string;
+    public status?: REIMBURSEMENT_STATUS;
+    public statusNotes?: string;
+
+    public constructor(init?: Partial<UpdateEmpReimbursement>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateEmpReimbursement'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteEmpReimbursement implements IReturnVoid, IDeleteDb<EmpReimbursement>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteEmpReimbursement>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteEmpReimbursement'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateEmpResume implements IReturn<CRUDResponse>, ICreateDb<EmpResume>
+{
+    public appUserId?: number;
+    public resumeType?: EMP_RESUME_TYPE;
+    public resumeNo?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public title?: string;
+    public subTitle?: string;
+    public description?: string;
+    public certificationPublishedDate?: string;
+    public certificationExpiredDate?: string;
+    public attachmentFile?: string;
+
+    public constructor(init?: Partial<CreateEmpResume>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateEmpResume'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateEmpResume implements IReturn<CRUDResponse>, IPatchDb<EmpResume>
+{
+    public id?: number;
+    public appUserId?: number;
+    public resumeType?: EMP_RESUME_TYPE;
+    public resumeNo?: number;
+    public startDate?: string;
+    public endDate?: string;
+    public title?: string;
+    public subTitle?: string;
+    public description?: string;
+    public certificationPublishedDate?: string;
+    public certificationExpiredDate?: string;
+    public attachmentFile?: string;
+
+    public constructor(init?: Partial<UpdateEmpResume>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateEmpResume'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteEmpResume implements IReturnVoid, IDeleteDb<EmpResume>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteEmpResume>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteEmpResume'; }
+    public getMethod() { return 'DELETE'; }
+    public createResponse() {}
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class CreateIdentitiesNumber implements IReturn<CRUDResponse>, ICreateDb<IdentitiesNumber>
+{
+    public id?: number;
+    public owner?: IDENTITY_OWNER;
+    public ownerId?: number;
+    public identityType?: IDENTITY_TYPE;
+    public identityNUmber?: string;
+    public publishedDate?: string;
+    public expiredDate?: string;
+    public identityFile?: string;
+
+    public constructor(init?: Partial<CreateIdentitiesNumber>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'CreateIdentitiesNumber'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class UpdateIdentitiesNumber implements IReturn<CRUDResponse>, IPatchDb<IdentitiesNumber>
+{
+    public id?: number;
+    public owner?: IDENTITY_OWNER;
+    public ownerId?: number;
+    public identityType?: IDENTITY_TYPE;
+    public identityNUmber?: string;
+    public publishedDate?: string;
+    public expiredDate?: string;
+    public identityFile?: string;
+
+    public constructor(init?: Partial<UpdateIdentitiesNumber>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'UpdateIdentitiesNumber'; }
+    public getMethod() { return 'PATCH'; }
+    public createResponse() { return new CRUDResponse(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class DeleteIdentitiesNumber implements IReturnVoid, IDeleteDb<IdentitiesNumber>
+{
+    public id?: number;
+
+    public constructor(init?: Partial<DeleteIdentitiesNumber>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'DeleteIdentitiesNumber'; }
     public getMethod() { return 'DELETE'; }
     public createResponse() {}
 }

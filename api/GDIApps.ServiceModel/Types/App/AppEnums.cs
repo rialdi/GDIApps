@@ -125,3 +125,45 @@ public enum REIMBURSEMENT_STATUS {
     REJECTED,
     COMPLETED
 }
+
+public enum FAMILY_MEMBER_TYPE {
+    HUSBAND,
+    WIFE,
+    CHILD
+}
+
+public enum LIVING_STATUS {
+    ALIVE,
+    DEAD
+}
+
+public enum MARITAL_STATUS {
+    MARRIED,
+    WIDOWED,
+    SEPARATED,
+    DIVORCED,
+    SINGLE
+}
+
+public enum IDENTITY_OWNER {
+    EMPLOYEE,
+    FAMILY_MEMBER
+}
+
+public enum IDENTITY_TYPE {
+    KTP,
+    SIM_A,
+    SIM_C,
+    PASPOR,
+    NPWP,
+    BPJS
+}
+
+public enum EMP_RESUME_TYPE {
+    FORMAL_EDUCATION,
+    PROFESIONAL_EDUCATION,
+    PROFESIONAL_EXPERIENCE,
+    PROFESIONAL_TRAINING,
+    PROJECT_EXPERIENCE,
+    SKILL
+}

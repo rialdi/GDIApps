@@ -20,7 +20,6 @@ declare module '@vue/runtime-core' {
     CloseButton: typeof import('./components/form/CloseButton.vue')['default']
     Confirmation: typeof import('./components/Confirmation.vue')['default']
     ConfirmDelete: typeof import('./components/form/ConfirmDelete.vue')['default']
-    copy: typeof import('./components/grids/KGridDropDownCell copy.vue')['default']
     ErrorSummary: typeof import('./components/form/ErrorSummary.vue')['default']
     FormAutoComplete: typeof import('./components/kform/FormAutoComplete.vue')['default']
     FormCheckbox: typeof import('./components/kform/FormCheckbox.vue')['default']

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using ServiceStack;
 using ServiceStack.DataAnnotations;
 
@@ -15,11 +14,17 @@ public class EmpLeave : AuditBase
     [References(typeof(AppUser))]
     public int AppUserId { get; set;}
 
+    [Required]
     public int Year { get; set; }
+    [Required]
     public EMPLOYEE_LEAVE_TYPE LeaveType { get; set; }
+    [Required]
     public bool IsPlanned { get; set; }
+    [Required]
     public DateTime StartDate { get; set; }
+    [Required]
     public DateTime EndDate { get; set; }
+    [Required]
     public int TotalWorkingDays { get; set; }
 
     [Required]
@@ -27,7 +32,6 @@ public class EmpLeave : AuditBase
     public string Notes { get; set; } = string.Empty;
     public APPROVAL_STATUS ApprovalStatus { get; set; }
 }
-
 
 [ValidateIsAuthenticated]
 [Tag("EmpLeaves")]
