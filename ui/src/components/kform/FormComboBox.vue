@@ -4,14 +4,14 @@
         {{label}}
         </klabel>
         <div class="k-form-field-wrap">
-             <combobox
-                :style="{ width: '230px' }" 
+             <comboBox
                 :name="name"
-                :data-items="data" 
+                :data-items="dataItems" 
                 :valid="valid"
                 :value="value"
                 :id="id"
                 :text-field="textField"
+                :value-field="valueField"
                 @change="handleChange"
                 @blur="handleBlur"
                 @focus="handleFocus"
@@ -30,7 +30,8 @@ import { ComboBox } from "@progress/kendo-vue-dropdowns";
 export default {
     props: {
         textField: String,
-        data: Object,
+        valueField: String,
+        dataItems: Object,
         name: String,
         touched: Boolean,
         label: String,
@@ -50,7 +51,7 @@ export default {
         error: Error,
         hint: Hint,
         klabel: Label,
-        combobox: ComboBox
+        comboBox: ComboBox
     },
     emits: {
         change: null,

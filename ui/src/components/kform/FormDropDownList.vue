@@ -5,7 +5,7 @@
         </klabel>
         <div class="k-form-field-wrap">
              <dropdownlist
-                :data-items="data" 
+                :data-items="dataItems" 
                 :valid="valid"
                 :value="value"
                 :id="id"
@@ -30,7 +30,7 @@ import { DropDownList } from "@progress/kendo-vue-dropdowns";
 export default {
     props: {
         textField: String,
-        data: Object,
+        dataItems: Object,
         touched: Boolean,
         label: String,
         validationMessage: String,

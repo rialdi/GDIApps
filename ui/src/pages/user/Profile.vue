@@ -12,6 +12,8 @@ import ProfileEditForm from "./ProfileEditForm.vue";
 import ChangePassword from "./ChangePassword.vue";
 import UploadFile from "@/components/form/UploadFile.vue";
 
+import FamilyMember from "./family/Index.vue";
+
 import { Button as KButton} from '@progress/kendo-vue-buttons'
 
 const roles = auth.value?.roles ?? []
@@ -140,7 +142,7 @@ const onUploadProfileImg = async () => {
               <ChangePassword />
             </div>
             <div id="btabs-static-family" aria-labelledby="btabs-static-tab-family" tabindex="2" class="tab-pane" role="tabpanel">
-              <h1>Family</h1>
+              <FamilyMember></FamilyMember>
             </div>
             <div id="btabs-static-resume" aria-labelledby="btabs-static-tab-resume" tabindex="3" class="tab-pane" role="tabpanel">
               <h1>Resume</h1>

@@ -32,6 +32,12 @@ export const phoneValidator = value =>
     : phoneRegex.test(value)
     ? ''
     : 'Not a valid phone number.';
+  export const phoneValidatorNotRequired = value =>
+  !value
+    ? ''
+    : phoneRegex.test(value)
+    ? ''
+    : 'Not a valid phone number.';
 export const cardValidator = value =>
   !value
     ? 'Credit card number is required. '

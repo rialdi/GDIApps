@@ -5,8 +5,8 @@
                 <label>{{ label }}</label>
             </div>
             <div class="col-sm">
-                <KLabel v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="valid" class="form-label">
-                    {{ label }}
+                <KLabel v-if="label != '' && (labelPosition == 'top' || labelPosition == undefined)" :editor-id="id" :editor-valid="isValid" class="form-label">
+                {{ label }}
                 </KLabel>
                 <kDatePicker 
                     :id="id"

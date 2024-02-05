@@ -26,7 +26,7 @@
       color: darken($body-bg-dark, 10%);
     }
 
-    .theme-modern .k-form, .theme-modern .k-form-inline, .k-form, .k-form-inline {
+    .theme-modern .k-form, .theme-modern .k-form-inline, .k-form, .k-form-inline, .k-form .k-form-md, .k-form-field {
       color: $body-bg-dark !important;
     }
 
@@ -44,7 +44,7 @@
     .h5,
     .h6,
     .k-label{
-      color: $body-bg-dark;
+      color: $body-bg-dark !important;
     }
 
     .content-heading,
@@ -397,13 +397,13 @@
       }
     }
 
-    .popover-header {
+    .popover-header, .k-window-title, .k-dialog-titlebar {
       color: $body-bg-dark;
       background-color: lighten($primary-darker, 3%);
       border-bottom-color: darken($primary-darker, 4.5%);
     }
 
-    .popover-body {
+    .popover-body, .k-window {
       color: darken($body-bg-dark, 10%);
       background-color: lighten($primary-darker, 3%);
     }

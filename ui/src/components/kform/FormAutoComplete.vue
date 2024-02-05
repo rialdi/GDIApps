@@ -5,7 +5,7 @@
       </klabel>
       <div class="k-form-field-wrap">
         <autocomplete
-          :data-items="data"
+          :data-items="dataItems"
           :valid="valid"
           :value="value"
           :id="id"
@@ -26,7 +26,7 @@
   import { AutoComplete } from '@progress/kendo-vue-dropdowns';
   export default {
     props: {
-      data: Object,
+      dataItems: Object,
       touched: Boolean,
       label: String,
       validationMessage: String,

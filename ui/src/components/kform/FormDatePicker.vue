@@ -4,7 +4,7 @@
         {{label}}
         </klabel>
         <div class="k-form-field-wrap">
-            <datepicker :style="{ width: '230px' }" 
+            <datepicker  
                 :value="currValue"
                 v-model="currValue"
                 :format="dateFormat"
@@ -31,7 +31,10 @@ export default {
     props: {
         hintDirection: String,
         touched: Boolean,
-        format: String,
+        format: {
+            type: String,
+            default: 'DD-MMM-yyyy'
+        },
         label: String,
         validationMessage: String,
         hint: String,

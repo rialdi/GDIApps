@@ -4,7 +4,7 @@
         {{label}}
         </klabel>
         <div class="k-form-field-wrap">
-            <numerictextbox :style="{ width: '230px' }" 
+            <numerictextbox 
                 :valid="valid"
                 :value="value"
                 :id="id"

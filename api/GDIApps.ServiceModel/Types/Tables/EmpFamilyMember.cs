@@ -16,17 +16,11 @@ public class EmpFamilyMember : AuditBase
     public int AppUserId { get; set;}
     [Required]
     public FAMILY_MEMBER_TYPE MemberType { get; set; }
-    [Required]
     public int MemberNo { get; set; }
-    [Required]
     public LIVING_STATUS LivingStatus { get; set; }
-    [Required]
     public GENDER Gender { get; set; }
-    [Required]
     public string FullName { get; set; } 
-    [Required]
     public string NickName { get; set; } 
-    [Required]
     public DateTime BirthDate { get; set; }
     public string PlaceOfBirth { get; set; } 
     public string PhoneNo { get; set; } 
@@ -53,13 +47,11 @@ public class CreateEmpFamilyMember : ICreateDb<EmpFamilyMember>, IReturn<CRUDRes
 {  
     #nullable disable
     public int AppUserId { get; set;}
-    [ApiAllowableValues(typeof(FAMILY_MEMBER_TYPE))]
     public FAMILY_MEMBER_TYPE MemberType { get; set; }
     public int MemberNo { get; set; }
-    [ApiAllowableValues(typeof(LIVING_STATUS))]
-    public LIVING_STATUS LivingStatus { get; set; }
-    [ApiAllowableValues(typeof(GENDER))]
-    public GENDER Gender { get; set; }
+    public LIVING_STATUS? LivingStatus { get; set; }
+    // [ApiAllowableValues(typeof(GENDER_TYPE))]
+    public GENDER? Gender { get; set; }
     public string FullName { get; set; } 
     public string NickName { get; set; } 
     public DateTime BirthDate { get; set; }
@@ -78,13 +70,12 @@ public class UpdateEmpFamilyMember : IPatchDb<EmpFamilyMember>, IReturn<CRUDResp
     #nullable disable
     public int Id { get; set; } 
     public int AppUserId { get; set;}
-    [ApiAllowableValues(typeof(FAMILY_MEMBER_TYPE))]
-    public FAMILY_MEMBER_TYPE MemberType { get; set; }
+
+    // [ApiAllowableValues(typeof(FAMILY_MEMBER_TYPE))]
+    public FAMILY_MEMBER_TYPE? MemberType { get; set; }
     public int MemberNo { get; set; }
-    [ApiAllowableValues(typeof(LIVING_STATUS))]
-    public LIVING_STATUS LivingStatus { get; set; }
-    [ApiAllowableValues(typeof(GENDER))]
-    public GENDER Gender { get; set; }
+    public LIVING_STATUS? LivingStatus { get; set; }
+    public GENDER? Gender { get; set; }
     public string FullName { get; set; } 
     public string NickName { get; set; } 
     public DateTime BirthDate { get; set; }
