@@ -34,6 +34,7 @@ public class DailyScrumMeeting : AuditBase
 [Tag("Reviews")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryDailyScrumMeetings : QueryDb<DailyScrumMeeting> {
+    public int? AppUserId { get; set;}
 }
 
 [ValidateIsAuthenticated]

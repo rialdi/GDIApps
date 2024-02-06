@@ -45,6 +45,7 @@ const ProjectPlanPages = () => import("@/pages/backend/ProjectPlan/Index.vue");
 
 // Employee: Pages
 const TimeSheetPages = () => import("@/pages/backend/employees/TimeSheet/Index.vue");
+const DailyScrumMeetingPages = () => import("@/pages/backend/dailyscrum/Index.vue");
 
 // Backend: Pages
 const BackendPagesAuth = () => import("@/views/backend/pages/AuthView.vue");
@@ -223,6 +224,11 @@ const routes = [
             path: "plans",
             name: "backend-projects-plans",
             component: ProjectPlanPages,
+          },
+          {
+            path: "dailyscrummeeting",
+            name: "backend-projects-dailyscrummeeting",
+            component: DailyScrumMeetingPages,
           },
           // {
           //   path: "task",
