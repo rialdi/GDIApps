@@ -128,7 +128,7 @@ public class UploadUserProfile : IPost, IReturn<UploadUserProfile>
 
 [Tag("appusers")]
 [ValidateIsAuthenticated]
-public class GetUserListByRoles : IReturn<AppUser[]>
+public class GetUserListByRoles : IReturn<QueryResponse<AppUser>>
 {
     public string RoleName {get;set;} = string.Empty;
     // public string UserNameOrEmail { get; set; } = string.Empty;

@@ -75,10 +75,13 @@ public class AuthServices : Service
     public object Any (GetUserListByRoles request)
     { 
         var db = AutoQuery.GetDb<AppUser>();
-        var explicitJoin = db.Select(db.From<AppUser>()
+        var returnList = db.Select(db.From<AppUser>()
             .Join<UserAuthRole>((appUser,authRole) => appUser.Id == authRole.UserAuthId)
-            .Where<UserAuthRole>(x => x.Role == request.RoleName));
-        
-        return explicitJoin;
+            .Where<UserAuthRole>(x => x.Role == request.RoleName || request.RoleName == string.Empty));
+
+        return new QueryResponse<AppUser>{
+            Total = returnList.Count,
+            Results = returnList
+        };
     }
 }
