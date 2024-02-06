@@ -12,6 +12,8 @@
                 :id="id"
                 :text-field="textField"
                 :value-field="valueField"
+                :data-item-key="dataItemKey"
+                :value-primitive="valuePrimitive"
                 @change="handleChange"
                 @blur="handleBlur"
                 @focus="handleFocus"
@@ -31,6 +33,8 @@ export default {
     props: {
         textField: String,
         valueField: String,
+        dataItemKey: String,
+        valuePrimitive: Boolean,
         dataItems: Object,
         name: String,
         touched: Boolean,
@@ -40,7 +44,7 @@ export default {
         id: String,
         valid: Boolean,
         value: {
-             type: String ,
+             type: [String, Number] ,
              default: function(){
                  return {};
              }
@@ -54,6 +58,7 @@ export default {
         comboBox: ComboBox
     },
     emits: {
+        // update:modelValue,
         change: null,
         blur: null,
         focus: null
@@ -74,6 +79,9 @@ export default {
     },
     methods: {
         handleChange(e){
+            // console.log('handleChange')
+            // console.log(e)
+            // this.$emit('update:modelValue', e.value)
             this.$emit('change', e);
         },
         handleBlur(e){

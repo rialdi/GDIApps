@@ -46,18 +46,19 @@ public class EmpReimbursement : AuditBase
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpReimbursements")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmpReimbursements : QueryDb<EmpReimbursement> 
 {    
     #nullable disable
-    public int AppUserId { get; set; }
-    public int Year { get; set; }
-    public string ReimbursementTypes { get; set; }
+    public int? AppUserId { get; set; }
+    public int? Year { get; set; }
+    public REIMBURSEMENT_TYPE? ReimbursementTypes { get; set; }
+    #nullable restore
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpReimbursements")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditCreate)]
 public class CreateEmpReimbursement : ICreateDb<EmpReimbursement>, IReturn<CRUDResponse>
 {  
@@ -65,8 +66,7 @@ public class CreateEmpReimbursement : ICreateDb<EmpReimbursement>, IReturn<CRUDR
     public int AppUserId { get; set;}
     public int Year { get; set; }
     public DateTime SubmitDate { get; set; }
-    [ApiAllowableValues(typeof(REIMBURSEMENT_TYPE))]
-    public REIMBURSEMENT_TYPE ReimbursementType { get; set; }
+    public REIMBURSEMENT_TYPE? ReimbursementType { get; set; }
     public string ShortDesc { get; set; }
     public string LongDesc { get; set; }
     public string FamilyMemberName { get; set; } 
@@ -74,14 +74,13 @@ public class CreateEmpReimbursement : ICreateDb<EmpReimbursement>, IReturn<CRUDR
 
     [Input(Type = "file"), UploadTo("reimbursementfile")]
     public string AttahmentFile { get; set; }
-    [ApiAllowableValues(typeof(REIMBURSEMENT_STATUS))]
-    public REIMBURSEMENT_STATUS Status { get; set; }
+    public REIMBURSEMENT_STATUS? Status { get; set; }
     public string StatusNotes { get; set; }
     #nullable restore
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpReimbursements")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdateEmpReimbursement : IPatchDb<EmpReimbursement>, IReturn<CRUDResponse>
 {
@@ -90,8 +89,7 @@ public class UpdateEmpReimbursement : IPatchDb<EmpReimbursement>, IReturn<CRUDRe
     public int AppUserId { get; set;}
     public int Year { get; set; }
     public DateTime SubmitDate { get; set; }
-    [ApiAllowableValues(typeof(REIMBURSEMENT_TYPE))]
-    public REIMBURSEMENT_TYPE ReimbursementType { get; set; }
+    public REIMBURSEMENT_TYPE? ReimbursementType { get; set; }
     public string ShortDesc { get; set; }
     public string LongDesc { get; set; }
     public string FamilyMemberName { get; set; } 
@@ -99,14 +97,13 @@ public class UpdateEmpReimbursement : IPatchDb<EmpReimbursement>, IReturn<CRUDRe
 
     [Input(Type = "file"), UploadTo("reimbursementfile")]
     public string AttahmentFile { get; set; }
-    [ApiAllowableValues(typeof(REIMBURSEMENT_STATUS))]
-    public REIMBURSEMENT_STATUS Status { get; set; }
+    public REIMBURSEMENT_STATUS? Status { get; set; }
     public string StatusNotes { get; set; }
     #nullable restore
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpReimbursements")]
+[Tag("Employees")]
 public class DeleteEmpReimbursement : IDeleteDb<EmpReimbursement>, IReturnVoid
 {
     public int Id { get; set; }        

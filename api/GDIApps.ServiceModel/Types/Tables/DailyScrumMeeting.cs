@@ -31,14 +31,14 @@ public class DailyScrumMeeting : AuditBase
 }
 
 [ValidateIsAuthenticated]
-[Tag("Reviews")]
+[Tag("Projects")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryDailyScrumMeetings : QueryDb<DailyScrumMeeting> {
     public int? AppUserId { get; set;}
 }
 
 [ValidateIsAuthenticated]
-[Tag("Reviews")]
+[Tag("Projects")]
 [AutoApply(Behavior.AuditCreate)]
 public class CreateDailyScrumMeeting : ICreateDb<DailyScrumMeeting>, IReturn<CRUDResponse>
 {
@@ -52,7 +52,7 @@ public class CreateDailyScrumMeeting : ICreateDb<DailyScrumMeeting>, IReturn<CRU
 }
 
 [ValidateIsAuthenticated]
-[Tag("Reviews")]
+[Tag("Projects")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdateDailyScrumMeeting : IPatchDb<DailyScrumMeeting>, IReturn<CRUDResponse>
 {
@@ -67,7 +67,7 @@ public class UpdateDailyScrumMeeting : IPatchDb<DailyScrumMeeting>, IReturn<CRUD
 }
 
 [ValidateIsAuthenticated]
-[Tag("Reviews")]
+[Tag("Projects")]
 public class DeleteDailyScrumMeeting : IDeleteDb<DailyScrumMeeting>, IReturnVoid
 {
     public int Id { get; set; }        

@@ -44,7 +44,8 @@ const InvoicesPages = () => import("@/pages/backend/admins/Invoices/Index.vue");
 const ProjectPlanPages = () => import("@/pages/backend/ProjectPlan/Index.vue");
 
 // Employee: Pages
-const TimeSheetPages = () => import("@/pages/backend/employees/TimeSheet/Index.vue");
+// const TimeSheetPages = () => import("@/pages/backend/employees/TimeSheet/Index.vue");
+const TimeSheetPages = () => import("@/pages/backend/timesheet/Index.vue");
 const DailyScrumMeetingPages = () => import("@/pages/backend/dailyscrum/Index.vue");
 
 // Backend: Pages
@@ -229,7 +230,12 @@ const routes = [
             path: "dailyscrummeeting",
             name: "backend-projects-dailyscrummeeting",
             component: DailyScrumMeetingPages,
-          },
+          }
+          // {
+          //   path: "timesheet",
+          //   name: "backend-projects-timesheet",
+          //   component: DailyScrumMeetingPages,
+          // },
           // {
           //   path: "task",
           //   name: "backend-projects-tasks",

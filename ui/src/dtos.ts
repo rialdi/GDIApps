@@ -1,5 +1,5 @@
 /* Options:
-Date: 2024-02-06 10:13:10
+Date: 2024-02-06 19:16:23
 Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -1291,7 +1291,6 @@ export class TimeSheet extends AuditBase
     // @References("typeof(GDIApps.ServiceModel.Types.Project)")
     public projectId?: number;
 
-    // @Required()
     // @References("typeof(GDIApps.ServiceModel.Types.ProjectTask)")
     public projectTaskId?: number;
 
@@ -1430,6 +1429,27 @@ export class UploadUserProfile implements IReturn<UploadUserProfile>, IPost
     public createResponse() { return new UploadUserProfile(); }
 }
 
+// @DataContract
+export class QueryResponse<AppUser>
+{
+    // @DataMember(Order=1)
+    public offset?: number;
+
+    // @DataMember(Order=2)
+    public total?: number;
+
+    // @DataMember(Order=3)
+    public results?: AppUser[];
+
+    // @DataMember(Order=4)
+    public meta?: { [index: string]: string; };
+
+    // @DataMember(Order=5)
+    public responseStatus?: ResponseStatus;
+
+    public constructor(init?: Partial<QueryResponse<AppUser>>) { (Object as any).assign(this, init); }
+}
+
 export class ContactUsEmailResponse
 {
     public email?: string;
@@ -1560,27 +1580,6 @@ export class UnAssignRolesResponse
     public constructor(init?: Partial<UnAssignRolesResponse>) { (Object as any).assign(this, init); }
 }
 
-// @DataContract
-export class QueryResponse<AppMenu>
-{
-    // @DataMember(Order=1)
-    public offset?: number;
-
-    // @DataMember(Order=2)
-    public total?: number;
-
-    // @DataMember(Order=3)
-    public results?: AppMenu[];
-
-    // @DataMember(Order=4)
-    public meta?: { [index: string]: string; };
-
-    // @DataMember(Order=5)
-    public responseStatus?: ResponseStatus;
-
-    public constructor(init?: Partial<QueryResponse<AppMenu>>) { (Object as any).assign(this, init); }
-}
-
 // @ValidateRequest(Validator="IsAuthenticated")
 export class UpdatePassword implements IReturn<ResponseStatus>
 {
@@ -1652,14 +1651,14 @@ export class GetUserList implements IReturn<AppUser[]>
 }
 
 // @ValidateRequest(Validator="IsAuthenticated")
-export class GetUserListByRoles implements IReturn<AppUser[]>
+export class GetUserListByRoles implements IReturn<QueryResponse<AppUser>>
 {
     public roleName?: string;
 
     public constructor(init?: Partial<GetUserListByRoles>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'GetUserListByRoles'; }
     public getMethod() { return 'POST'; }
-    public createResponse() { return new Array<AppUser>(); }
+    public createResponse() { return new QueryResponse<AppUser>(); }
 }
 
 // @Route("/contacts/email", "POST")
@@ -2063,6 +2062,7 @@ export class QueryCRoleRates extends QueryDb_2<CRoleRate, CRoleRateView> impleme
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryDailyScrumMeetings extends QueryDb_1<DailyScrumMeeting> implements IReturn<QueryResponse<DailyScrumMeeting>>
 {
+    public appUserId?: number;
 
     public constructor(init?: Partial<QueryDailyScrumMeetings>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryDailyScrumMeetings'; }
@@ -2109,7 +2109,7 @@ export class QueryEmpLeaves extends QueryDb_1<EmpLeave> implements IReturn<Query
 {
     public appUserId?: number;
     public year?: number;
-    public leaveTypes?: string;
+    public leaveTypes?: EMPLOYEE_LEAVE_TYPE;
     public isPlanned?: boolean;
 
     public constructor(init?: Partial<QueryEmpLeaves>) { super(init); (Object as any).assign(this, init); }
@@ -2145,7 +2145,7 @@ export class QueryEmpReimbursements extends QueryDb_1<EmpReimbursement> implemen
 {
     public appUserId?: number;
     public year?: number;
-    public reimbursementTypes?: string;
+    public reimbursementTypes?: REIMBURSEMENT_TYPE;
 
     public constructor(init?: Partial<QueryEmpReimbursements>) { super(init); (Object as any).assign(this, init); }
     public getTypeName() { return 'QueryEmpReimbursements'; }
@@ -2334,8 +2334,13 @@ export class QueryReviewMasterQuestions extends QueryDb_1<ReviewMasterQuestion> 
 // @ValidateRequest(Validator="IsAuthenticated")
 export class QueryTimeSheets extends QueryDb_2<TimeSheet, TimeSheetView> implements IReturn<QueryResponse<TimeSheetView>>
 {
+    public appUserId?: number;
+    public clientId?: number;
+    public projectId?: number;
+    public projectTaskId?: number;
+    public tsDateGreaterThanOrEqualTo?: string;
+    public tsDateLessThanOrEqualTo?: string;
     public appUserIds?: number[];
-    public tsDateBetween?: string[];
     public clientIds?: number[];
     public projectIds?: number[];
 

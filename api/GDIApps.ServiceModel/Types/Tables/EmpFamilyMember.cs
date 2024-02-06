@@ -31,7 +31,7 @@ public class EmpFamilyMember : AuditBase
 
 
 [ValidateIsAuthenticated]
-[Tag("EmpFamilyMembers")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmpFamilyMembers : QueryDb<EmpFamilyMember> 
 {    
@@ -41,7 +41,7 @@ public class QueryEmpFamilyMembers : QueryDb<EmpFamilyMember>
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpFamilyMembers")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditCreate)]
 public class CreateEmpFamilyMember : ICreateDb<EmpFamilyMember>, IReturn<CRUDResponse>
 {  
@@ -63,7 +63,7 @@ public class CreateEmpFamilyMember : ICreateDb<EmpFamilyMember>, IReturn<CRUDRes
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpFamilyMembers")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdateEmpFamilyMember : IPatchDb<EmpFamilyMember>, IReturn<CRUDResponse>
 {
@@ -88,7 +88,7 @@ public class UpdateEmpFamilyMember : IPatchDb<EmpFamilyMember>, IReturn<CRUDResp
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpFamilyMembers")]
+[Tag("Employees")]
 public class DeleteEmpFamilyMember : IDeleteDb<EmpFamilyMember>, IReturnVoid
 {
     public int Id { get; set; }        

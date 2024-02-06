@@ -26,9 +26,8 @@ public class TimeSheet : AuditBase
     [References(typeof(Project))]
     public int  ProjectId { get; set; }
 
-    [Required]
     [References(typeof(ProjectTask))]
-    public int  ProjectTaskId { get; set; }
+    public int ProjectTaskId { get; set; }
 
     [Required]
     [StringLength(1000)] 
@@ -55,9 +54,17 @@ public class TimeSheetView : TimeSheet
 public class QueryTimeSheets : QueryDb<TimeSheet, TimeSheetView>, 
     IJoin<TimeSheet, AppUser>, 
     IJoin<TimeSheet, Client>, 
-    IJoin<TimeSheet, Project> {
+    IJoin<TimeSheet, Project> 
+{
+    public int? AppUserId { get; set; }
+    public int? ClientId { get; set; }
+    public int? ProjectId { get; set; }
+    public int? ProjectTaskId { get; set; }
+
+    public DateTime? TSDateGreaterThanOrEqualTo { get; set; }
+    public DateTime? TSDateLessThanOrEqualTo { get; set; }
     public int[]? AppUserIds { get; set; }
-    public DateTime[]? TSDateBetween {get; set;}
+    // public DateTime[]? TSDateBetween {get; set;}
     public int[]? ClientIds { get; set; }
     public int[]? ProjectIds { get; set; }
 }
@@ -67,12 +74,14 @@ public class QueryTimeSheets : QueryDb<TimeSheet, TimeSheetView>,
 [AutoApply(Behavior.AuditCreate)]
 public class CreateTimeSheet : ICreateDb<TimeSheet>, IReturn<CRUDResponse>
 {  
+    #nullable disable
     public DateTime TSDate { get; set; }
     public int AppUserId { get; set;}
-    public int  ClientId { get; set; }
-    public int  ProjectId { get; set; }
-    public int  ProjectTaskId { get; set; }
+    public int ClientId { get; set; }
+    public int ProjectId { get; set; }
+    public int? ProjectTaskId { get; set; }
     public string Notes { get; set; } = string.Empty;
+    #nullable restore
 
 }
 
@@ -81,13 +90,17 @@ public class CreateTimeSheet : ICreateDb<TimeSheet>, IReturn<CRUDResponse>
 [AutoApply(Behavior.AuditModify)]
 public class UpdateTimeSheet : IPatchDb<TimeSheet>, IReturn<CRUDResponse>
 {
+    
     public int Id { get; set; } 
+    
+    #nullable disable
     public DateTime TSDate { get; set; }
     public int AppUserId { get; set;}
-    public int  ClientId { get; set; }
-    public int  ProjectId { get; set; }
-    public int  ProjectTaskId { get; set; }
+    public int ClientId { get; set; }
+    public int ProjectId { get; set; }
+    public int? ProjectTaskId { get; set; }
     public string Notes { get; set; } = string.Empty;
+    #nullable restore
 }
 
 [ValidateIsAuthenticated]

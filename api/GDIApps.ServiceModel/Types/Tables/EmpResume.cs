@@ -33,7 +33,7 @@ public class EmpResume : AuditBase
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpResumes")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditQuery)]
 public class QueryEmpResumes : QueryDb<EmpResume> 
 {    
@@ -43,7 +43,7 @@ public class QueryEmpResumes : QueryDb<EmpResume>
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpResumes")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditCreate)]
 public class CreateEmpResume : ICreateDb<EmpResume>, IReturn<CRUDResponse>
 {  
@@ -65,7 +65,7 @@ public class CreateEmpResume : ICreateDb<EmpResume>, IReturn<CRUDResponse>
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpResumes")]
+[Tag("Employees")]
 [AutoApply(Behavior.AuditModify)]
 public class UpdateEmpResume : IPatchDb<EmpResume>, IReturn<CRUDResponse>
 {
@@ -88,7 +88,7 @@ public class UpdateEmpResume : IPatchDb<EmpResume>, IReturn<CRUDResponse>
 }
 
 [ValidateIsAuthenticated]
-[Tag("EmpResumes")]
+[Tag("Employees")]
 public class DeleteEmpResume : IDeleteDb<EmpResume>, IReturnVoid
 {
     public int Id { get; set; }        
