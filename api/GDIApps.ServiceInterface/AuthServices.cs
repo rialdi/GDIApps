@@ -45,6 +45,14 @@ public class AuthServices : Service
         return AuthRepository.GetUserAuthByUserName(request.UserNameOrEmail);
     }
 
+    public object Any (GetUserInfoDetailById request)
+    {
+        var userAuth = AuthRepository.GetUserAuth(request.UserAuthId);
+        // return AuthRepository.GetUserAuthByUserName(userAuth.UserName);
+
+        return userAuth;
+    }
+
     public object Any(UploadUserProfile request) 
     {
         var existingUser = AuthRepository.GetUserAuthByUserName(request.Email) as AppUser;

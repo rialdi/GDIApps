@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { client } from "@/api"
-import { auth, appUser, getAppUser } from "@/auth"
+import { auth, appUser, getAppUserById } from "@/auth"
 import { UpdateAppUser, UploadUserProfile } from "@/dtos"
 import { showNotifSuccess, showNotifError } from '@/stores/commons'
 
@@ -32,7 +32,7 @@ let profileImage = ref<File |undefined> ()
 const roleInfoClass = ref<string>('mb-0 fs-sm fw-medium items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 bg-indigo-100 text-indigo-800')
 
 onMounted(() => {
-  getAppUser(auth.value?.userName)
+  getAppUserById(auth.value?.userId)
   console.log(auth.value)
 })
 
@@ -45,7 +45,7 @@ const onUpdateUserProfile = async (dataItem: any) => {
   const api = await client.api(request)
   if (api.succeeded) {
     showNotifSuccess('Update Profile', 'Successfully updated Profile data 🎉')
-    await getAppUser(auth.value?.userName)
+    await getAppUserById(auth.value?.userId)
   } 
 }
 
@@ -59,7 +59,7 @@ const onUploadProfileImg = async () => {
   if(api.succeeded)
   {
     showNotifSuccess('Update Profile Image', 'Successfully updated Profile Image 🎉')
-    getAppUser(auth.value?.userName)
+    getAppUserById(auth.value?.userId)
   }
   else
   {

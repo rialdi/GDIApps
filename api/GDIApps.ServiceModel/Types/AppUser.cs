@@ -77,6 +77,13 @@ public class GetUserInfoDetail : IReturn<AppUser>
 
 [Tag("appusers")]
 [ValidateIsAuthenticated]
+public class GetUserInfoDetailById : IReturn<AppUser>
+{
+    public string UserAuthId { get; set; } = string.Empty;
+}
+
+[Tag("appusers")]
+[ValidateIsAuthenticated]
 public class UpdateAppUser
 {
     public string Email {get;set;}  = string.Empty;

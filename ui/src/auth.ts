@@ -2,7 +2,7 @@ import { ref, computed } from "vue"
 import { checkAuth, logout } from "./api"
 import { AuthenticateResponse } from "./dtos"
 import { Router } from "vue-router"
-import {GetUserInfoDetail, AppUser} from "@/dtos"
+import {GetUserInfoDetail, GetUserInfoDetailById, AppUser} from "@/dtos"
 import { client } from "@/api"
 
 export function createAttrs(auth?: AuthenticateResponse) {
@@ -26,6 +26,14 @@ export async function revalidate() {
 
 export const getAppUser = async (userName:string|undefined) => {
     const api = await client.api(new GetUserInfoDetail({ userNameOrEmail: userName}))
+    if (api.succeeded) {
+        appUser.value = api.response! ?? []
+        appUser.value.roles = auth.value?.roles
+    }
+}
+
+export const getAppUserById = async (userAuthId:string|undefined) => {
+    const api = await client.api(new GetUserInfoDetailById({ userAuthId: userAuthId}))
     if (api.succeeded) {
         appUser.value = api.response! ?? []
         appUser.value.roles = auth.value?.roles

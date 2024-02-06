@@ -1,5 +1,5 @@
 /* Options:
-Date: 2024-02-02 10:52:36
+Date: 2024-02-06 10:13:10
 Version: 6.110
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5005
@@ -697,24 +697,12 @@ export class EmpFamilyMember extends AuditBase
     // @Required()
     public memberType?: FAMILY_MEMBER_TYPE;
 
-    // @Required()
     public memberNo?: number;
-
-    // @Required()
     public livingStatus?: LIVING_STATUS;
-
-    // @Required()
     public gender?: GENDER;
-
-    // @Required()
     public fullName?: string;
-
-    // @Required()
     public nickName?: string;
-
-    // @Required()
     public birthDate?: string;
-
     public placeOfBirth?: string;
     public phoneNo?: string;
     public profileUrl?: string;
@@ -1638,6 +1626,17 @@ export class GetUserInfoDetail implements IReturn<AppUser>
 
     public constructor(init?: Partial<GetUserInfoDetail>) { (Object as any).assign(this, init); }
     public getTypeName() { return 'GetUserInfoDetail'; }
+    public getMethod() { return 'POST'; }
+    public createResponse() { return new AppUser(); }
+}
+
+// @ValidateRequest(Validator="IsAuthenticated")
+export class GetUserInfoDetailById implements IReturn<AppUser>
+{
+    public userAuthId?: string;
+
+    public constructor(init?: Partial<GetUserInfoDetailById>) { (Object as any).assign(this, init); }
+    public getTypeName() { return 'GetUserInfoDetailById'; }
     public getMethod() { return 'POST'; }
     public createResponse() { return new AppUser(); }
 }
